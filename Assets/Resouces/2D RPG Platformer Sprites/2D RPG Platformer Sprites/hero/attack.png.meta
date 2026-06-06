@@ -193,6 +193,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: attack_0
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 206
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f9df4044deea74943898491c0debaf1e
+      internalID: -2025687311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -204,6 +225,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      attack_0: -2025687311
       hero_0: 18549624
       hero_1: 12302091
       hero_2: 518228207

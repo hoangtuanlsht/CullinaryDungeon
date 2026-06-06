@@ -20,7 +20,7 @@ public class Enemy : Character
     public Character Target => target;
     private void Update()
     {
-        if(currentState != null)
+        if(currentState != null && IsDead)
         {
             currentState.OnExecute(this);
         }
@@ -76,6 +76,7 @@ public class Enemy : Character
     {
         if(thrownPrefab != null && thrownPoint != null)
         {
+            Debug.Log("Throw");
             Instantiate(thrownPrefab, thrownPoint.position, thrownPoint.rotation);
         }
 

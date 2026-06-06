@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class Flame : MonoBehaviour
 {
+    public ParticleSystem hitVFX;
     public Rigidbody2D rb;
     [SerializeField]private float speed;
+    [SerializeField]private float damage;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,7 +17,7 @@ public class Flame : MonoBehaviour
     // Update is called once per frame
     private void OnInit(){
         rb.velocity = transform.right * speed;
-        Invoke(nameof(OnDespawn), 2f);
+        Invoke(nameof(OnDespawn), 5f);
     }
     private void OnDespawn()
     {
@@ -26,7 +28,8 @@ public class Flame : MonoBehaviour
     {
         if(collision.CompareTag("Player"))
         {
-            collision.GetComponent<Character>().OnHit(10);
+            collision.GetComponent<Character>().OnHit(damage);
+            Instantiate(hitVFX, transform.position, transform.rotation);
             OnDespawn();
         }
     }

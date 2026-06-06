@@ -9,6 +9,7 @@ public class Character : MonoBehaviour
 
     private string currentAnimName;
     [SerializeField] private Animator anim;
+    [SerializeField] private HealthBar healthBar;
 
     public bool IsDead => health <= 0f;
     public void Start()
@@ -18,6 +19,7 @@ public class Character : MonoBehaviour
     public virtual void OnInit()
     {
         health = 100f;
+        healthBar.OnInit(100);
     }
     public virtual void OnDespawn()
     {
@@ -36,13 +38,17 @@ public class Character : MonoBehaviour
     }
     public void OnHit(float damage)
     {
-        if (IsDead)
+        if (!IsDead)
         { 
             health -= damage;
+            Debug.Log($"{gameObject.name} hit with {damage} damage, remaining health: {health}");
             if (health <= damage)
             {
+                
                 OnDeath();
             }
+            healthBar.SetNewHP(health);
+
         }
     }
     public virtual void OnDeath()
