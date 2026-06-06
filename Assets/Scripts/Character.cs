@@ -47,7 +47,8 @@ public class Character : MonoBehaviour
     }
     public virtual void OnDeath()
     {
-
+        ChangedAnim("Dead");
+        Invoke(nameof(OnDespawn), 2f);
     }
     
 }

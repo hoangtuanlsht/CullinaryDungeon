@@ -11,7 +11,7 @@ public class IdleState : IsState
     {
         enemy.StopMoving();
         timer = 0;
-        randomTime = Random.Range(2.5f, 4f);
+        randomTime = Random.Range(2f, 4f);
     }
 
     public void OnExecute(Enemy enemy)

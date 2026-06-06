@@ -19,6 +19,7 @@ public class Player : Character
     [SerializeField]public Rigidbody2D rb;
 
     [SerializeField] private Vector3 savePoint;
+    [SerializeField] private GameObject attackArea;
     public void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -111,6 +112,7 @@ public class Player : Character
         coin = 0;
         transform.position = savePoint;
         ChangedAnim("Idle");
+        DeactiveAttack();
     }
     public override void OnDespawn()
     {
@@ -119,6 +121,7 @@ public class Player : Character
     public override void OnDeath()
     {
         base.OnDeath();
+        OnInit();
     }   
     private bool CheckGrounded()
     {
@@ -143,13 +146,22 @@ public class Player : Character
         ChangedAnim("Attack");
         isAttacking = true;
         Invoke("ResetAttack", 0.5f);
+        ActiveAttack();
+        Invoke("DeactiveAttack", 0.5f);
     }
     private void ResetAttack()
     {
         isAttacking = false;
     }
    
-
+    private void ActiveAttack()
+    {
+        attackArea.SetActive(true);
+    }
+    private void DeactiveAttack()
+    {
+        attackArea.SetActive(false);
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Coin"))
