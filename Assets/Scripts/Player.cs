@@ -20,10 +20,13 @@ public class Player : Character
 
     [SerializeField] private Vector3 savePoint;
     [SerializeField] private GameObject attackArea;
+
     public void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         savePoint = transform.position;
+        coin = PlayerPrefs.GetInt("coin", 0);
+
     }
 
     // Update is called once per frame
@@ -113,6 +116,7 @@ public class Player : Character
         transform.position = savePoint;
         ChangedAnim("Idle");
         DeactiveAttack();
+        UIManager.instance.SetCoin(coin);
     }
     public override void OnDespawn()
     {
@@ -167,6 +171,8 @@ public class Player : Character
         if (collision.CompareTag("Coin"))
         {
             coin++;
+            PlayerPrefs.SetInt("coin", coin);
+            UIManager.instance.SetCoin(coin);
             Destroy(collision.gameObject);
             Debug.Log("Coin");
         }

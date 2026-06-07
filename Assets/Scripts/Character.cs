@@ -9,7 +9,7 @@ public class Character : MonoBehaviour
 
     private string currentAnimName;
     [SerializeField] private Animator anim;
-    [SerializeField] private HealthBar healthBar;
+    [SerializeField] protected HealthBar healthBar;
 
     public bool IsDead => health <= 0f;
     public void Start()
@@ -19,7 +19,7 @@ public class Character : MonoBehaviour
     public virtual void OnInit()
     {
         health = 100f;
-        healthBar.OnInit(100);
+        healthBar.OnInit(100,transform);
     }
     public virtual void OnDespawn()
     {
