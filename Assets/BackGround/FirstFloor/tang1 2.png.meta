@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: dfa34c66a2d9f5145a324263ec3145d7
+guid: 52e176591475021458db3daa4f8640fd
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -108,7 +108,28 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: tang1 2_0
+      rect:
+        serializedVersion: 2
+        x: 1055
+        y: 338
+        width: 289
+        height: 430
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b85ec9e67a987c4b8441e462703f4c2
+      internalID: 189796158
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -119,7 +140,9 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      tang1 2_0: 189796158
+      tang1 2_1: -268277203
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
