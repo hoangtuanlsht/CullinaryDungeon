@@ -95,10 +95,18 @@ public class Enemy : Character
     }
     private void ActiveAttack()
     {
+        if(attackArea == null)
+        {
+            return;
+        }
         attackArea.SetActive(true);
     }
     private void DeactiveAttack()
     {
+        if (attackArea == null)
+        {
+            return;
+        }
         attackArea.SetActive(false);
     }
     private void OnTriggerEnter2D(Collider2D collision)

@@ -1,0 +1,451 @@
+fileFormatVersion: 2
+guid: 3ad5d46ce8ee53f4b9d5fb0431588777
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 36
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Plant3_Death_full_87
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 13
+        width: 32
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 41919dcfe9948604aaf0ecb5c2e65a5c
+      internalID: 1701641268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Plant3_Death_full_88
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 13
+        width: 32
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1cb52c225ca493549a2f55c5c4136fe6
+      internalID: -877906559
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Plant3_Death_full_89
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 13
+        width: 33
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0ccefa00eb60f60469f54b2386e8c85f
+      internalID: -929707176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Plant3_Death_full_101
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 13
+        width: 36
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e211d6c6c6c43314a83ddcac3cf249b4
+      internalID: 1526541275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Plant3_Death_full_105
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 10
+        width: 45
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c89e4c0a8bee7d74ab4e06f0b1299982
+      internalID: 1889112333
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Plant3_Death_full_109
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 13
+        width: 34
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2142bb638650e9c49805493397fe4474
+      internalID: -1408978162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Plant3_Death_full_110
+      rect:
+        serializedVersion: 2
+        x: 335
+        y: 13
+        width: 41
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0c7a2972133d6f64c90f1503e8f3ebc9
+      internalID: -1472406365
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Plant3_Death_full_111
+      rect:
+        serializedVersion: 2
+        x: 456
+        y: 10
+        width: 45
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 23c143c6424a83c4abe930389812d7a0
+      internalID: -1398571275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Plant3_Death_full_112
+      rect:
+        serializedVersion: 2
+        x: 521
+        y: 10
+        width: 41
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: df78563674526804f8bbbf41b4c7a4bd
+      internalID: 1089344702
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Plant3_Death_full_113
+      rect:
+        serializedVersion: 2
+        x: 586
+        y: 10
+        width: 40
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3cab60f82423175409e264b6a99875ff
+      internalID: 1801819943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      Plant3_Death_full_0: 270961816
+      Plant3_Death_full_1: 1089598608
+      Plant3_Death_full_10: 1921960774
+      Plant3_Death_full_100: -1531689761
+      Plant3_Death_full_101: 1526541275
+      Plant3_Death_full_102: -314637986
+      Plant3_Death_full_103: -1452624541
+      Plant3_Death_full_104: 448128329
+      Plant3_Death_full_105: 1889112333
+      Plant3_Death_full_106: -159011904
+      Plant3_Death_full_107: -1914733226
+      Plant3_Death_full_108: -454207510
+      Plant3_Death_full_109: -1408978162
+      Plant3_Death_full_11: -1914853476
+      Plant3_Death_full_110: -1472406365
+      Plant3_Death_full_111: -1398571275
+      Plant3_Death_full_112: 1089344702
+      Plant3_Death_full_113: 1801819943
+      Plant3_Death_full_12: -630658318
+      Plant3_Death_full_13: -1744209408
+      Plant3_Death_full_14: -959349489
+      Plant3_Death_full_15: -1637446089
+      Plant3_Death_full_16: -1230810463
+      Plant3_Death_full_17: 858809823
+      Plant3_Death_full_18: -864501468
+      Plant3_Death_full_19: 1840760656
+      Plant3_Death_full_2: 64472197
+      Plant3_Death_full_20: -1295020418
+      Plant3_Death_full_21: -604061684
+      Plant3_Death_full_22: 2131282961
+      Plant3_Death_full_23: -1515834346
+      Plant3_Death_full_24: -499773917
+      Plant3_Death_full_25: -771005930
+      Plant3_Death_full_26: -1156150124
+      Plant3_Death_full_27: -1341267981
+      Plant3_Death_full_28: 417827490
+      Plant3_Death_full_29: -1720612354
+      Plant3_Death_full_3: -1985295018
+      Plant3_Death_full_30: 1614721433
+      Plant3_Death_full_31: 377709527
+      Plant3_Death_full_32: 2012006889
+      Plant3_Death_full_33: 2047276446
+      Plant3_Death_full_34: 2107725367
+      Plant3_Death_full_35: -636319175
+      Plant3_Death_full_36: 676084650
+      Plant3_Death_full_37: -798767745
+      Plant3_Death_full_38: -831178395
+      Plant3_Death_full_39: 1297558013
+      Plant3_Death_full_4: 2087833349
+      Plant3_Death_full_40: 1749942118
+      Plant3_Death_full_41: 1341988566
+      Plant3_Death_full_42: 860092927
+      Plant3_Death_full_43: 37754499
+      Plant3_Death_full_44: -2113573963
+      Plant3_Death_full_45: 1181785609
+      Plant3_Death_full_46: -2130906354
+      Plant3_Death_full_47: -2012522109
+      Plant3_Death_full_48: -551763634
+      Plant3_Death_full_49: -571106352
+      Plant3_Death_full_5: -603522431
+      Plant3_Death_full_50: -1188663849
+      Plant3_Death_full_51: 512216420
+      Plant3_Death_full_52: 1057798761
+      Plant3_Death_full_53: -1581562835
+      Plant3_Death_full_54: -1511145031
+      Plant3_Death_full_55: 1626420774
+      Plant3_Death_full_56: 1102141128
+      Plant3_Death_full_57: 344669960
+      Plant3_Death_full_58: 1043484479
+      Plant3_Death_full_59: 2140503343
+      Plant3_Death_full_6: -2022568224
+      Plant3_Death_full_60: 1903162395
+      Plant3_Death_full_61: -644057192
+      Plant3_Death_full_62: -231603591
+      Plant3_Death_full_63: 1679307777
+      Plant3_Death_full_64: 801120647
+      Plant3_Death_full_65: -372323261
+      Plant3_Death_full_66: 220402188
+      Plant3_Death_full_67: 754830373
+      Plant3_Death_full_68: 1639638156
+      Plant3_Death_full_69: 1960829089
+      Plant3_Death_full_7: -1827445047
+      Plant3_Death_full_70: 1404296552
+      Plant3_Death_full_71: -1086351293
+      Plant3_Death_full_72: -1222206710
+      Plant3_Death_full_73: 1706099356
+      Plant3_Death_full_74: 1855561668
+      Plant3_Death_full_75: -1505555280
+      Plant3_Death_full_76: 52313283
+      Plant3_Death_full_77: 1138846713
+      Plant3_Death_full_78: -1733551232
+      Plant3_Death_full_79: -906301676
+      Plant3_Death_full_8: 595851943
+      Plant3_Death_full_80: 188352256
+      Plant3_Death_full_81: 823622586
+      Plant3_Death_full_82: -731651788
+      Plant3_Death_full_83: -1812969759
+      Plant3_Death_full_84: -1865021092
+      Plant3_Death_full_85: -278547378
+      Plant3_Death_full_86: -1630613272
+      Plant3_Death_full_87: 1701641268
+      Plant3_Death_full_88: -877906559
+      Plant3_Death_full_89: -929707176
+      Plant3_Death_full_9: 1107975338
+      Plant3_Death_full_90: 2110118933
+      Plant3_Death_full_91: -1186374120
+      Plant3_Death_full_92: 890298383
+      Plant3_Death_full_93: -2021352041
+      Plant3_Death_full_94: -785312445
+      Plant3_Death_full_95: 370367372
+      Plant3_Death_full_96: 1174901375
+      Plant3_Death_full_97: -200413803
+      Plant3_Death_full_98: -1746063631
+      Plant3_Death_full_99: -686899240
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

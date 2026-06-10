@@ -19,6 +19,7 @@ public class Character : MonoBehaviour
     public virtual void OnInit()
     {
         health = 100f;
+     
         healthBar.OnInit(100,transform);
     }
     public virtual void OnDespawn()

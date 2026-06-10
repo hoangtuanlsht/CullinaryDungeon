@@ -14,18 +14,24 @@ public class Player : Character
     private bool isDead=false;  
     public LayerMask groundLayer;
 
-    [SerializeField] private int coin=0;
+    [SerializeField] public static int coin=0;
 
     [SerializeField]public Rigidbody2D rb;
 
     [SerializeField] private Vector3 savePoint;
     [SerializeField] private GameObject attackArea;
+    [SerializeField] public GameObject interactUI;
+    [SerializeField] private Interact currentInteract;
 
     public void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         savePoint = transform.position;
         coin = PlayerPrefs.GetInt("coin", 0);
+        if (interactUI != null)
+        {
+            interactUI.SetActive(false);
+        }
 
     }
 
@@ -44,6 +50,10 @@ public class Player : Character
         if (Input.GetKeyDown(KeyCode.C))
         {
             Attack();
+        }
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            TryInteract();
         }
     }   
     void FixedUpdate()
@@ -139,7 +149,6 @@ public class Player : Character
     }
     private void Jump() 
     {
-        Debug.Log("Jump");
         ChangedAnim("Jump");
         isJumping = false;
         rb.AddForce(jumpForce * Vector2.up, ForceMode2D.Impulse);
@@ -174,7 +183,6 @@ public class Player : Character
             PlayerPrefs.SetInt("coin", coin);
             UIManager.instance.SetCoin(coin);
             Destroy(collision.gameObject);
-            Debug.Log("Coin");
         }
         if(collision.CompareTag("DeadZone"))
         {
@@ -183,6 +191,32 @@ public class Player : Character
             isDead = true;
             Debug.Log("Dead");
             Invoke("OnInit", 2f);
+        }
+        Interact interact = collision.GetComponent<Interact>();
+        if (interact != null)
+        {
+            currentInteract = interact;
+            if (interactUI != null)
+            {
+                interactUI.SetActive(true);
+                interactUI.transform.position = currentInteract.transform.position + new Vector3(0, 0.5f,0);
+            }
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        Interact interact = collision.GetComponent<Interact>();
+        if (interact != null && interact == currentInteract)
+        {
+            currentInteract = null;
+            if (interactUI != null) interactUI.SetActive(false);
+        }
+    }
+    private void TryInteract()
+    {
+        if (currentInteract != null)
+        {
+            currentInteract.InteractWithObject();
         }
     }
 }
