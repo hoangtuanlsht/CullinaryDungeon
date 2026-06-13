@@ -76,15 +76,19 @@ public class Player : Character
                 Jump();
                 return;
             }
-            
+
             //Change run
-            if (Mathf.Abs(horizontalInput) > 0.1f)
+            if (rb.velocity.y <= 0.1f)
             {
-                ChangedAnim("Run");
-            }
-            else
-            {
-                ChangedAnim("Idle");
+                //Change run
+                if (Mathf.Abs(horizontalInput) > 0.1f)
+                {
+                    ChangedAnim("Run");
+                }
+                else
+                {
+                    ChangedAnim("Idle");
+                }
             }
             //throw
         }
@@ -149,6 +153,7 @@ public class Player : Character
     }
     private void Jump() 
     {
+        Debug.Log("cc");
         ChangedAnim("Jump");
         isJumping = false;
         rb.AddForce(jumpForce * Vector2.up, ForceMode2D.Impulse);

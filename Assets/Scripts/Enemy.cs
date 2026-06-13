@@ -8,6 +8,7 @@ public class Enemy : Character
 {
     [SerializeField] private float attackRange;
     [SerializeField] private float moveSpeed;
+    [SerializeField] public float damager;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Flame thrownPrefab;
     [SerializeField] private Transform thrownPoint;
@@ -70,8 +71,11 @@ public class Enemy : Character
     {
         ChangedAnim("Attack");
         Throw();
-        ActiveAttack();
-        Invoke("DeactiveAttack", 0.5f);
+        if(thrownPoint == null && thrownPrefab == null)
+        {
+            ActiveAttack();
+            Invoke("DeactiveAttack", 0.5f);
+        }
     }
     private void Throw()
     {
@@ -111,6 +115,7 @@ public class Enemy : Character
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        
         if (collision.CompareTag("EnemyWall"))
         {
             ChangeDirection(!isRight);

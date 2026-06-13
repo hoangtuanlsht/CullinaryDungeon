@@ -8,6 +8,7 @@ TagManager:
   - DeadZone
   - EnemyWall
   - Enemy
+  - SpawnPoint
   layers:
   - Default
   - TransparentFX
@@ -18,8 +19,8 @@ TagManager:
   - Ground
   - Player
   - Enemy
-  - 
-  - 
+  - FogOfWar
+  - FogOfWarLayer2
   - 
   - 
   - 
@@ -44,4 +45,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: FogOfWar
+    uniqueID: 4278559297
     locked: 0
