@@ -35,8 +35,6 @@ public class Player : Character
         }
         recycleableInventoryManager = GameObject.Find("InventoryManager").GetComponent<InventoryManager>();
     }
-
-    // Update is called once per frame
     void Update()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
@@ -46,7 +44,6 @@ public class Player : Character
         {
             isJumping = true;
         }
-
         //attack
         if (Input.GetKeyDown(KeyCode.C))
         {
@@ -119,10 +116,8 @@ public class Player : Character
             rb.velocity = new Vector2(0, rb.velocity.y);
         }
     }
-
     public override void OnInit()
     {
-        //health = 100f;
         base.OnInit();
         isJumping = false;
         isAttacking = false;
@@ -157,7 +152,6 @@ public class Player : Character
         ChangedAnim("Jump");
         isJumping = false;
         rb.AddForce(jumpForce * Vector2.up, ForceMode2D.Impulse);
-
     }
     private void Attack()
     {
@@ -171,7 +165,6 @@ public class Player : Character
     {
         isAttacking = false;
     }
-   
     private void ActiveAttack()
     {
         attackArea.SetActive(true);
@@ -211,7 +204,6 @@ public class Player : Character
         if (item != null) 
         {
             currentItem = item;
-
             interactUI.SetActive(true);
             interactUI.transform.position = currentItem.transform.position + new Vector3(0, 0.5f, 0);
         }
@@ -224,7 +216,7 @@ public class Player : Character
             currentInteract = null;
             if (interactUI != null) interactUI.SetActive(false);
         }
-        ItemItem item = collision.GetComponent <ItemItem>();
+        ItemClass item = collision.GetComponent <ItemClass>();
         if (item != null && item == currentItem)
         {
             currentItem = null;

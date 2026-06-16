@@ -23,7 +23,13 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
     private SlotClass tempSlot = new SlotClass();
     public bool isMoving;
 
+    private static InventoryManager instance;
+    public static InventoryManager Instance { get { return instance; } }
     //[SerializeField] private List<SlotClass> items = new List<SlotClass>();
+    private void wake()
+    {
+        instance = this;
+    }
     private void Start()
     {
         items = new SlotClass[totalSlots];

@@ -125,10 +125,12 @@ MonoBehaviour:
   healthBar: {fileID: 0}
   attackRange: 3
   moveSpeed: 2
+  damager: 0
   rb: {fileID: 5122730948794685677}
   thrownPrefab: {fileID: 0}
   thrownPoint: {fileID: 0}
   attackArea: {fileID: 6055206810833127712}
+  itemPrefab: {fileID: 6087911828334214770, guid: ce6eff89fd574a342b4f77a53bb54423, type: 3}
 --- !u!1 &4626757178591922119
 GameObject:
   m_ObjectHideFlags: 0
@@ -347,6 +349,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74326dcec6f62384abf793ac4abdfc37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemy: {fileID: 0}
 --- !u!68 &390583223177142554
 EdgeCollider2D:
   m_ObjectHideFlags: 0

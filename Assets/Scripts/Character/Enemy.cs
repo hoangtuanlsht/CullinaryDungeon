@@ -13,7 +13,7 @@ public class Enemy : Character
     [SerializeField] private Flame thrownPrefab;
     [SerializeField] private Transform thrownPoint;
     [SerializeField] private GameObject attackArea;
-
+    [SerializeField] private ItemClass itemPrefab;
 
     private bool isRight = true;   
 
@@ -38,9 +38,14 @@ public class Enemy : Character
         base.OnDespawn();
         Destroy(healthBar.gameObject);
         Destroy(gameObject);
+        if (itemPrefab != null)
+        {
+            Instantiate(itemPrefab, transform.position, transform.rotation);
+        }
     }
     public override void OnDeath()
     {
+        
         ChangeState(null);
         base.OnDeath();
     }

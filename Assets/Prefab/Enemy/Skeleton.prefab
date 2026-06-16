@@ -77,7 +77,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -218,6 +218,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74326dcec6f62384abf793ac4abdfc37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemy: {fileID: 0}
 --- !u!68 &1868665390219250955
 EdgeCollider2D:
   m_ObjectHideFlags: 0
@@ -367,10 +368,12 @@ MonoBehaviour:
   healthBar: {fileID: 0}
   attackRange: 5
   moveSpeed: 2
+  damager: 0
   rb: {fileID: 8475905070946512503}
   thrownPrefab: {fileID: 0}
   thrownPoint: {fileID: 0}
   attackArea: {fileID: 6035164399049098154}
+  itemPrefab: {fileID: 8169253012484678060, guid: af5b3b07841fb6743a3f005c63966886, type: 3}
 --- !u!50 &8475905070946512503
 Rigidbody2D:
   serializedVersion: 4

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class Character : MonoBehaviour
@@ -45,8 +46,10 @@ public class Character : MonoBehaviour
             Debug.Log($"{gameObject.name} hit with {damage} damage, remaining health: {health}");
             if (health <= damage)
             {
-                
-                OnDeath();
+                health = 0;
+                healthBar.SetNewHP(health);
+                OnDeath();                
+                return;
             }
             healthBar.SetNewHP(health);
 

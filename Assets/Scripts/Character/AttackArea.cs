@@ -11,9 +11,13 @@ public class AttackArea : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.CompareTag("Player") || collision.CompareTag("Enemy"))
+        if(enemy != null && collision.CompareTag("Player"))
         {
             collision.GetComponent<Character>().OnHit(enemy.damager);
+        }
+        if(collision.CompareTag("Enemy"))
+        {
+            collision.GetComponent<Character>().OnHit(10);
         }
     }
 }

@@ -183,7 +183,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -336,6 +336,7 @@ MonoBehaviour:
   thrownPrefab: {fileID: 0}
   thrownPoint: {fileID: 0}
   attackArea: {fileID: 9208356753652154964}
+  itemPrefab: {fileID: 2319611087485755607, guid: a0f30b3a2fe35764ea4a8efb09f240ec, type: 3}
 --- !u!50 &9082373960990031405
 Rigidbody2D:
   serializedVersion: 4
