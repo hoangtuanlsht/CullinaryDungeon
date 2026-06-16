@@ -3,51 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using PolyAndCode.UI;
 
-public class InventoryManager : MonoBehaviour
+public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
 {
-    //private UIManager UIManager;
-    [SerializeField] private GameObject slotsHolder;
-    [SerializeField] private ItemItem itemToAdd;
+    [Header("UI References")]
+    [SerializeField] private RecyclableScrollRect scrollRect;
+    public Image itemCursor;
+    public GameObject inventory;
 
-    [SerializeField] private ItemItem itemToRemove;
+    [Header("Data")]
+    [SerializeField]private int totalSlots = 30;
     [SerializeField] public SlotClass[] items;
-    //[SerializeField] private SlotClass[] herb;
-    //[SerializeField] private SlotClass[] potion;
-
     [SerializeField] private SlotClass[] startingItems;
 
-    [SerializeField] private SlotClass movingSlot;//di chuyển các slot khác cho cái item
-    [SerializeField] private SlotClass originalSlot;
-    [SerializeField] private SlotClass tempSlot;
-
-
-
-    public Image itemCursor ;
-
-    [SerializeField] public GameObject[] slots;
+    [Header("Moving/Dragging")]
+    [SerializeField] private SlotClass movingSlot = new SlotClass();
+    private SlotClass originalSlot;
+    private SlotClass tempSlot = new SlotClass();
     public bool isMoving;
 
     //[SerializeField] private List<SlotClass> items = new List<SlotClass>();
     private void Start()
     {
-        //UIManager = FindAnyObjectByType<UIManager>();
-        slots = new GameObject[slotsHolder.transform.childCount];
-        items = new SlotClass[slots.Length];
-        //potion = new SlotClass[slots.Length];
-        //herb = new SlotClass[slots.Length];
-
-
-        for (int i = 0; i < slots.Length; i++)
-        {
-            slots[i] = slotsHolder.transform.GetChild(i).gameObject;
-        }
-
-        for (int i = 0; i < slots.Length; i++)
+        items = new SlotClass[totalSlots];
+        for (int i = 0; i < items.Length; i++)
         {
             items[i] = new SlotClass();
-            //herb[i] = new SlotClass();
-            //potion[i] = new SlotClass();
+        }
+
+        for (int i = 0; i < startingItems.Length; i++)
+        {
+            items[i] = new SlotClass();
         }
         for (int i = 0; i < startingItems.Length; i++)
         {
@@ -57,82 +44,16 @@ public class InventoryManager : MonoBehaviour
             }
 
         }
-        RefreshUI();
+        //scrollRect.DataSource = this;
+        if (scrollRect != null)
+        {
+            scrollRect.Initialize(this); // Gọi hàm này để thiết lập DataSource và đúc Cell
+        }
     }
-    //public void Classify()
-    //{
-    //    RefreshUI();
-    //    for (int i = 0; i < slots.Length; i++)
-    //    {
-    //        herb[i].RemoveItem();
-    //        potion[i].RemoveItem();
-    //    }
-    //}
-    //public void ClassifyPotion()
-    //{
-    //    int j = 0;
-    //    for (int i = 0; i < items.Length; i++)
-    //    {
-    //        var currentItem = items[i].GetItem();
-    //        if ((currentItem is PotionClass))
-    //        {
-    //            potion[j].AddItem(items[i].GetItem(), items[i].GetQuantity());
-    //            j++;
-    //        }
-    //    }
-    //    j = 0;
-    //    RefreshPotion();
-    //    for (int i = 0; i < slots.Length; i++)
-    //    {
-    //        herb[i].RemoveItem();
-
-    //    }
-    //}
-    //public void ClassifyHerb()
-    //{
-    //    int j = 0;
-    //    for (int i = 0; i < items.Length; i++)
-    //    {
-    //        var currentItem = items[i].GetItem();
-    //        if ((currentItem is HerbClass))
-    //        {
-    //            herb[j].AddItem(items[i].GetItem(), items[i].GetQuantity());
-    //            j++;
-    //        }
-    //    }
-    //    j = 0;
-    //    for (int i = 0; i < slots.Length; i++)
-    //    {
-
-    //        potion[i].RemoveItem();
-    //    }
-    //    RefreshHerb();
-    //}
+    
     private void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (isMoving)
-            {
-                EndMove();
-            }
-            else
-            {
-                BeginMove();
-            }
-        }
-        if (Input.GetMouseButtonDown(1))
-        {
-            if (isMoving)
-            {
-                //EndMove();
-            }
-            else
-            { 
-                BeginSplit();
-            }
-        }
-        if (isMoving)
+    {       
+        if (isMoving && movingSlot.GetItem()!= null)
         {
             itemCursor.enabled = true;
             itemCursor.transform.position = Input.mousePosition;
@@ -143,72 +64,29 @@ public class InventoryManager : MonoBehaviour
             itemCursor.enabled = false;
             itemCursor.sprite = null;
         }
-
-    }
-    //private void RefreshHerb()
-    //{
-    //    for (int i = 0; i < slots.Length; i++)
-    //    {
-    //        try
-    //        {
-    //            slots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
-    //            slots[i].transform.GetChild(0).GetComponent<Image>().sprite = herb[i].GetItem().itemIcon;
-    //            slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = herb[i].GetQuantity() + "";
-    //        }
-    //        catch
-    //        {
-    //            slots[i].transform.GetChild(0).GetComponent<Image>().sprite = null;
-    //            slots[i].transform.GetChild(0).GetComponent<Image>().enabled = false;
-    //            slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
-    //        }
-    //    }
-    //}
-    //private void RefreshPotion()
-    //{
-
-    //    for (int i = 0; i < slots.Length; i++)
-    //    {
-    //        try
-    //        {
-    //            slots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
-    //            slots[i].transform.GetChild(0).GetComponent<Image>().sprite = potion[i].GetItem().itemIcon;
-    //            slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = potion[i].GetQuantity() + "";
-    //        }
-    //        catch
-    //        {
-    //            slots[i].transform.GetChild(0).GetComponent<Image>().sprite = null;
-    //            slots[i].transform.GetChild(0).GetComponent<Image>().enabled = false;
-    //            slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
-    //        }
-    //    }
-    //}
-    public void RefreshUI()
-    {
-        for (int i = 0; i < slots.Length; i++)
+        if (Input.GetKeyDown(KeyCode.B))
         {
-            try
-            {
-                slots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
-                slots[i].transform.GetChild(0).GetComponent<Image>().sprite = items[i].GetItem().itemIcon;
-                slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = items[i].GetQuantity() + "";
-
-            }
-            catch
-            {
-                slots[i].transform.GetChild(0).GetComponent<Image>().sprite = null;
-                slots[i].transform.GetChild(0).GetComponent<Image>().enabled = false;
-                slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
-            }
-
+            Vector3 posInventory = inventory.GetComponent<RectTransform>().anchoredPosition;
+            inventory.GetComponent<RectTransform>().anchoredPosition = posInventory.y == 1000 ? new Vector3(600,0,0) : new Vector3(600,1000,0);
         }
-
     }
 
+
+    public int GetItemCount()
+    {
+        return items.Length;
+    }
+
+    public void SetCell(ICell cell, int index)
+    {
+        //Casting to the implemented Cell
+        var item = cell as CellItemData;
+        item.ConfigureCell(this,items[index], index);
+    }
     // Update is called once per frame
     public void AddItem(ItemItem item, int quantity)
     {
         SlotClass slot = ContainItem(item);
-        Debug.Log("ccc");
         if (slot != null)
         {
             slot.AddQuantity(quantity);
@@ -225,7 +103,7 @@ public class InventoryManager : MonoBehaviour
             }
 
         }
-        RefreshUI();
+        scrollRect.ReloadData();
     }
     public void RemoveItem(ItemItem item, int quantity)
     {
@@ -256,38 +134,41 @@ public class InventoryManager : MonoBehaviour
         {
             return;
         }
-        RefreshUI();
+        scrollRect.ReloadData();
     }
-
     public SlotClass ContainItem(ItemItem item)
     {
-        foreach (SlotClass slot in items)
+        foreach(SlotClass slot in items)
         {
-            if (slot != null && slot.GetItem() == item)
+            if(slot != null && slot.GetItem() == item)
             {
                 return slot;
-
             }
-        }
-        return null;
+        }return null;
     }
-
-    private SlotClass GetCloseSlot()
+    public void OnLeftClickSlot(int slotIndex)
     {
-        for (int i = 0; i < slots.Length; i++)
+        if (isMoving)
         {
-            if (Vector2.Distance(slots[i].transform.position, Input.mousePosition) <= 32)
-            {
-                return items[i];
-            }
-            else { }
+            Debug.Log("CCs");
+            EndMove(slotIndex);
         }
-        return null;
+        else
+        {
+            BeginMove(slotIndex);
+        }
+    }
+    public void OnRightClickSlot(int slotIndex)
+    {
+        if (!isMoving)
+        {
+            BeginSplit(slotIndex);
+        }
     }
 
-    private void BeginMove()
+    private void BeginMove(int index)
     {
-        originalSlot = GetCloseSlot();
+        originalSlot = items[index];
         if (originalSlot == null || originalSlot.GetItem() == null)
         {
             return;
@@ -296,13 +177,11 @@ public class InventoryManager : MonoBehaviour
 
         originalSlot.RemoveItem();
         isMoving = true;
-        RefreshUI();
-        return;
-
+        scrollRect.ReloadData();
     }
-    private void BeginSplit()
+    private void BeginSplit(int index)
     {
-        originalSlot = GetCloseSlot();
+        originalSlot = items[index];
         
         if (originalSlot == null || originalSlot.GetItem() == null) return;
         
@@ -314,18 +193,20 @@ public class InventoryManager : MonoBehaviour
 
         originalSlot.SubQuantity(Mathf.CeilToInt(originalSlot.GetQuantity() / 2f));
         isMoving = true;
-        RefreshUI();
+        scrollRect.ReloadData();
         return;
 
     }
-    private void EndMove()
+    private void EndMove(int index)
     {
-        originalSlot = GetCloseSlot();
-
+        originalSlot = items[index];
+        Debug.Log("CCs");
+        // 1. NẾU Ô ĐÍCH ĐANG TRỐNG -> Đặt đồ xuống
         if (originalSlot == null)
         {
             AddItem(movingSlot.GetItem(), movingSlot.GetQuantity());
         }
+        // 2. NẾU Ô ĐÍCH ĐÃ CÓ ĐỒ
         else
         {
             if (originalSlot.GetItem() != null)
@@ -334,6 +215,7 @@ public class InventoryManager : MonoBehaviour
                 {
                     if (originalSlot.GetItem().isStackable)
                     {
+                        Debug.Log("CC");
                         int itemMaxStack = originalSlot.GetItem().maxStackQuantity;
                         int count = originalSlot.GetQuantity() + movingSlot.GetQuantity();
                         if (count > itemMaxStack) {
@@ -341,7 +223,7 @@ public class InventoryManager : MonoBehaviour
                             originalSlot.SetQuantity(itemMaxStack);
                             movingSlot.SetQuantity(remain);
                             isMoving = true;
-                            RefreshUI();
+                            scrollRect.ReloadData();
                             return;
                         }
                         originalSlot.AddQuantity(movingSlot.GetQuantity());
@@ -359,7 +241,7 @@ public class InventoryManager : MonoBehaviour
                     movingSlot.AddItem(tempSlot.GetItem(), tempSlot.GetQuantity());
                     tempSlot.RemoveItem();
 
-                    RefreshUI();
+                    scrollRect.ReloadData();
                     return;
                 }
             }
@@ -369,10 +251,8 @@ public class InventoryManager : MonoBehaviour
                 movingSlot.RemoveItem();
             }
         }
-
-
         isMoving = false;
-        RefreshUI();
+        scrollRect.ReloadData();
         return;
     }
 

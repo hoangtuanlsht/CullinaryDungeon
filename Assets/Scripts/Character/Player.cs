@@ -22,8 +22,8 @@ public class Player : Character
     [SerializeField] private GameObject attackArea;
     [SerializeField] public GameObject interactUI;
     [SerializeField] private Interact currentInteract;
-    [SerializeField] private Item currentItem;
-    private RecycleableInventoryManager recycleableInventoryManager;
+    [SerializeField] private ItemClass currentItem;
+    [SerializeField]private InventoryManager recycleableInventoryManager;
     public void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -33,7 +33,7 @@ public class Player : Character
         {
             interactUI.SetActive(false);
         }
-        recycleableInventoryManager = GameObject.Find("InventoryManager").GetComponent<RecycleableInventoryManager>();
+        recycleableInventoryManager = GameObject.Find("InventoryManager").GetComponent<InventoryManager>();
     }
 
     // Update is called once per frame
@@ -207,7 +207,7 @@ public class Player : Character
                 interactUI.transform.position = currentInteract.transform.position + new Vector3(0, 0.5f,0);
             }
         }
-        Item item = collision.GetComponent<Item>();
+        ItemClass item = collision.GetComponent<ItemClass>();
         if (item != null) 
         {
             currentItem = item;
@@ -224,7 +224,7 @@ public class Player : Character
             currentInteract = null;
             if (interactUI != null) interactUI.SetActive(false);
         }
-        Item item = collision.GetComponent <Item>();
+        ItemItem item = collision.GetComponent <ItemItem>();
         if (item != null && item == currentItem)
         {
             currentItem = null;
@@ -239,12 +239,11 @@ public class Player : Character
         }
         if(currentItem != null)
         {
-            InventoryItems item = new InventoryItems();
-            item.name = "Health potion";
-            item.description = "potion";
-            Debug.Log(item.ToString());
-            recycleableInventoryManager.AddInventoryItem(item);
-            currentItem.HarverstItem();
+            recycleableInventoryManager.AddItem(currentItem.itemData, currentItem.amount);
+            Destroy(currentItem.gameObject);
+
+            currentItem = null;
+            if(interactUI != null) interactUI.SetActive(false);
         }
     }
 }
