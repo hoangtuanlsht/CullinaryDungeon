@@ -11,7 +11,9 @@ public class Player : Character
     private bool isGrounded=true;
     private bool isJumping=false;
     private bool isAttacking=false;
-    private bool isDead=false;  
+    private bool isDead=false;
+    private bool isHurt = false;
+    private bool isDefending = false;
     public LayerMask groundLayer;
 
     [SerializeField] public static int coin=0;
@@ -34,6 +36,7 @@ public class Player : Character
             interactUI.SetActive(false);
         }
         recycleableInventoryManager = GameObject.Find("InventoryManager").GetComponent<InventoryManager>();
+
     }
     void Update()
     {
@@ -45,11 +48,19 @@ public class Player : Character
             isJumping = true;
         }
         //attack
-        if (Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.C) && isGrounded&&!isDefending)
         {
             Attack();
         }
-        if(Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKey(KeyCode.F) && isGrounded && !isAttacking && !isHurt && !isDead)
+        {
+            isDefending = true;
+        }
+        else
+        {
+            isDefending = false;
+        }
+        if (Input.GetKeyDown(KeyCode.E))
         {
             TryInteract();
         }
@@ -57,9 +68,15 @@ public class Player : Character
     void FixedUpdate()
     {
         isGrounded = CheckGrounded();
-        if(isDead)
+        if(isDead || isHurt)
         {
             rb.velocity = Vector2.zero;
+            return;
+        }
+        if (isDefending)
+        {
+            rb.velocity = Vector2.zero;
+            ChangedAnim("Defend"); // Chạy Animation đỡ đòn
             return;
         }
         if (isAttacking)
@@ -122,6 +139,8 @@ public class Player : Character
         isJumping = false;
         isAttacking = false;
         isDead = false;
+        isHurt = false;
+        isDefending = false;
         coin = 0;
         transform.position = savePoint;
         ChangedAnim("Idle");
@@ -135,8 +154,33 @@ public class Player : Character
     public override void OnDeath()
     {
         base.OnDeath();
-        OnInit();
-    }   
+        Invoke("OnInit",2f);
+    }
+    public override void OnHit(float damage)
+    {
+        if (isDefending)
+        {
+            Debug.Log("Đã đỡ đòn! Không nhận sát thương.");
+            // Tùy chọn: Bạn có thể thêm animation tia lửa hoặc âm thanh đỡ đòn ở đây
+            // return ngay lập tức để bỏ qua việc trừ máu ở class base
+            return;
+        }
+        base.OnHit(damage);
+        if (!IsDead)
+        {
+            Debug.Log("Player bị thương!");
+            ChangedAnim("Hurt");
+            isHurt = true;
+
+            // Dừng các hoạt động khác trong 0.5 giây (hoặc bằng thời gian của animation Hurt)
+            Invoke(nameof(ResetHurt), 0.5f);
+        }
+    }
+
+    private void ResetHurt()
+    {
+        isHurt = false;
+    }
     private bool CheckGrounded()
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.01f, groundLayer);

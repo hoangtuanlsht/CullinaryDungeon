@@ -15,7 +15,7 @@ public class AttackArea : MonoBehaviour
         {
             collision.GetComponent<Character>().OnHit(enemy.damager);
         }
-        if(collision.CompareTag("Enemy"))
+        else if(collision.CompareTag("Enemy"))
         {
             collision.GetComponent<Character>().OnHit(10);
         }

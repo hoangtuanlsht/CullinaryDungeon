@@ -27,8 +27,9 @@ public class Character : MonoBehaviour
     {
         // Clean up character properties
     }
-    protected void ChangedAnim(string animName)
+    public void ChangedAnim(string animName)
     {
+        Debug.Log("Anim: " + animName);
         if (currentAnimName != animName)
         {
             anim.ResetTrigger(animName);
@@ -38,11 +39,11 @@ public class Character : MonoBehaviour
             anim.SetTrigger(currentAnimName);
         }
     }
-    public void OnHit(float damage)
+    public virtual void OnHit(float damage)
     {
         if (!IsDead)
         { 
-            health -= damage;
+            health -= damage;            
             Debug.Log($"{gameObject.name} hit with {damage} damage, remaining health: {health}");
             if (health <= damage)
             {

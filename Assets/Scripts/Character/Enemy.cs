@@ -14,6 +14,8 @@ public class Enemy : Character
     [SerializeField] private Transform thrownPoint;
     [SerializeField] private GameObject attackArea;
     [SerializeField] private ItemClass itemPrefab;
+    [SerializeField] private float attackCooldown = 2f; // Thời gian nghỉ giữa 2 đòn đánh (tính bằng giây)
+    private float attackTimer = 0f; // Biến đếm ngược thời gian
 
     private bool isRight = true;   
 
@@ -21,7 +23,11 @@ public class Enemy : Character
     public Character Target => target;
     private void Update()
     {
-        if(currentState != null && !IsDead)
+        if (attackTimer > 0)
+        {
+            attackTimer -= Time.deltaTime;
+        }
+        if (currentState != null && !IsDead)
         {
             currentState.OnExecute(this);
         }
@@ -74,13 +80,25 @@ public class Enemy : Character
     }
     public void Attack()
     {
+        // 1. Kiểm tra xem đã hết thời gian nghỉ chưa
+        if (attackTimer > 0)
+        {
+            // Nếu chưa, có thể bắt nó đứng im (gọi anim Idle) để chờ
+            ChangedAnim("Idle");
+            return;
+        }
+        // 2. Nếu đã sẵn sàng, reset lại thời gian chờ
+        attackTimer = attackCooldown;
         ChangedAnim("Attack");
         Throw();
-        if(thrownPoint == null && thrownPrefab == null)
+        // 3. Thực hiện đòn tấn công như cũ=
+        if (thrownPoint == null && thrownPrefab == null)
         {
-            ActiveAttack();
-            Invoke("DeactiveAttack", 0.5f);
+            Invoke("ActiveAttack",0.3f);
+            Invoke("DeactiveAttack", 0.8f);
         }
+        
+
     }
     private void Throw()
     {
