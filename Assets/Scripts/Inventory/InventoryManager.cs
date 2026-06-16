@@ -26,7 +26,7 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
     private static InventoryManager instance;
     public static InventoryManager Instance { get { return instance; } }
     //[SerializeField] private List<SlotClass> items = new List<SlotClass>();
-    private void wake()
+    private void Awake()
     {
         instance = this;
     }
@@ -50,11 +50,11 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
             }
 
         }
-        //scrollRect.DataSource = this;
         if (scrollRect != null)
         {
             scrollRect.Initialize(this); // Gọi hàm này để thiết lập DataSource và đúc Cell
         }
+        inventory.GetComponent<RectTransform>().anchoredPosition = new Vector3 (600,1000,0); 
     }
     
     private void Update()
