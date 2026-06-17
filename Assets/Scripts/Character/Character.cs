@@ -30,7 +30,6 @@ public class Character : MonoBehaviour
     }
     public void ChangedAnim(string animName)
     {
-        Debug.Log("Anim: " + animName);
         if (currentAnimName != animName)
         {
             anim.ResetTrigger(animName);
@@ -60,7 +59,7 @@ public class Character : MonoBehaviour
     public virtual void OnDeath()
     {
         ChangedAnim("Dead");
-        Invoke(nameof(OnDespawn), 2f);
+        Invoke(nameof(OnDespawn), 2.5f);
     }
     
 }

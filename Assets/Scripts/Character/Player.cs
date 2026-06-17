@@ -48,7 +48,7 @@ public class Player : Character
             isJumping = true;
         }
         //attack
-        if (Input.GetKeyDown(KeyCode.C) && isGrounded&&!isDefending)
+        if (Input.GetKeyDown(KeyCode.C) &&!isDefending)
         {
             Attack();
         }

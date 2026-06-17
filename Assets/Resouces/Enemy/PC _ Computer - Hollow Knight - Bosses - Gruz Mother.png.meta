@@ -1,0 +1,1117 @@
+fileFormatVersion: 2
+guid: 6499573622285444aba38a78021a57c6
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_0
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 3190
+        width: 308
+        height: 130
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 4, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 90ea03aebb12f5f49a132d31b718c15e
+      internalID: -1143497944
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_1
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 3190
+        width: 310
+        height: 130
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b133df48be618554bb44821d6a208829
+      internalID: -1905520459
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_2
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 3192
+        width: 300
+        height: 130
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 49a4630d30e57a7458f9142addd8b70f
+      internalID: -26566501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_3
+      rect:
+        serializedVersion: 2
+        x: 966
+        y: 3191
+        width: 287
+        height: 131
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8fd0bc35a692f6d4db84c4025d18e3b2
+      internalID: -1236978722
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_4
+      rect:
+        serializedVersion: 2
+        x: 1273
+        y: 3191
+        width: 297
+        height: 131
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1baacda14c5628948ab215e36d5fb0af
+      internalID: -104287553
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_5
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 3049
+        width: 300
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1bffa32b60949b245b7b575d47eb5c74
+      internalID: -376379658
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_6
+      rect:
+        serializedVersion: 2
+        x: 327
+        y: 3050
+        width: 299
+        height: 130
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 86407d579239f3b44a6867fa43170df9
+      internalID: 1029505153
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_7
+      rect:
+        serializedVersion: 2
+        x: 646
+        y: 3050
+        width: 292
+        height: 125
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c9b7a9ad6855b2f458b0c4fa5d3b2b2d
+      internalID: -1808306194
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_8
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 2792
+        width: 197
+        height: 224
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2c3cbceafc66116448484d7c618a65ab
+      internalID: 1239456135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_9
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 2791
+        width: 193
+        height: 222
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 13947bf1d12238e4da6c02e054b924d0
+      internalID: -1031376980
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_10
+      rect:
+        serializedVersion: 2
+        x: 435
+        y: 2789
+        width: 195
+        height: 224
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c651cfef7bd75345a7c1e6b758d1b76
+      internalID: -1834405718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_11
+      rect:
+        serializedVersion: 2
+        x: 650
+        y: 2792
+        width: 195
+        height: 216
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e14fb83a059396b4291b06f2479e2a42
+      internalID: -1566593624
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_12
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 2522
+        width: 185
+        height: 236
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fa149aac5eb15e144ae9fde4466fd142
+      internalID: 2067529222
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_13
+      rect:
+        serializedVersion: 2
+        x: 217
+        y: 2524
+        width: 187
+        height: 230
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dd1adff903bdb7746b490b12f882ea79
+      internalID: -443707672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_14
+      rect:
+        serializedVersion: 2
+        x: 429
+        y: 2520
+        width: 182
+        height: 236
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6e899bd563cae7845bb40e3402265911
+      internalID: -281213431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_15
+      rect:
+        serializedVersion: 2
+        x: 633
+        y: 2524
+        width: 187
+        height: 227
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6d5d5f48db57a4b40a0afb54c0d1bd59
+      internalID: 665464695
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_16
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 2268
+        width: 213
+        height: 218
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 552a5f52c63a0484393bff702d29a7a3
+      internalID: -1320117040
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_17
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 2268
+        width: 214
+        height: 218
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f9fa7e89e94f7f34197e0c4e9554a5a2
+      internalID: 130271745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_18
+      rect:
+        serializedVersion: 2
+        x: 465
+        y: 2266
+        width: 209
+        height: 218
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 71cf2e2a4daae264297b5ed087688037
+      internalID: -309467627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_19
+      rect:
+        serializedVersion: 2
+        x: 694
+        y: 2269
+        width: 214
+        height: 219
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e0fda8ea72ea69a44a1a3203bb10b5a4
+      internalID: -1578516706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_20
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 2023
+        width: 222
+        height: 220
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 503fdd1578fa89e44853d4e6056540a7
+      internalID: -1100829230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_21
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 1747
+        width: 192
+        height: 249
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5fe215b13673e2f40bd862c37c9e4e63
+      internalID: -369319211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_22
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 1748
+        width: 191
+        height: 245
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7cfb71d355592da4da69451d8ed72594
+      internalID: -1614210185
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_23
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 1566
+        width: 278
+        height: 148
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e308bda43801f1c4f8674a93ce93b66f
+      internalID: 744134266
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_24
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 1409
+        width: 276
+        height: 122
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e2aafc0bf08b40543b8c012cac3415c4
+      internalID: -1944649996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_25
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 1191
+        width: 188
+        height: 193
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ffaa1b8eefab10648b1330939c8aebc3
+      internalID: 166663828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_26
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 958
+        width: 194
+        height: 204
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3b0feaff9f465d84e9adf6ac306ab221
+      internalID: -866544789
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_27
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 961
+        width: 195
+        height: 197
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6bd60f244d2003b4faa3647f2e76a31b
+      internalID: 757507979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_28
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 783
+        width: 230
+        height: 141
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 222f9b53c6cf4a0419a91a9e6df7782a
+      internalID: -659877291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_29
+      rect:
+        serializedVersion: 2
+        x: 253
+        y: 781
+        width: 229
+        height: 143
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b9f33f828b3a6f14eb125e96e443b761
+      internalID: -1289691889
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_30
+      rect:
+        serializedVersion: 2
+        x: 500
+        y: 783
+        width: 238
+        height: 141
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e99688bbc041da48815b60552e75d9c
+      internalID: -1576116806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_31
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 619
+        width: 253
+        height: 132
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7619597cd3d55d7418a33159b841a380
+      internalID: 645307400
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_32
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 617
+        width: 243
+        height: 131
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f69944e2492ed004d92dfc7238dbfd5c
+      internalID: 1105950941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_33
+      rect:
+        serializedVersion: 2
+        x: 522
+        y: 617
+        width: 241
+        height: 133
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 317a5d0e32a10914db4a13680ffc0436
+      internalID: 1025938901
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_34
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 453
+        width: 217
+        height: 134
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a1be039fc6751748b5de86cfd2a40a1
+      internalID: 789043635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_35
+      rect:
+        serializedVersion: 2
+        x: 235
+        y: 453
+        width: 214
+        height: 134
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 55a7f4e74dbcc4c4e889f443e0b8f97d
+      internalID: -1244405619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_36
+      rect:
+        serializedVersion: 2
+        x: 460
+        y: 448
+        width: 218
+        height: 139
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b96bb6729587b4d44a5eb953a824d8b2
+      internalID: 2047690344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_37
+      rect:
+        serializedVersion: 2
+        x: 688
+        y: 448
+        width: 211
+        height: 136
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3ff24588942706e41a53ff1410c1dfa6
+      internalID: 1371744762
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_38
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 218
+        width: 295
+        height: 140
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: af91fdcc391097e46b3ab8670efea305
+      internalID: -360623937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_39
+      rect:
+        serializedVersion: 2
+        x: 358
+        y: 224
+        width: 273
+        height: 134
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 51ab84540f1008546b588006d3bcd2f9
+      internalID: 804024482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_40
+      rect:
+        serializedVersion: 2
+        x: 653
+        y: 218
+        width: 298
+        height: 205
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c750cee6eed924a46bfcafde9a4e0442
+      internalID: 50693557
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_41
+      rect:
+        serializedVersion: 2
+        x: 972
+        y: 221
+        width: 298
+        height: 166
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9e36bb80805229143992683d5051c4c0
+      internalID: -381273433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_42
+      rect:
+        serializedVersion: 2
+        x: 1284
+        y: 219
+        width: 313
+        height: 169
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e117f413a151ea74ebac785bd11409f3
+      internalID: 430881079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_43
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 5
+        width: 313
+        height: 132
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7adf7a5dbb6326d4ca8640b2665dedfb
+      internalID: 23098522
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PC _ Computer - Hollow Knight - Bosses - Gruz Mother_44
+      rect:
+        serializedVersion: 2
+        x: 329
+        y: 6
+        width: 307
+        height: 131
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 200796c3c3c8e1c4697716d21933d930
+      internalID: 179748745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_0: -1143497944
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_1: -1905520459
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_10: -1834405718
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_11: -1566593624
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_12: 2067529222
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_13: -443707672
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_14: -281213431
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_15: 665464695
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_16: -1320117040
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_17: 130271745
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_18: -309467627
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_19: -1578516706
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_2: -26566501
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_20: -1100829230
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_21: -369319211
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_22: -1614210185
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_23: 744134266
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_24: -1944649996
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_25: 166663828
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_26: -866544789
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_27: 757507979
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_28: -659877291
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_29: -1289691889
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_3: -1236978722
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_30: -1576116806
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_31: 645307400
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_32: 1105950941
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_33: 1025938901
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_34: 789043635
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_35: -1244405619
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_36: 2047690344
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_37: 1371744762
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_38: -360623937
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_39: 804024482
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_4: -104287553
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_40: 50693557
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_41: -381273433
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_42: 430881079
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_43: 23098522
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_44: 179748745
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_5: -376379658
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_6: 1029505153
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_7: -1808306194
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_8: 1239456135
+      PC _ Computer - Hollow Knight - Bosses - Gruz Mother_9: -1031376980
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

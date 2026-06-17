@@ -5,9 +5,11 @@ using UnityEngine;
 public class AttackArea : MonoBehaviour
 {
     public Enemy enemy;
+    private GruzMother gruzMother;
     public void Awake()
     {
         enemy = GetComponentInParent<Enemy>();
+        gruzMother = GetComponentInParent<GruzMother>();
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -18,6 +20,10 @@ public class AttackArea : MonoBehaviour
         else if(collision.CompareTag("Enemy"))
         {
             collision.GetComponent<Character>().OnHit(10);
+        }
+        if (collision.CompareTag("Player") && gruzMother!= null)
+        {
+            collision.GetComponent<Character>().OnHit(gruzMother.dame);
         }
     }
 }
