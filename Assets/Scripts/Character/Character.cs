@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    private float health;
+    [SerializeField]private float maxhealth = 100f;
+    protected float health;
 
     private string currentAnimName;
     [SerializeField] private Animator anim;
@@ -19,9 +20,9 @@ public class Character : MonoBehaviour
     }
     public virtual void OnInit()
     {
-        health = 100f;
+        health = maxhealth;
      
-        healthBar.OnInit(100,transform);
+        healthBar.OnInit(maxhealth,transform);
     }
     public virtual void OnDespawn()
     {

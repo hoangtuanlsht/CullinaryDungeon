@@ -298,16 +298,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03ffe31663d7ced4bb24dd9e928c4fe5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxhealth: 100
   anim: {fileID: 6795004835537701993}
   healthBar: {fileID: 0}
   attackRange: 2
   moveSpeed: 2
+  attackTime: 0.3
+  deAttackTime: 0.8
   damager: 0
   rb: {fileID: 2472377210012644814}
   thrownPrefab: {fileID: 2850505237740591228, guid: 26f2612665f5ba742a6035c7bf6eeccc, type: 3}
   thrownPoint: {fileID: 7493235021505707506}
   attackArea: {fileID: 1111399579564214893}
   itemPrefab: {fileID: 9183690583356827673, guid: 9052be5ee16804343902684221b78c4b, type: 3}
+  attackCooldown: 2
 --- !u!50 &2472377210012644814
 Rigidbody2D:
   serializedVersion: 4
@@ -332,7 +336,7 @@ Rigidbody2D:
     serializedVersion: 2
     m_Bits: 0
   m_Interpolate: 0
-  m_SleepingMode: 1
+  m_SleepingMode: 0
   m_CollisionDetection: 0
   m_Constraints: 4
 --- !u!61 &3918494006219391620

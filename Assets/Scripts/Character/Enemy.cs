@@ -6,20 +6,22 @@ using UnityEngine.UIElements;
 
 public class Enemy : Character
 {
-    [SerializeField] private float attackRange;
-    [SerializeField] private float moveSpeed;
+    [SerializeField] protected float attackRange;
+    [SerializeField] protected float moveSpeed;
+    [SerializeField] protected float attackTime= 0.3f;
+    [SerializeField] protected float deAttackTime=0.8f;
     [SerializeField] public float damager;
-    [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private Flame thrownPrefab;
-    [SerializeField] private Transform thrownPoint;
-    [SerializeField] private GameObject attackArea;
-    [SerializeField] private ItemClass itemPrefab;
-    [SerializeField] private float attackCooldown = 2f; // Thời gian nghỉ giữa 2 đòn đánh (tính bằng giây)
-    private float attackTimer = 0f; // Biến đếm ngược thời gian
+    [SerializeField] protected Rigidbody2D rb;
+    [SerializeField] protected Flame thrownPrefab;
+    [SerializeField] protected Transform thrownPoint;
+    [SerializeField] protected GameObject attackArea;
+    [SerializeField] protected ItemClass itemPrefab;
+    [SerializeField] protected float attackCooldown = 2f; // Thời gian nghỉ giữa 2 đòn đánh (tính bằng giây)
+    protected float attackTimer = 0f; // Biến đếm ngược thời gian
 
-    private bool isRight = true;   
+    protected bool isRight = true;
 
-    private Character target;
+    protected Character target;
     public Character Target => target;
     private void Update()
     {
@@ -94,11 +96,9 @@ public class Enemy : Character
         // 3. Thực hiện đòn tấn công như cũ=
         if (thrownPoint == null && thrownPrefab == null)
         {
-            Invoke("ActiveAttack",0.3f);
-            Invoke("DeactiveAttack", 0.8f);
+            Invoke("ActiveAttack",attackTime);
+            Invoke("DeactiveAttack", deAttackTime);
         }
-        
-
     }
     private void Throw()
     {

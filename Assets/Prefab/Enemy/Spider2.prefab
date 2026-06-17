@@ -49,16 +49,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03ffe31663d7ced4bb24dd9e928c4fe5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxhealth: 100
   anim: {fileID: 7014636011560546192}
   healthBar: {fileID: 0}
-  attackRange: 5
+  attackRange: 1
   moveSpeed: 2
+  attackTime: 0.3
+  deAttackTime: 0.8
   damager: 0
   rb: {fileID: 3005669168347266337}
   thrownPrefab: {fileID: 0}
   thrownPoint: {fileID: 0}
   attackArea: {fileID: 7560400134219161341}
   itemPrefab: {fileID: 0}
+  attackCooldown: 2
 --- !u!50 &3005669168347266337
 Rigidbody2D:
   serializedVersion: 4
@@ -83,7 +87,7 @@ Rigidbody2D:
     serializedVersion: 2
     m_Bits: 0
   m_Interpolate: 0
-  m_SleepingMode: 1
+  m_SleepingMode: 0
   m_CollisionDetection: 0
   m_Constraints: 4
 --- !u!61 &4821864394299079202
@@ -420,7 +424,6 @@ GameObject:
   - component: {fileID: 2449627228812361596}
   - component: {fileID: 5971387217103984793}
   - component: {fileID: 1474026376762196227}
-  - component: {fileID: 3965064250726020292}
   m_Layer: 0
   m_Name: AttackArea
   m_TagString: Untagged
@@ -500,55 +503,3 @@ EdgeCollider2D:
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
   m_UseAdjacentEndPoint: 0
---- !u!212 &3965064250726020292
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7560400134219161341}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: -2049226530, guid: dd76de39d3050244fb05c5eca844ed55, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
