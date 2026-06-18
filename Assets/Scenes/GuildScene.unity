@@ -613,7 +613,7 @@ GameObject:
   m_Component:
   - component: {fileID: 155673831}
   m_Layer: 0
-  m_Name: SpawnPoint
+  m_Name: GuildScene
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1353,10 +1353,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 836be7e3dca157c48ae6a88e539d2780, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxhealth: 100
   anim: {fileID: 1346082664}
   healthBar: {fileID: 695971160}
   speed: 150
   jumpForce: 7
+  attackCooldown: 2
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -1366,6 +1368,7 @@ MonoBehaviour:
   interactUI: {fileID: 1771547406}
   currentInteract: {fileID: 0}
   currentItem: {fileID: 0}
+  recycleableInventoryManager: {fileID: 0}
 --- !u!4 &480035049
 Transform:
   m_ObjectHideFlags: 0

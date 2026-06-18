@@ -310,7 +310,9 @@ MonoBehaviour:
   thrownPrefab: {fileID: 2850505237740591228, guid: 26f2612665f5ba742a6035c7bf6eeccc, type: 3}
   thrownPoint: {fileID: 7493235021505707506}
   attackArea: {fileID: 1111399579564214893}
-  itemPrefab: {fileID: 9183690583356827673, guid: 9052be5ee16804343902684221b78c4b, type: 3}
+  itemPrefab:
+  - {fileID: 9183690583356827673, guid: 9052be5ee16804343902684221b78c4b, type: 3}
+  - {fileID: 2319611087485755607, guid: a0f30b3a2fe35764ea4a8efb09f240ec, type: 3}
   attackCooldown: 2
 --- !u!50 &2472377210012644814
 Rigidbody2D:

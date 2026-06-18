@@ -825,6 +825,7 @@ MonoBehaviour:
   levelScene:
     sceneAsset: {fileID: 102900000, guid: 2cda990e2423bbf4892e6590ba056729, type: 3}
     sceneName: GuildScene
+  spawnPoint: GuildScene
 --- !u!4 &360674559
 Transform:
   m_ObjectHideFlags: 0

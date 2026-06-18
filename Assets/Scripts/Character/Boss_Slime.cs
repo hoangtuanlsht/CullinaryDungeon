@@ -6,6 +6,7 @@ using UnityEngine;
 public class Boss_Slime : Enemy
 {
 
+    public GameObject nextMapPrefab;
     public override void OnInit()
     {
         // Gọi base.OnInit() để chạy các thiết lập cơ bản của Enemy và Character
@@ -14,5 +15,11 @@ public class Boss_Slime : Enemy
 
         // Ngay sau đó, chuyển lập tức sang trạng thái Intro
         ChangeState(new IntroState());
+    }
+    public override void OnDeath()
+    {
+        base.OnDeath();
+        nextMapPrefab.SetActive(true);
+
     }
 }

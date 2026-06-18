@@ -15,7 +15,7 @@ public class Enemy : Character
     [SerializeField] protected Flame thrownPrefab;
     [SerializeField] protected Transform thrownPoint;
     [SerializeField] protected GameObject attackArea;
-    [SerializeField] protected ItemClass itemPrefab;
+    [SerializeField] protected List<ItemClass> itemPrefab;
     [SerializeField] protected float attackCooldown = 2f; // Thời gian nghỉ giữa 2 đòn đánh (tính bằng giây)
     protected float attackTimer = 0f; // Biến đếm ngược thời gian
 
@@ -48,7 +48,10 @@ public class Enemy : Character
         Destroy(gameObject);
         if (itemPrefab != null)
         {
-            Instantiate(itemPrefab, transform.position, transform.rotation);
+            foreach (var item in itemPrefab)
+            {
+                Instantiate(item, transform.position, transform.rotation);
+            }
         }
     }
     public override void OnDeath()

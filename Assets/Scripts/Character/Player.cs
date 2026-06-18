@@ -8,6 +8,9 @@ public class Player : Character
     public float jumpForce = 10f;
     private float horizontalInput;
     private float verticalInput;
+    [SerializeField] private float attackCooldown = 2f;
+    private float attackTimer;
+
     private bool isGrounded=true;
     private bool isJumping=false;
     private bool isAttacking=false;
@@ -42,6 +45,10 @@ public class Player : Character
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
+        if (attackTimer > 0)
+        {
+            attackTimer -= Time.deltaTime;
+        }
         //Jumping
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -51,6 +58,7 @@ public class Player : Character
         if (Input.GetKeyDown(KeyCode.C) &&!isDefending)
         {
             Attack();
+            
         }
         if (Input.GetKey(KeyCode.F) && isGrounded && !isAttacking && !isHurt && !isDead)
         {
@@ -81,7 +89,7 @@ public class Player : Character
         }
         if (isAttacking)
         {
-            rb.velocity = Vector2.zero;
+            rb.velocity = new Vector2(0,rb.velocity.y);
             return;
         }
         if (isGrounded)
@@ -199,6 +207,12 @@ public class Player : Character
     }
     private void Attack()
     {
+        if (attackTimer > 0)
+        {
+            ChangedAnim("Idle");
+            return;
+        }
+        attackTimer = attackCooldown;
         ChangedAnim("Attack");
         isAttacking = true;
         Invoke("ResetAttack", 0.5f);

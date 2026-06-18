@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 7992795143713178225}
   - component: {fileID: 5122730948794685677}
   - component: {fileID: 2038482281087964007}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Slime
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -133,7 +133,8 @@ MonoBehaviour:
   thrownPrefab: {fileID: 0}
   thrownPoint: {fileID: 0}
   attackArea: {fileID: 6055206810833127712}
-  itemPrefab: {fileID: 6087911828334214770, guid: ce6eff89fd574a342b4f77a53bb54423, type: 3}
+  itemPrefab:
+  - {fileID: 6087911828334214770, guid: ce6eff89fd574a342b4f77a53bb54423, type: 3}
   attackCooldown: 2
 --- !u!1 &4626757178591922119
 GameObject:

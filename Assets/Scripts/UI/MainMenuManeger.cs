@@ -12,6 +12,7 @@ public class MainMenuManeger : MonoBehaviour
 
     [SerializeField] private SceneField persistentGameplay;
     [SerializeField] private SceneField levelScene;
+    [SerializeField] private string spawnPoint;
 
     private List<AsyncOperation> sceneToLoad = new List<AsyncOperation>();
     void Awake()
@@ -48,7 +49,7 @@ public class MainMenuManeger : MonoBehaviour
             while (!sceneToLoad[i].isDone)
             {
                 Debug.Log("scenetoload");
-                SceneData.SpawnPointName = "SpawnPoint";
+                SceneData.SpawnPointName = spawnPoint;
                 loadPregess += sceneToLoad[i].progress;
                 loadingBar.fillAmount = loadPregess / sceneToLoad.Count;
                 yield return null;

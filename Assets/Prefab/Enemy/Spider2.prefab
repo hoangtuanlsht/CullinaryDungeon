@@ -61,7 +61,8 @@ MonoBehaviour:
   thrownPrefab: {fileID: 0}
   thrownPoint: {fileID: 0}
   attackArea: {fileID: 7560400134219161341}
-  itemPrefab: {fileID: 0}
+  itemPrefab:
+  - {fileID: 0}
   attackCooldown: 2
 --- !u!50 &3005669168347266337
 Rigidbody2D:
@@ -458,7 +459,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74326dcec6f62384abf793ac4abdfc37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 0}
+  enemy: {fileID: 5216081877180574682}
 --- !u!68 &1474026376762196227
 EdgeCollider2D:
   m_ObjectHideFlags: 0
