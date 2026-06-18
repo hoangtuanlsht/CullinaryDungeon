@@ -6,10 +6,12 @@ public class AttackArea : MonoBehaviour
 {
     public Enemy enemy;
     private GruzMother gruzMother;
+    private FlyEnemy flyEnemy;
     public void Awake()
     {
         enemy = GetComponentInParent<Enemy>();
         gruzMother = GetComponentInParent<GruzMother>();
+        flyEnemy = GetComponentInParent<FlyEnemy>();
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -24,6 +26,10 @@ public class AttackArea : MonoBehaviour
         if (collision.CompareTag("Player") && gruzMother!= null)
         {
             collision.GetComponent<Character>().OnHit(gruzMother.dame);
+        }
+        if(collision.CompareTag("Player") && flyEnemy != null)
+        {
+            collision.GetComponent<Character>().OnHit(flyEnemy.dame);
         }
     }
 }

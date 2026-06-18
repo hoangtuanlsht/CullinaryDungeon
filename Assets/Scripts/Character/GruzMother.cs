@@ -141,8 +141,7 @@ public class GruzMother : Character
     public override void OnDeath()
     {
         base.OnDeath();
-        rb.velocity = Vector2.zero;
-        rb.gravityScale = 0;
+        rb.velocity = new Vector2(0, rb.velocity.y);
     }
     public override void OnDespawn()
     {
