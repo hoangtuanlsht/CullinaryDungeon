@@ -20,6 +20,7 @@ public class Enemy : Character
     protected float attackTimer = 0f; // Biến đếm ngược thời gian
 
     protected bool isRight = true;
+    protected bool isAttacking = false;
 
     protected Character target;
     public Character Target => target;
@@ -94,6 +95,7 @@ public class Enemy : Character
         }
         // 2. Nếu đã sẵn sàng, reset lại thời gian chờ
         attackTimer = attackCooldown;
+        isAttacking = true;
         ChangedAnim("Attack");
         Throw();
         // 3. Thực hiện đòn tấn công như cũ=
@@ -133,6 +135,7 @@ public class Enemy : Character
     }
     private void DeactiveAttack()
     {
+        isAttacking = false;
         if (attackArea == null)
         {
             return;
@@ -150,6 +153,7 @@ public class Enemy : Character
 
     public void ChangeDirection(bool isRight)
     {
+        if (isAttacking) return;
         this.isRight = isRight;
         transform.rotation = isRight ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
     }
