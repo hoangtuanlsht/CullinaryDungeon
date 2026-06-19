@@ -7,6 +7,7 @@ public class Player : Character
     public float speed = 5f;
     public float jumpForce = 10f;    
     [SerializeField] private float attackCooldown = 2f;
+    public float healHealth;////
     private float attackTimer;
     [SerializeField] private float knockbackForceX = 3f; // Lực văng ngang
 
@@ -204,7 +205,15 @@ public class Player : Character
             Invoke(nameof(ResetHurt), 0.5f);
         }
     }
-
+    public void Healing()////////
+    {
+        if (health+healHealth <=maxhealth)
+        {
+            health += healHealth;
+            healthBar.SetNewHP(health);
+        }
+        
+    }
     private void ResetHurt()
     {
         isHurt = false;

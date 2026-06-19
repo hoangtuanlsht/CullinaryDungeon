@@ -23,6 +23,12 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
     private SlotClass tempSlot = new SlotClass();
     public bool isMoving;
 
+    [Header("UseItem")]
+    [SerializeField] private ConsumableItem item;
+    [SerializeField] private Player player;
+    [SerializeField] private GameObject uiUseItem;
+    private int selectedSlotIndex = -1; // Lưu vị trí ô đang được chọn để dùng
+
     private static InventoryManager instance;
     public static InventoryManager Instance { get { return instance; } }
 
@@ -35,6 +41,8 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
     public CraftingSlotUI[] craftingSlotUIs = new CraftingSlotUI[4];
     public ResultSlotUI resultSlotUI;
     //[SerializeField] private List<SlotClass> items = new List<SlotClass>();
+
+
     private void Awake()
     {
         instance = this;
@@ -72,11 +80,11 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
         {
             scrollRect.Initialize(this); // Gọi hàm này để thiết lập DataSource và đúc Cell
         }
-        inventory.GetComponent<RectTransform>().anchoredPosition = new Vector3 (600,1000,0); 
+        inventory.GetComponent<RectTransform>().anchoredPosition = new Vector3 (600,1000,0);
+        player = GameObject.Find("Player").GetComponent<Player>();
     }
-    
     private void Update()
-    {       
+    {
         if (isMoving && movingSlot.GetItem()!= null)
         {
             itemCursor.enabled = true;
@@ -94,20 +102,16 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
             inventory.GetComponent<RectTransform>().anchoredPosition = posInventory.y == 1000 ? new Vector3(500,0,0) : new Vector3(600,1000,0);
         }
     }
-
-
     public int GetItemCount()
     {
         return items.Length;
     }
-
     public void SetCell(ICell cell, int index)
     {
         //Casting to the implemented Cell
         var item = cell as CellItemData;
         item.ConfigureCell(this,items[index], index);
     }
-    // Update is called once per frame
     public void AddItem(ItemItem item, int quantity)
     {
         SlotClass slot = ContainItem(item);
@@ -185,10 +189,27 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
     {
         if (!isMoving)
         {
-            BeginSplit(slotIndex);
+            SlotClass clickedSlot = items[slotIndex];
+
+            // Đảm bảo ô có đồ
+            if (clickedSlot != null && clickedSlot.GetItem() != null)
+            {
+                // Kiểm tra xem vật phẩm có phải là loại tiêu hao (ConsumableItem) không
+                if (clickedSlot.GetItem() is ConsumableItem consumable)
+                {
+                    selectedSlotIndex = slotIndex; // Lưu lại index
+
+                    // Bật UI Use Item và có thể gán vị trí UI ngay tại con trỏ chuột
+                    if (uiUseItem != null)
+                    {
+                        uiUseItem.SetActive(true);
+                        uiUseItem.transform.position = Input.mousePosition + new Vector3(100,0,0);
+                    }
+                    return; // Thoát hàm để không chạy logic chia đồ ở dưới
+                }
+            }
         }
     }
-
     private void BeginMove(int index)
     {
         originalSlot = items[index];
@@ -202,23 +223,66 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
         isMoving = true;
         scrollRect.ReloadData();
     }
-    private void BeginSplit(int index)
+    //private void BeginSplit(int index)
+    //{
+    //    originalSlot = items[index];
+
+
+    //    if (originalSlot == null || originalSlot.GetItem() == null) return;
+
+    //    if(originalSlot.GetQuantity() < 1)
+    //    {
+    //        return ;
+    //    }
+    //    movingSlot.AddItem(originalSlot.GetItem(), Mathf.CeilToInt(originalSlot.GetQuantity()/2f));
+
+    //    originalSlot.SubQuantity(Mathf.CeilToInt(originalSlot.GetQuantity() / 2f));
+    //    isMoving = true;
+    //    scrollRect.ReloadData();
+    //    return;
+    //}
+    // Hàm này sẽ được gọi khi bạn bấm nút "Use" trên UI
+    public void ConfirmUseItem()
     {
-        originalSlot = items[index];
-        
-        if (originalSlot == null || originalSlot.GetItem() == null) return;
-        
-        if(originalSlot.GetQuantity() < 1)
+        if (selectedSlotIndex == -1) return;
+
+        SlotClass slot = items[selectedSlotIndex];
+        if (slot != null && slot.GetItem() is ConsumableItem consumable)
         {
-            return ;
+            // Gọi hàm hồi máu cho Player
+            UseItem(consumable);
+
+            // Trừ đi 1 vật phẩm
+            if (slot.GetQuantity() > 1)
+            {
+                slot.SubQuantity(1);
+            }
+            else
+            {
+                slot.RemoveItem(); // Nếu chỉ còn 1 thì xóa hoàn toàn đồ khỏi ô
+            }
+
+            // Cập nhật lại giao diện Inventory
+            scrollRect.ReloadData();
         }
-        movingSlot.AddItem(originalSlot.GetItem(), Mathf.CeilToInt(originalSlot.GetQuantity()/2f));
 
-        originalSlot.SubQuantity(Mathf.CeilToInt(originalSlot.GetQuantity() / 2f));
-        isMoving = true;
-        scrollRect.ReloadData();
-        return;
+        // Tắt UI đi và reset lại index
+        CloseUseItemUI();
+    }
 
+    // Hàm này để đóng UI (có thể gán cho nút "Cancel" hoặc dấu X)
+    public void CloseUseItemUI()
+    {
+        if (uiUseItem != null)
+        {
+            uiUseItem.SetActive(false);
+        }
+        selectedSlotIndex = -1;
+    }
+    public void UseItem(ConsumableItem itemClass)///
+    {
+        player.healHealth = itemClass.healthRecovery;
+        player.Healing();
     }
     private void EndMove(int index)
     {

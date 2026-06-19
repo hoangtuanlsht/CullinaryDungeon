@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    [SerializeField]private float maxhealth = 100f;
+    [SerializeField]protected float maxhealth = 100f;
     protected float health;
 
     private string currentAnimName;
