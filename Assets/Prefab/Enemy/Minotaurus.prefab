@@ -63,6 +63,7 @@ MonoBehaviour:
   attackArea: {fileID: 7997308484844253857}
   itemPrefab: []
   attackCooldown: 4
+  knockbackForceX: 2
 --- !u!50 &1725335451857161946
 Rigidbody2D:
   serializedVersion: 4
@@ -271,7 +272,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -1.35, z: 0}
-  m_LocalScale: {x: 7, y: 0.5, z: 1}
+  m_LocalScale: {x: 9, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7495384243988917809}
@@ -441,7 +442,7 @@ Transform:
   m_GameObject: {fileID: 7997308484844253857}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.58, y: -1.04, z: 0}
+  m_LocalPosition: {x: 2.31, y: -1.04, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
