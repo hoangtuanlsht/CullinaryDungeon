@@ -10,7 +10,7 @@ public class EnemySight : MonoBehaviour
         if(collision.CompareTag("Player"))
         {
             enemy.SetTarget(collision.GetComponent<Character>());
-            enemy.ChangeState(new AttackState());
+            //enemy.ChangeState(new AttackState());
         }
     }
      private void OnTriggerExit2D(Collider2D collision)
@@ -18,7 +18,7 @@ public class EnemySight : MonoBehaviour
         if(collision.CompareTag("Player"))
         {
             enemy.SetTarget(null);
-            enemy.ChangeState(new IdleState());
+            //enemy.ChangeState(new IdleState());
         }
     }
 }

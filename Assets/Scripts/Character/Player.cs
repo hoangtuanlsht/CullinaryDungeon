@@ -66,16 +66,14 @@ public class Player : Character
         if (Input.GetKey(KeyCode.F) && isGrounded && !isAttacking && !isHurt && !isDead)
         {
             isDefending = true;
+            Debug.Log("defender");
+            Invoke("ResetDefend", 0.5f);
         }
-        if(Input.GetKeyDown(KeyCode.G) && isGrounded && !isAttacking &&!isDefending && !isDead)
+        if (Input.GetKeyDown(KeyCode.G) && isGrounded && !isAttacking &&!isDefending && !isDead)
         {
             bool isCooking = !cooking.activeSelf;
             cooking.SetActive(isCooking);
             
-        }
-        else
-        {
-            isDefending = false;
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
@@ -103,6 +101,7 @@ public class Player : Character
         {
             rb.velocity = Vector2.zero;
             ChangedAnim("Defend"); // Chạy Animation đỡ đòn
+            Debug.Log("defend");
             return;
         }
         if (isAttacking)
@@ -209,6 +208,10 @@ public class Player : Character
     private void ResetHurt()
     {
         isHurt = false;
+    }
+    private void ResetDefend()
+    {
+        isDefending = false;
     }
     private bool CheckGrounded()
     {

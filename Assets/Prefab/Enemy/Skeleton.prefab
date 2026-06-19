@@ -314,7 +314,7 @@ MonoBehaviour:
   maxhealth: 50
   anim: {fileID: 5661224539177080916}
   healthBar: {fileID: 0}
-  attackRange: 0.8
+  attackRange: 1
   moveSpeed: 2
   attackTime: 0.3
   deAttackTime: 0.8

@@ -198,4 +198,12 @@ public class Enemy : Character
             ChangeState(new IdleState());
         }
     }
+    private void OnDrawGizmosSelected()
+    {
+        // 1. Chọn màu sắc cho vòng tròn (Ví dụ: Màu đỏ)
+        Gizmos.color = Color.red;
+
+        // 2. Vẽ một vòng tròn khung (WireSphere) tại vị trí của nhân vật, với bán kính là attackRange
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+    }
 }
