@@ -420,7 +420,7 @@ MonoBehaviour:
   maxhealth: 50
   anim: {fileID: 4577560950165028150}
   healthBar: {fileID: 0}
-  attackRange: 1
+  attackRange: 0.6
   moveSpeed: 2
   attackTime: 0.3
   deAttackTime: 0.8
@@ -432,6 +432,7 @@ MonoBehaviour:
   itemPrefab:
   - {fileID: 5388264031660169607, guid: 34bf784db13037f4298f097f74de34e8, type: 3}
   attackCooldown: 2
+  knockbackForceX: 2
 --- !u!50 &383299318287389758
 Rigidbody2D:
   serializedVersion: 4

@@ -362,10 +362,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 836be7e3dca157c48ae6a88e539d2780, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxhealth: 100
   anim: {fileID: 565623571}
   healthBar: {fileID: 334734658}
   speed: 200
   jumpForce: 8
+  attackCooldown: 2
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -376,6 +378,7 @@ MonoBehaviour:
   currentInteract: {fileID: 0}
   currentItem: {fileID: 0}
   recycleableInventoryManager: {fileID: 0}
+  cooking: {fileID: 0}
 --- !u!1 &80813235
 GameObject:
   m_ObjectHideFlags: 0

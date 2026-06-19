@@ -5,12 +5,13 @@ using UnityEngine;
 public class Player : Character
 {
     public float speed = 5f;
-    public float jumpForce = 10f;
-    private float horizontalInput;
-    private float verticalInput;
+    public float jumpForce = 10f;    
     [SerializeField] private float attackCooldown = 2f;
     private float attackTimer;
+    [SerializeField] private float knockbackForceX = 3f; // Lực văng ngang
 
+    private float horizontalInput;
+    private float verticalInput;
     private bool isGrounded=true;
     private bool isJumping=false;
     private bool isAttacking=false;
@@ -29,6 +30,8 @@ public class Player : Character
     [SerializeField] private Interact currentInteract;
     [SerializeField] private ItemClass currentItem;
     [SerializeField]private InventoryManager recycleableInventoryManager;
+    [SerializeField]private GameObject cooking;
+
     public void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -64,6 +67,12 @@ public class Player : Character
         {
             isDefending = true;
         }
+        if(Input.GetKeyDown(KeyCode.G) && isGrounded && !isAttacking &&!isDefending && !isDead)
+        {
+            bool isCooking = !cooking.activeSelf;
+            cooking.SetActive(isCooking);
+            
+        }
         else
         {
             isDefending = false;
@@ -76,9 +85,18 @@ public class Player : Character
     void FixedUpdate()
     {
         isGrounded = CheckGrounded();
-        if(isDead || isHurt)
+        //if(isDead || isHurt)
+        //{
+        //    rb.velocity = Vector2.zero;
+        //    return;
+        //}
+        if (isDead)
         {
             rb.velocity = Vector2.zero;
+            return;
+        }
+        if (isHurt)
+        {
             return;
         }
         if (isDefending)
@@ -180,6 +198,9 @@ public class Player : Character
             ChangedAnim("Hurt");
             isHurt = true;
 
+            rb.velocity = Vector2.zero;
+            float knockbackDirection = transform.localScale.x > 0 ? -1f : 1f;
+            rb.AddForce(new Vector2(knockbackDirection * knockbackForceX, 0),ForceMode2D.Impulse);
             // Dừng các hoạt động khác trong 0.5 giây (hoặc bằng thời gian của animation Hurt)
             Invoke(nameof(ResetHurt), 0.5f);
         }

@@ -124,7 +124,7 @@ MonoBehaviour:
   maxhealth: 50
   anim: {fileID: 3818839771461192880}
   healthBar: {fileID: 0}
-  attackRange: 1
+  attackRange: 0.6
   moveSpeed: 2
   attackTime: 0.3
   deAttackTime: 0.8
@@ -136,6 +136,7 @@ MonoBehaviour:
   itemPrefab:
   - {fileID: 6087911828334214770, guid: ce6eff89fd574a342b4f77a53bb54423, type: 3}
   attackCooldown: 2
+  knockbackForceX: 2
 --- !u!1 &4626757178591922119
 GameObject:
   m_ObjectHideFlags: 0

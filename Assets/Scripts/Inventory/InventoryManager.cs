@@ -25,6 +25,15 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
 
     private static InventoryManager instance;
     public static InventoryManager Instance { get { return instance; } }
+
+    [Header("Crafting System")]
+    public List<CraftingRecipe> recipes;
+    public SlotClass[] craftingSlots = new SlotClass[4];
+    public SlotClass resultSlot = new SlotClass();
+
+    [Header("Crafting UI Link")]
+    public CraftingSlotUI[] craftingSlotUIs = new CraftingSlotUI[4];
+    public ResultSlotUI resultSlotUI;
     //[SerializeField] private List<SlotClass> items = new List<SlotClass>();
     private void Awake()
     {
@@ -50,6 +59,15 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
             }
 
         }
+        craftingSlots = new SlotClass[4];
+        for (int i = 0; i < craftingSlots.Length; i++)
+        {
+            // Tạo mới một instance SlotClass cho từng ô để ô đó sẵn sàng chứa item
+            craftingSlots[i] = new SlotClass();
+        }
+
+        // Khởi tạo instance cho ô chứa kết quả chế tạo
+        resultSlot = new SlotClass();
         if (scrollRect != null)
         {
             scrollRect.Initialize(this); // Gọi hàm này để thiết lập DataSource và đúc Cell
@@ -73,7 +91,7 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
         if (Input.GetKeyDown(KeyCode.B))
         {
             Vector3 posInventory = inventory.GetComponent<RectTransform>().anchoredPosition;
-            inventory.GetComponent<RectTransform>().anchoredPosition = posInventory.y == 1000 ? new Vector3(600,0,0) : new Vector3(600,1000,0);
+            inventory.GetComponent<RectTransform>().anchoredPosition = posInventory.y == 1000 ? new Vector3(500,0,0) : new Vector3(600,1000,0);
         }
     }
 
@@ -156,7 +174,6 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
     {
         if (isMoving)
         {
-            Debug.Log("CCs");
             EndMove(slotIndex);
         }
         else
@@ -261,7 +278,143 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
         scrollRect.ReloadData();
         return;
     }
+    public void CheckForCompletedRecipes()
+    {
+        resultSlot.RemoveItem(); // Xóa kết quả cũ
 
+        foreach (CraftingRecipe recipe in recipes)
+        {
+            // 1. Gom các item ĐANG CÓ trên bàn chế tạo (bỏ qua các ô trống)
+            List<ItemItem> itemsOnTable = new List<ItemItem>();
+            for (int i = 0; i < craftingSlots.Length; i++)
+            {
+                if (craftingSlots[i].GetItem() != null)
+                {
+                    itemsOnTable.Add(craftingSlots[i].GetItem());
+                }
+            }
 
+            // 2. Gom các item YÊU CẦU của công thức này (bỏ qua phần tử null)
+            List<ItemItem> requiredItems = new List<ItemItem>();
+            foreach (ItemItem item in recipe.requiredItems)
+            {
+                if (item != null)
+                {
+                    requiredItems.Add(item);
+                }
+            }
 
+            // 3. Nếu tổng số món đồ trên bàn khác tổng số lượng yêu cầu -> Loại công thức này
+            if (itemsOnTable.Count != requiredItems.Count)
+            {
+                continue;
+            }
+
+            // 4. Kiểm tra chéo (Bất chấp vị trí)
+            bool isMatch = true;
+            foreach (ItemItem reqItem in requiredItems)
+            {
+                // Nếu tìm thấy nguyên liệu yêu cầu nằm trên bàn
+                if (itemsOnTable.Contains(reqItem))
+                {
+                    // Gạch bỏ nguyên liệu đó khỏi danh sách tạm để không bị đếm trùng lặp
+                    // (Đề phòng trường hợp công thức cần 2 Gỗ, mà trên bàn chỉ có 1 Gỗ)
+                    itemsOnTable.Remove(reqItem);
+                }
+                else
+                {
+                    // Thiếu nguyên liệu -> Sai công thức
+                    isMatch = false;
+                    break;
+                }
+            }
+
+            // 5. Nếu vượt qua mọi bài kiểm tra -> Khớp!
+            if (isMatch)
+            {
+                resultSlot.AddItem(recipe.resultItem, recipe.resultQuantity);
+                Debug.Log("Đã tìm thấy công thức: " + recipe.recipeName);
+                break; // Tìm thấy thì dừng tìm các công thức khác
+            }
+        }
+    }
+    public void OnCraftingSlotLeftClick(int craftSlotIndex)
+    {
+        SlotClass targetCraftSlot = craftingSlots[craftSlotIndex];
+
+        if (isMoving) // TRƯỜNG HỢP 1: Bạn đang cầm đồ trên chuột
+        {
+            // Nếu ô Crafting trống -> Bỏ 1 item vào
+            if (targetCraftSlot.GetItem() == null)
+            {
+                targetCraftSlot.AddItem(movingSlot.GetItem(), 1);
+                movingSlot.SubQuantity(1);
+            }
+            // Nếu ô Crafting đã có đồ CÙNG LOẠI -> Thêm 1 item vào (Cộng dồn)
+            else if (targetCraftSlot.GetItem() == movingSlot.GetItem())
+            {
+                targetCraftSlot.AddQuantity(1);
+                movingSlot.SubQuantity(1);
+            }
+
+            // Nếu trên tay hết đồ thì tắt trạng thái cầm đồ
+            if (movingSlot.GetQuantity() <= 0)
+            {
+                isMoving = false;
+                movingSlot.RemoveItem();
+            }
+        }
+        else // TRƯỜNG HỢP 2: Tay bạn đang trống (Không cầm đồ)
+        {
+            // Click vào ô Crafting có đồ -> Cầm đồ đó lên lại
+            if (targetCraftSlot.GetItem() != null)
+            {
+                movingSlot.AddItem(targetCraftSlot.GetItem(), targetCraftSlot.GetQuantity());
+                isMoving = true;
+                targetCraftSlot.RemoveItem(); // Xóa đồ ở ô Crafting đi
+            }
+        }
+
+        // Cập nhật lại công thức và hình ảnh UI
+        CheckForCompletedRecipes();
+        UpdateCraftingUI();
+    }
+    public void OnClickResultSlot()
+    {
+        if (resultSlot.GetItem() != null && !isMoving)
+        {
+            // Cầm vật phẩm kết quả lên chuột (movingSlot)
+            movingSlot.AddItem(resultSlot.GetItem(), resultSlot.GetQuantity());
+            isMoving = true;
+            resultSlot.RemoveItem();
+
+            // Trừ nguyên liệu ở 4 ô chế tạo
+            for (int i = 0; i < craftingSlots.Length; i++)
+            {
+                if (craftingSlots[i].GetItem() != null)
+                {
+                    craftingSlots[i].SubQuantity(1);
+
+                    // SỬA LỖI Ở ĐÂY: Nếu số lượng về 0 thì phải xóa sạch đồ khỏi ô
+                    if (craftingSlots[i].GetQuantity() <= 0)
+                    {
+                        craftingSlots[i].RemoveItem();
+                    }
+                }
+            }
+
+            // Cập nhật lại công thức và hình ảnh
+            CheckForCompletedRecipes();
+            UpdateCraftingUI();
+        }
+    }
+    public void UpdateCraftingUI()
+    {
+        for (int i = 0; i < craftingSlotUIs.Length; i++)
+        {
+            if (craftingSlotUIs[i] != null) craftingSlotUIs[i].UpdateSlotUI();
+        }
+        if (resultSlotUI != null) resultSlotUI.UpdateSlotUI();
+        if (scrollRect != null) scrollRect.ReloadData();
+    }
 }

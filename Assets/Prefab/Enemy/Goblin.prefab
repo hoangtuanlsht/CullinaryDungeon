@@ -330,7 +330,7 @@ MonoBehaviour:
   maxhealth: 50
   anim: {fileID: 2709146300495118127}
   healthBar: {fileID: 0}
-  attackRange: 1
+  attackRange: 0.6
   moveSpeed: 2
   attackTime: 0.3
   deAttackTime: 0.8
@@ -343,6 +343,7 @@ MonoBehaviour:
   - {fileID: 2319611087485755607, guid: a0f30b3a2fe35764ea4a8efb09f240ec, type: 3}
   - {fileID: 8169253012484678060, guid: af5b3b07841fb6743a3f005c63966886, type: 3}
   attackCooldown: 2
+  knockbackForceX: 2
 --- !u!50 &9082373960990031405
 Rigidbody2D:
   serializedVersion: 4

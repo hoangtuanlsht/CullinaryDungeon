@@ -19,13 +19,19 @@ public class Enemy : Character
     [SerializeField] protected float attackCooldown = 2f; // Thời gian nghỉ giữa 2 đòn đánh (tính bằng giây)
     protected float attackTimer = 0f; // Biến đếm ngược thời gian
 
+    [SerializeField] private float knockbackForceX = 2f;
+    
     protected bool isRight = true;
     protected bool isAttacking = false;
-
+    protected bool isHurt = false;
     protected Character target;
     public Character Target => target;
     private void Update()
     {
+        if (isHurt)
+        {
+            return;
+        }
         if (attackTimer > 0)
         {
             attackTimer -= Time.deltaTime;
@@ -54,6 +60,24 @@ public class Enemy : Character
                 Instantiate(item, transform.position, transform.rotation);
             }
         }
+    }
+    public override void OnHit(float damage)
+    {
+        base.OnHit(damage);
+        if (!IsDead)
+        {
+            isHurt = true;
+
+            rb.velocity = Vector2.zero;
+            float knockbackDirection = transform.localScale.x > 0 ? -1f : 1f;
+            rb.AddForce(new Vector2(knockbackDirection * knockbackForceX, 0), ForceMode2D.Impulse);
+            Invoke("ResetHurt", 0.5f);
+        }
+        
+    }
+    public void ResetHurt()
+    {
+        isHurt= false;
     }
     public override void OnDeath()
     {

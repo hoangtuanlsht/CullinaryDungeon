@@ -15,7 +15,7 @@ public class GruzMother : Character
     [Header("AttackPlayer")]
     [SerializeField] float attackPlayerSpeed;
     [SerializeField] public float dame;
-    [SerializeField] Transform player;
+    [SerializeField] GameObject player;
     [SerializeField] GameObject attackArea;
     private Vector2 playerPos;
     private bool hasPlayerPos;
@@ -40,6 +40,8 @@ public class GruzMother : Character
         attackDirection.Normalize();
         rb = GetComponent<Rigidbody2D>();
         animGruz = GetComponent<Animator>();
+        player = GameObject.FindWithTag("Player");
+
     }
 
     // Update is called once per frame
@@ -121,7 +123,7 @@ public class GruzMother : Character
     {
         if (!hasPlayerPos) 
         {
-            playerPos = player.position - transform.position;
+            playerPos = player.transform.position - transform.position;
             playerPos.Normalize();
             hasPlayerPos = true;
         }
