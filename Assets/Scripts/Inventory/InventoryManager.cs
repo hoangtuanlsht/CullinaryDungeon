@@ -99,7 +99,13 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
         if (Input.GetKeyDown(KeyCode.B))
         {
             Vector3 posInventory = inventory.GetComponent<RectTransform>().anchoredPosition;
-            inventory.GetComponent<RectTransform>().anchoredPosition = posInventory.y == 1000 ? new Vector3(500,0,0) : new Vector3(600,1000,0);
+            if((inventory.GetComponent<RectTransform>().anchoredPosition == new Vector2(500, 1000)) && PauseController.IsGamePause)
+            {
+                return;
+            }
+            inventory.GetComponent<RectTransform>().anchoredPosition = posInventory.y == 1000 ? new Vector3(500, 0, 0) : new Vector3(500, 1000, 0);
+            PauseController.SetPause(posInventory.y == 1000 ? true : false);
+
         }
     }
     public int GetItemCount()
@@ -480,5 +486,10 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
         }
         if (resultSlotUI != null) resultSlotUI.UpdateSlotUI();
         if (scrollRect != null) scrollRect.ReloadData();
+    }
+    public void ClearInventory()
+    {
+        System.Array.Clear(items, 0, items.Length);
+        scrollRect.ReloadData();
     }
 }

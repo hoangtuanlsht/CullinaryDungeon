@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneLoadManager : Interact
+public class SceneLoadManager : MonoBehaviour,Interact
 {
     [SerializeField] private string spawnPoint;
     [SerializeField] private SceneField[] scenesToLoad;
@@ -15,7 +15,7 @@ public class SceneLoadManager : Interact
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    public override void InteractWithObject()
+    public void InteractWithObject()
     {
         SceneData.SpawnPointName = spawnPoint;
         LoadScene();

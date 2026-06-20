@@ -3,14 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapManager : Interact
+public class MapManager :MonoBehaviour, Interact
 {
     public CinemachineVirtualCamera map1Cam;
     public CinemachineVirtualCamera map2Cam;
     public GameObject teleport;
     public GameObject player;
     public bool isNextMap=false;
-    public override void InteractWithObject()
+    public void InteractWithObject()
     {
         if (map1Cam != null && map2Cam != null)
         {

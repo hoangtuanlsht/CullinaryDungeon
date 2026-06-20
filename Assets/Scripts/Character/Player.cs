@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : Character
 {
@@ -19,13 +20,14 @@ public class Player : Character
     private bool isDead=false;
     private bool isHurt = false;
     private bool isDefending = false;
+    private bool isPlayFootStep=false;
+    public float footStepSpeed = 0.5f;
     public LayerMask groundLayer;
 
     [SerializeField] public static int coin=0;
 
     [SerializeField]public Rigidbody2D rb;
 
-    [SerializeField] private Vector3 savePoint;
     [SerializeField] private GameObject attackArea;
     [SerializeField] public GameObject interactUI;
     [SerializeField] private Interact currentInteract;
@@ -36,7 +38,6 @@ public class Player : Character
     public void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        savePoint = transform.position;
         coin = PlayerPrefs.GetInt("coin", 0);
         if (interactUI != null)
         {
@@ -64,31 +65,33 @@ public class Player : Character
             Attack();
             
         }
-        if (Input.GetKey(KeyCode.F) && isGrounded && !isAttacking && !isHurt && !isDead)
+        if (Input.GetKey(KeyCode.F) && isGrounded && !isAttacking && !isHurt && !isDead && !isDefending)
         {
             isDefending = true;
-            Debug.Log("defender");
+            SoundManager.Play("Defend");
             Invoke("ResetDefend", 0.5f);
         }
         if (Input.GetKeyDown(KeyCode.G) && isGrounded && !isAttacking &&!isDefending && !isDead)
         {
             bool isCooking = !cooking.activeSelf;
             cooking.SetActive(isCooking);
-            
+            PauseController.SetPause(isCooking);
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
             TryInteract();
         }
+        if (PauseController.IsGamePause)
+        {
+            rb.velocity = Vector2.zero;
+            StopFootStep();
+            return;
+        }
+        
     }   
     void FixedUpdate()
     {
         isGrounded = CheckGrounded();
-        //if(isDead || isHurt)
-        //{
-        //    rb.velocity = Vector2.zero;
-        //    return;
-        //}
         if (isDead)
         {
             rb.velocity = Vector2.zero;
@@ -101,8 +104,8 @@ public class Player : Character
         if (isDefending)
         {
             rb.velocity = Vector2.zero;
+            
             ChangedAnim("Defend"); // Chạy Animation đỡ đòn
-            Debug.Log("defend");
             return;
         }
         if (isAttacking)
@@ -114,6 +117,7 @@ public class Player : Character
         {
             if (isJumping)
             {
+                if (isPlayFootStep) StopFootStep();
                 Jump();
                 return;
             }
@@ -125,10 +129,13 @@ public class Player : Character
                 if (Mathf.Abs(horizontalInput) > 0.1f)
                 {
                     ChangedAnim("Run");
+                    if (!isPlayFootStep) StartFootStep();
+                    
                 }
                 else
                 {
                     ChangedAnim("Idle");
+                    StopFootStep();
                 }
             }
             //throw
@@ -139,6 +146,7 @@ public class Player : Character
         {
             isJumping = false;
             ChangedAnim("Fall");
+            if (isPlayFootStep) StopFootStep();
         }
 
         //Moving
@@ -167,8 +175,7 @@ public class Player : Character
         isDead = false;
         isHurt = false;
         isDefending = false;
-        coin = 0;
-        transform.position = savePoint;
+        //coin = 0;
         ChangedAnim("Idle");
         DeactiveAttack();
         UIManager.instance.SetCoin(coin);
@@ -180,7 +187,8 @@ public class Player : Character
     public override void OnDeath()
     {
         base.OnDeath();
-        Invoke("OnInit",2f);
+        //Invoke("OnInit",2f);
+        Invoke("RespawnAtGuild", 2f);
     }
     public override void OnHit(float damage)
     {
@@ -246,6 +254,7 @@ public class Player : Character
             return;
         }
         attackTimer = attackCooldown;
+        SoundManager.Play("Attack");
         ChangedAnim("Attack");
         isAttacking = true;
         Invoke("ResetAttack", 0.5f);
@@ -279,7 +288,8 @@ public class Player : Character
             ChangedAnim("Dead");
             isDead = true;
             Debug.Log("Dead");
-            Invoke("OnInit", 2f);
+            //Invoke("OnInit", 2f);
+            Invoke("RespawnAtGuild", 2f);
         }
         Interact interact = collision.GetComponent<Interact>();
         if (interact != null)
@@ -288,7 +298,7 @@ public class Player : Character
             if (interactUI != null)
             {
                 interactUI.SetActive(true);
-                interactUI.transform.position = currentInteract.transform.position + new Vector3(0, 0.5f,0);
+                interactUI.transform.position = collision.transform.position + new Vector3(0, 0.5f,0);
             }
         }
         ItemClass item = collision.GetComponent<ItemClass>();
@@ -328,5 +338,45 @@ public class Player : Character
             currentItem = null;
             if(interactUI != null) interactUI.SetActive(false);
         }
+    }
+    private void RespawnAtGuild()
+    {
+        coin = 0;
+        PlayerPrefs.SetInt("coin", 0);
+        UIManager.instance.SetCoin(coin);
+
+        // 2. Mất toàn bộ đồ trong túi
+        if (recycleableInventoryManager != null)
+        {
+            recycleableInventoryManager.ClearInventory(); // Tùy thuộc vào hàm bạn đã viết ở bước trước
+        }
+
+        // 3. Khôi phục lại trạng thái sống và máu (gọi lại OnInit để reset anim/trạng thái)
+        OnInit();
+        // Giả sử class Character của bạn có biến máu, hãy buff đầy máu ở đây:
+        // health = maxhealth;
+        // healthBar.SetNewHP(health);
+
+        // 4. Báo cho SpawnManager biết vị trí cần đứng khi load xong scene sảnh
+        // Thay "GuildSpawnPoint" bằng đúng tên GameObject điểm hồi sinh bạn đặt trong scene sảnh
+        SceneData.SpawnPointName = "GuildSpawnPoint";
+
+        // 5. Load scene Sảnh chính
+        // Thay "GuildScene" bằng đúng tên scene của bạn trong Build Settings
+        SceneManager.LoadScene("GuildScene");
+    }
+    void StartFootStep()
+    {
+        isPlayFootStep = true;
+        InvokeRepeating(nameof(PlayFootStep), 0f, footStepSpeed);
+    }
+    void StopFootStep()
+    {
+        isPlayFootStep = false;
+        CancelInvoke(nameof(PlayFootStep));
+    }
+    void PlayFootStep()
+    {
+        SoundManager.Play("Step");
     }
 }

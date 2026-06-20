@@ -41,7 +41,6 @@ public class CellItemData : MonoBehaviour, ICell, IPointerClickHandler
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            Debug.Log("dd");
             _contactInfo.OnLeftClickSlot(_cellIndex);
         }
         else if(eventData.button == PointerEventData.InputButton.Right)

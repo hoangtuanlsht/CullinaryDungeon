@@ -2514,6 +2514,10 @@ PrefabInstance:
       propertyPath: healthBar
       value: 
       objectReference: {fileID: 878199749}
+    - target: {fileID: 2038482281087964007, guid: 7a28285e89f0cd54a9f456757dd0b385, type: 3}
+      propertyPath: maxhealth
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 2788783000532440759, guid: 7a28285e89f0cd54a9f456757dd0b385, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -4426,6 +4430,10 @@ PrefabInstance:
       propertyPath: healthBar
       value: 
       objectReference: {fileID: 15035151}
+    - target: {fileID: 1338628338248451892, guid: 3d8a5303f907fe543b127b12d65e5591, type: 3}
+      propertyPath: maxhealth
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 2166657617552893124, guid: 3d8a5303f907fe543b127b12d65e5591, type: 3}
       propertyPath: m_LocalPosition.x
       value: -11.843834
@@ -8077,6 +8085,10 @@ PrefabInstance:
       propertyPath: healthBar
       value: 
       objectReference: {fileID: 1331966560}
+    - target: {fileID: 2038482281087964007, guid: 7a28285e89f0cd54a9f456757dd0b385, type: 3}
+      propertyPath: maxhealth
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 3097246439290522402, guid: 7a28285e89f0cd54a9f456757dd0b385, type: 3}
       propertyPath: m_Name
       value: Slime (1)
@@ -8444,7 +8456,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 2b9eddae066682a4daac6b8c53706b53, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -8909,10 +8921,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 836be7e3dca157c48ae6a88e539d2780, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxhealth: 100
   anim: {fileID: 1104174931}
   healthBar: {fileID: 327442457}
   speed: 200
   jumpForce: 8
+  attackCooldown: 2
+  healHealth: 0
+  knockbackForceX: 3
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -8923,6 +8939,7 @@ MonoBehaviour:
   currentInteract: {fileID: 0}
   currentItem: {fileID: 0}
   recycleableInventoryManager: {fileID: 0}
+  cooking: {fileID: 0}
 --- !u!4 &1799837533
 Transform:
   m_ObjectHideFlags: 0
@@ -9147,6 +9164,10 @@ PrefabInstance:
       propertyPath: healthBar
       value: 
       objectReference: {fileID: 1396492658}
+    - target: {fileID: 1338628338248451892, guid: 3d8a5303f907fe543b127b12d65e5591, type: 3}
+      propertyPath: maxhealth
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 2166657617552893124, guid: 3d8a5303f907fe543b127b12d65e5591, type: 3}
       propertyPath: m_LocalPosition.x
       value: 7.1346774
@@ -10584,6 +10605,10 @@ PrefabInstance:
       propertyPath: healthBar
       value: 
       objectReference: {fileID: 70983227}
+    - target: {fileID: 1338628338248451892, guid: 3d8a5303f907fe543b127b12d65e5591, type: 3}
+      propertyPath: maxhealth
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 2166657617552893124, guid: 3d8a5303f907fe543b127b12d65e5591, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4.051211

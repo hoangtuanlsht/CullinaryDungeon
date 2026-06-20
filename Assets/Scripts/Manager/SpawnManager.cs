@@ -14,7 +14,7 @@ public class SpawnManager : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         GameObject spawn =
             GameObject.Find(SceneData.SpawnPointName);

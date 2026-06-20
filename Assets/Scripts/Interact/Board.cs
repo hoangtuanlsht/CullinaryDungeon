@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Board : Interact
+public class Board :MonoBehaviour, Interact
 {
-    public override void InteractWithObject()
+    public void InteractWithObject()
     {
         Debug.Log("Bảng thông báo! Đây là một bảng thông báo.");
         // Viết thêm code hiển thị thông báo hoặc mở menu ở đây...

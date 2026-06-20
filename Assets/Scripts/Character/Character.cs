@@ -45,7 +45,7 @@ public class Character : MonoBehaviour
         { 
             health -= damage;            
             Debug.Log($"{gameObject.name} hit with {damage} damage, remaining health: {health}");
-            if (health <= damage)
+            if (health <= 0)
             {
                 health = 0;
                 healthBar.SetNewHP(health);
