@@ -177,3 +177,5 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  buyPrice: 10
+  sellPriceMulti: 0.5

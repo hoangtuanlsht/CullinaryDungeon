@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 27a319b28ee5cc14a850710e5d160ac0, type: 3}
-  m_Name: Knight
+  m_Name: GuildMaster
   m_EditorClassIdentifier: 
-  npcName: Knight
+  npcName: GuildMaster
   npcPortrait: {fileID: -1320909188, guid: b3f751b7570564b409f285baad08e66d, type: 3}
   dialogueLines:
   - "Ch\xE0o m\u1EA1o hi\u1EC3m gi\u1EA3 tr\u1EBB tu\u1ED5i"
@@ -30,8 +30,10 @@ MonoBehaviour:
   - "T\xF4i ch\u1EC9 c\xF3 m\u1ED9t l\u1EDDi khuy\xEAn cho c\u1EADu l\xE0 \u0111\u1EEBng
     ti\u1EBFc vi\u1EC7c s\u1EED d\u1EE5ng b\xECnh m\xE1u v\xE0 c\xE1c th\u1EF1c ph\u1EA9m
     h\u1ED3i ph\u1EE5c"
+  - "B\xE2y gi\u1EDD h\xE3y b\u1EAFt \u0111\u1EA7u h\xE0nh tr\xECnh c\u1EE7a m\xECnh
+    \u0111i"
   - "Ch\xFAc may m\u1EAFn m\u1EA1o hi\u1EC3m gi\u1EA3 tr\u1EBB tu\u1ED5i"
-  autoProgressLines: 0000000000000000
+  autoProgressLines: 000000000000000000
   autoProgressDelay: 1.5
   typingSpeed: 0.05
   voiceSound: {fileID: 0}

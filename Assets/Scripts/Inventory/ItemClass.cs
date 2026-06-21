@@ -9,6 +9,8 @@ public class ItemClass : MonoBehaviour
     public Rigidbody2D rb;
     public LayerMask groundLayer;
 
+
+    
     public void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -26,6 +28,7 @@ public class ItemClass : MonoBehaviour
         InventoryManager.Instance.AddItem(itemData,1);
         Destroy(gameObject);
     }
+    
     private bool CheckGrounded()
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.5f, groundLayer);

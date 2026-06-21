@@ -26,6 +26,7 @@ public class Player : Character
 
     [SerializeField] public static int coin=0;
 
+
     [SerializeField]public Rigidbody2D rb;
 
     [SerializeField] private GameObject attackArea;
@@ -34,6 +35,7 @@ public class Player : Character
     [SerializeField] private ItemClass currentItem;
     [SerializeField]private InventoryManager recycleableInventoryManager;
     [SerializeField]private GameObject cooking;
+    [SerializeField] private ShopNPC currentShopNPC;
 
     public void Awake()
     {
@@ -175,7 +177,7 @@ public class Player : Character
         isDead = false;
         isHurt = false;
         isDefending = false;
-        //coin = 0;
+        coin = 0;
         ChangedAnim("Idle");
         DeactiveAttack();
         UIManager.instance.SetCoin(coin);
@@ -308,6 +310,16 @@ public class Player : Character
             interactUI.SetActive(true);
             interactUI.transform.position = currentItem.transform.position + new Vector3(0, 0.5f, 0);
         }
+        ShopNPC shop = collision.GetComponent<ShopNPC>();
+        if (shop != null)
+        {
+            currentShopNPC = shop;
+            if (interactUI != null)
+            {
+                interactUI.SetActive(true);
+                interactUI.transform.position = collision.transform.position + new Vector3(0, 0.5f, 0);
+            }
+        }
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
@@ -323,6 +335,15 @@ public class Player : Character
             currentItem = null;
             if(interactUI != null) interactUI.SetActive(false);
         }
+        ShopNPC shop = collision.GetComponent<ShopNPC>();
+        if (shop != null && shop == currentShopNPC)
+        {
+            currentShopNPC = null;
+            if (interactUI != null) interactUI.SetActive(false);
+
+            // Tự động đóng Shop nếu người chơi đi ra xa
+            if (ShopController.instance != null) ShopController.instance.CloseShop();
+        }
     }
     private void TryInteract()
     {
@@ -337,6 +358,10 @@ public class Player : Character
 
             currentItem = null;
             if(interactUI != null) interactUI.SetActive(false);
+        }
+        if (currentShopNPC != null)
+        {
+            currentShopNPC.Interact(); // Gọi hàm mở giao diện Shop
         }
     }
     private void RespawnAtGuild()
