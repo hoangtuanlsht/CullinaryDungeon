@@ -296,6 +296,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Minotaurus
       objectReference: {fileID: 0}
+    - target: {fileID: 4558654206118042056, guid: 3c0ea5d88df73574db68f395eac8d616, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6186347712835280605, guid: 3c0ea5d88df73574db68f395eac8d616, type: 3}
       propertyPath: healthBar
       value: 
@@ -389,6 +393,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3c0ea5d88df73574db68f395eac8d616, type: 3}
+--- !u!1 &109635051 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4558654206118042056, guid: 3c0ea5d88df73574db68f395eac8d616, type: 3}
+  m_PrefabInstance: {fileID: 109635050}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &151338767
 GameObject:
   m_ObjectHideFlags: 0
@@ -2015,6 +2024,28 @@ MonoBehaviour:
     item: {fileID: 0}
     quantity: 0
   isMoving: 0
+  item: {fileID: 0}
+  player: {fileID: 0}
+  uiUseItem: {fileID: 0}
+  recipes: []
+  craftingSlots:
+  - item: {fileID: 0}
+    quantity: 0
+  - item: {fileID: 0}
+    quantity: 0
+  - item: {fileID: 0}
+    quantity: 0
+  - item: {fileID: 0}
+    quantity: 0
+  resultSlot:
+    item: {fileID: 0}
+    quantity: 0
+  craftingSlotUIs:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  resultSlotUI: {fileID: 0}
 --- !u!1 &669113001
 GameObject:
   m_ObjectHideFlags: 0
@@ -4716,6 +4747,98 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1093089990}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1644731867
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1644731870}
+  - component: {fileID: 1644731869}
+  - component: {fileID: 1644731868}
+  m_Layer: 0
+  m_Name: SpawnBoss
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1644731868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1644731867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99b5af3949a9a9c4c87ef01aca0f7c86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bossPrefab: {fileID: 109635051}
+  healthBoss: {fileID: 1818405283}
+--- !u!61 &1644731869
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1644731867}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 3.477367}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 11.329217}
+  m_EdgeRadius: 0
+--- !u!4 &1644731870
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1644731867}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -79.480865, y: 0.078637436, z: -0.12977526}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1707782414
 GameObject:
   m_ObjectHideFlags: 0
@@ -5309,13 +5432,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Canvas-HealthBar-Boss
       objectReference: {fileID: 0}
-    - target: {fileID: 6244937105183669250, guid: abb064a81af57be4599d76e061a2b2db, type: 3}
-      propertyPath: m_Pivot.x
+    - target: {fileID: 4017859160725795276, guid: abb064a81af57be4599d76e061a2b2db, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6244937105183669250, guid: abb064a81af57be4599d76e061a2b2db, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6244937105183669250, guid: abb064a81af57be4599d76e061a2b2db, type: 3}
       propertyPath: m_Pivot.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6244937105183669250, guid: abb064a81af57be4599d76e061a2b2db, type: 3}
       propertyPath: m_AnchorMax.x
@@ -5335,11 +5462,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6244937105183669250, guid: abb064a81af57be4599d76e061a2b2db, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 1920
       objectReference: {fileID: 0}
     - target: {fileID: 6244937105183669250, guid: abb064a81af57be4599d76e061a2b2db, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 1080
+      objectReference: {fileID: 0}
+    - target: {fileID: 6244937105183669250, guid: abb064a81af57be4599d76e061a2b2db, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6244937105183669250, guid: abb064a81af57be4599d76e061a2b2db, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6244937105183669250, guid: abb064a81af57be4599d76e061a2b2db, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6244937105183669250, guid: abb064a81af57be4599d76e061a2b2db, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5371,11 +5510,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6244937105183669250, guid: abb064a81af57be4599d76e061a2b2db, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 960
       objectReference: {fileID: 0}
     - target: {fileID: 6244937105183669250, guid: abb064a81af57be4599d76e061a2b2db, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 540
       objectReference: {fileID: 0}
     - target: {fileID: 6244937105183669250, guid: abb064a81af57be4599d76e061a2b2db, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -5389,6 +5528,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7074020065252259869, guid: abb064a81af57be4599d76e061a2b2db, type: 3}
+      propertyPath: m_RenderMode
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5399,12 +5542,17 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5428056810532157639, guid: abb064a81af57be4599d76e061a2b2db, type: 3}
   m_PrefabInstance: {fileID: 1818405281}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1818405283}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e48cc4d7340c3e7479cbb6f256904f17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1818405283 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4017859160725795276, guid: abb064a81af57be4599d76e061a2b2db, type: 3}
+  m_PrefabInstance: {fileID: 1818405281}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1847436554
 GameObject:
   m_ObjectHideFlags: 0
@@ -12222,16 +12370,19 @@ MonoBehaviour:
   speed: 150
   jumpForce: 9
   attackCooldown: 2
+  healHealth: 0
+  knockbackForceX: 3
+  footStepSpeed: 0.5
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
   rb: {fileID: 2076217966}
-  savePoint: {x: 0, y: 0, z: 0}
   attackArea: {fileID: 185097336}
   interactUI: {fileID: 1344757334}
-  currentInteract: {fileID: 0}
   currentItem: {fileID: 0}
   recycleableInventoryManager: {fileID: 637106516}
+  cooking: {fileID: 0}
+  currentShopNPC: {fileID: 0}
 --- !u!4 &2076217968
 Transform:
   m_ObjectHideFlags: 0
@@ -12481,3 +12632,4 @@ SceneRoots:
   - {fileID: 552492801}
   - {fileID: 109635050}
   - {fileID: 1818405281}
+  - {fileID: 1644731870}

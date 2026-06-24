@@ -77,7 +77,6 @@ public class Player : Character
         {
             bool isCooking = !cooking.activeSelf;
             cooking.SetActive(isCooking);
-            PauseController.SetPause(isCooking);
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
