@@ -2532,7 +2532,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.02222836, y: 0.01111418}
+  m_Offset: {x: -0.02222836, y: 0.6353004}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -2543,7 +2543,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.77771616, y: 1.3067516}
+  m_Size: {x: 0.77771616, y: 1.3748446}
   m_EdgeRadius: 0
 --- !u!50 &802275186
 Rigidbody2D:
@@ -2587,7 +2587,8 @@ MonoBehaviour:
   maxhealth: 100
   anim: {fileID: 1316154431}
   healthBar: {fileID: 2042162438}
-  speed: 120
+  speedWalk: 120
+  speedRun: 220
   jumpForce: 7
   attackCooldown: 1
   healHealth: 0

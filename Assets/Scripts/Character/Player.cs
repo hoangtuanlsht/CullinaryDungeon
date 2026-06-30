@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,7 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class Player : Character
 {
-    public float speed = 5f;
+    public float speedWalk = 5f;
+    public float speedRun = 5f;
+    private float currentSpeed;
     public float jumpForce = 10f;    
     [SerializeField] private float attackCooldown = 2f;
     public float healHealth;////
@@ -21,6 +24,7 @@ public class Player : Character
     private bool isHurt = false;
     private bool isDefending = false;
     private bool isPlayFootStep=false;
+    private bool isRunning = false;
     public float footStepSpeed = 0.5f;
     public LayerMask groundLayer;
 
@@ -28,7 +32,7 @@ public class Player : Character
 
 
     [SerializeField]public Rigidbody2D rb;
-
+    private List<string> attackList = new List<string>() {"Attack","Attack1","Attack2"};
     [SerializeField] private GameObject attackArea;
     [SerializeField] public GameObject interactUI;
     [SerializeField] private Interact currentInteract;
@@ -88,6 +92,14 @@ public class Player : Character
             StopFootStep();
             return;
         }
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            isRunning = true;
+        }
+        else if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            isRunning = false;
+        }
         
     }   
     void FixedUpdate()
@@ -127,9 +139,18 @@ public class Player : Character
             if (rb.velocity.y <= 0.1f)
             {
                 //Change run
-                if (Mathf.Abs(horizontalInput) > 0.1f)
+                if (Mathf.Abs(horizontalInput) > 0.1f )
                 {
-                    ChangedAnim("Run");
+                    if (isRunning == false)
+                    {
+                        currentSpeed = speedWalk;
+                        ChangedAnim("Run");
+                    }
+                    if(isRunning == true)
+                    {
+                        currentSpeed = speedRun;
+                        ChangedAnim("Fast");
+                    }
                     if (!isPlayFootStep) StartFootStep();
                     
                 }
@@ -153,7 +174,7 @@ public class Player : Character
         //Moving
         if (Mathf.Abs(horizontalInput) > 0.1f)
         {
-            rb.velocity = new Vector2(horizontalInput * speed*Time.fixedDeltaTime, rb.velocity.y);
+            rb.velocity = new Vector2(horizontalInput * currentSpeed*Time.fixedDeltaTime, rb.velocity.y);
             if (horizontalInput > 0)
             {
                 transform.localScale = new Vector3(1f, 1f, 1f);
@@ -256,12 +277,20 @@ public class Player : Character
         }
         attackTimer = attackCooldown;
         SoundManager.Play("Attack");
-        ChangedAnim("Attack");
+        RandomAttack(attackList);
+        
         isAttacking = true;
         Invoke("ResetAttack", 0.5f);
         ActiveAttack();
         Invoke("DeactiveAttack", 0.5f);
     }
+
+    private void RandomAttack(List<string> attackList)
+    {
+        int index = UnityEngine.Random.Range(0, attackList.Count);
+        ChangedAnim(attackList[index]);
+    }
+
     private void ResetAttack()
     {
         isAttacking = false;
