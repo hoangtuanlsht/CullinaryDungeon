@@ -5605,7 +5605,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3097246439290522402, guid: 7a28285e89f0cd54a9f456757dd0b385, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9127631214036487347, guid: 7a28285e89f0cd54a9f456757dd0b385, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5948,7 +5948,7 @@ MonoBehaviour:
   soundEffectGroups:
   - name: Step
     audioClips:
-    - {fileID: 8300000, guid: 1cb4ef2dfb5c7334c9c0aa5ecc1c5e41, type: 3}
+    - {fileID: 8300000, guid: fde8e9bc292a9224587ae13e767e794b, type: 3}
   - name: OpenChest
     audioClips:
     - {fileID: 8300000, guid: b652652c9a176d04ab79f4f4a0977221, type: 3}
@@ -5957,10 +5957,13 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 47d77569448384f4198aa75d8f4ead57, type: 3}
   - name: Attack
     audioClips:
-    - {fileID: 8300000, guid: 455ac8625a827e048ba3c996427bb06b, type: 3}
+    - {fileID: 8300000, guid: 39faa569531e722489959fe8d442b970, type: 3}
   - name: SpeechSound
     audioClips:
     - {fileID: 8300000, guid: 8825fa7f43204674ab6b509a04574b4c, type: 3}
+  - name: Run
+    audioClips:
+    - {fileID: 8300000, guid: 1cb4ef2dfb5c7334c9c0aa5ecc1c5e41, type: 3}
 --- !u!82 &1689229244
 AudioSource:
   m_ObjectHideFlags: 0
@@ -6891,7 +6894,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8644281265865025605, guid: 42b9593c33bf3544188cc6b700eab3ba, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

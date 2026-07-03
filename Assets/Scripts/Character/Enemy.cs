@@ -51,7 +51,6 @@ public class Enemy : Character
     public override void OnDespawn()
     {
         base.OnDespawn();
-        Destroy(healthBar.gameObject);
         Destroy(gameObject);
         if (itemPrefab != null)
         {
@@ -61,15 +60,15 @@ public class Enemy : Character
             }
         }
     }
-    public override void OnHit(float damage)
+    public override void OnHit(float damage,UnityEngine.Transform attacker)
     {
-        base.OnHit(damage);
+        base.OnHit(damage,attacker);
         if (!IsDead)
         {
             isHurt = true;
 
             rb.velocity = Vector2.zero;
-            float knockbackDirection = transform.localScale.x > 0 ? -1f : 1f;
+            float knockbackDirection = transform.position.x < attacker.position.x ? -1f : 1f;
             rb.AddForce(new Vector2(knockbackDirection * knockbackForceX, 0), ForceMode2D.Impulse);
             Invoke("ResetHurt", 0.5f);
         }
@@ -80,10 +79,11 @@ public class Enemy : Character
         isHurt= false;
     }
     public override void OnDeath()
-    {
-        
+    {      
         ChangeState(null);
+        Destroy(healthBar.gameObject);
         base.OnDeath();
+
     }
     private IsState currentState;
     public void ChangeState(IsState newState)

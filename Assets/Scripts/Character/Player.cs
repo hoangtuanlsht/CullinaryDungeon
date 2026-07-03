@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class Player : Character
 {
@@ -145,14 +146,23 @@ public class Player : Character
                     {
                         currentSpeed = speedWalk;
                         ChangedAnim("Run");
+                        if (!isPlayFootStep || !IsInvoking(nameof(PlayFootStep)))
+                        {
+                            StopFootStep();
+                            StartFootStep();
+                        }
                     }
                     if(isRunning == true)
                     {
                         currentSpeed = speedRun;
                         ChangedAnim("Fast");
+                        if (!isPlayFootStep || !IsInvoking(nameof(PlayFootRun)))
+                        {
+                            StopFootStep();
+                            StartFootStep();
+                        }
                     }
-                    if (!isPlayFootStep) StartFootStep();
-                    
+                                  
                 }
                 else
                 {
@@ -160,7 +170,6 @@ public class Player : Character
                     StopFootStep();
                 }
             }
-            //throw
         }
 
         //change fall
@@ -212,16 +221,14 @@ public class Player : Character
         //Invoke("OnInit",2f);
         Invoke("RespawnAtGuild", 2f);
     }
-    public override void OnHit(float damage)
+    public override void OnHit(float damage, UnityEngine.Transform attacker)
     {
         if (isDefending)
         {
             Debug.Log("Đã đỡ đòn! Không nhận sát thương.");
-            // Tùy chọn: Bạn có thể thêm animation tia lửa hoặc âm thanh đỡ đòn ở đây
-            // return ngay lập tức để bỏ qua việc trừ máu ở class base
             return;
         }
-        base.OnHit(damage);
+        base.OnHit(damage, attacker);
         if (!IsDead)
         {
             Debug.Log("Player bị thương!");
@@ -229,13 +236,12 @@ public class Player : Character
             isHurt = true;
 
             rb.velocity = Vector2.zero;
-            float knockbackDirection = transform.localScale.x > 0 ? -1f : 1f;
+            float knockbackDirection = transform.position.x < attacker.position.x ? -1f : 1f;
             rb.AddForce(new Vector2(knockbackDirection * knockbackForceX, 0),ForceMode2D.Impulse);
-            // Dừng các hoạt động khác trong 0.5 giây (hoặc bằng thời gian của animation Hurt)
             Invoke(nameof(ResetHurt), 0.5f);
         }
     }
-    public void Healing()////////
+    public void Healing()
     {
         if (health+healHealth <=maxhealth)
         {
@@ -254,7 +260,7 @@ public class Player : Character
     }
     private bool CheckGrounded()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.01f, groundLayer);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.1f, groundLayer);
         
         if (hit.collider != null)
         {
@@ -398,38 +404,39 @@ public class Player : Character
         PlayerPrefs.SetInt("coin", 0);
         UIManager.instance.SetCoin(coin);
 
-        // 2. Mất toàn bộ đồ trong túi
         if (recycleableInventoryManager != null)
         {
             recycleableInventoryManager.ClearInventory(); // Tùy thuộc vào hàm bạn đã viết ở bước trước
         }
-
-        // 3. Khôi phục lại trạng thái sống và máu (gọi lại OnInit để reset anim/trạng thái)
         OnInit();
-        // Giả sử class Character của bạn có biến máu, hãy buff đầy máu ở đây:
-        // health = maxhealth;
-        // healthBar.SetNewHP(health);
-
-        // 4. Báo cho SpawnManager biết vị trí cần đứng khi load xong scene sảnh
-        // Thay "GuildSpawnPoint" bằng đúng tên GameObject điểm hồi sinh bạn đặt trong scene sảnh
         SceneData.SpawnPointName = "GuildSpawnPoint";
-
-        // 5. Load scene Sảnh chính
-        // Thay "GuildScene" bằng đúng tên scene của bạn trong Build Settings
         SceneManager.LoadScene("GuildScene");
     }
     void StartFootStep()
     {
         isPlayFootStep = true;
-        InvokeRepeating(nameof(PlayFootStep), 0f, footStepSpeed);
+        if(isRunning == false)
+        {
+            InvokeRepeating(nameof(PlayFootStep), 0f, footStepSpeed);
+        }
+        else if(isRunning == true)
+        {
+            InvokeRepeating(nameof(PlayFootRun), 0f, footStepSpeed);
+        }
+        
     }
     void StopFootStep()
     {
         isPlayFootStep = false;
         CancelInvoke(nameof(PlayFootStep));
+        CancelInvoke(nameof(PlayFootRun));
     }
     void PlayFootStep()
     {
         SoundManager.Play("Step");
+    }
+    void PlayFootRun()
+    {
+        SoundManager.Play("Run");
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class Character : MonoBehaviour
 {
@@ -39,7 +40,7 @@ public class Character : MonoBehaviour
             anim.SetTrigger(currentAnimName);
         }
     }
-    public virtual void OnHit(float damage)
+    public virtual void OnHit(float damage, UnityEngine.Transform attacker)
     {
         if (!IsDead)
         { 
@@ -59,7 +60,7 @@ public class Character : MonoBehaviour
     public virtual void OnDeath()
     {
         ChangedAnim("Dead");
-        Invoke(nameof(OnDespawn), 2.5f);
+        Invoke(nameof(OnDespawn), 1.5f);
     }
     
 }

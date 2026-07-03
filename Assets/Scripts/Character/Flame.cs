@@ -28,7 +28,7 @@ public class Flame : MonoBehaviour
     {
         if(collision.CompareTag("Player"))
         {
-            collision.GetComponent<Character>().OnHit(damage);
+            collision.GetComponent<Character>().OnHit(damage, transform.parent);
             Instantiate(hitVFX, transform.position, transform.rotation);
             OnDespawn();
         }

@@ -118,7 +118,7 @@ TextureImporter:
         width: 60
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -134,12 +134,12 @@ TextureImporter:
       name: Sprite Sheet - Green Death_1
       rect:
         serializedVersion: 2
-        x: 110
+        x: 108
         y: 0
-        width: 60
+        width: 61
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -155,12 +155,12 @@ TextureImporter:
       name: Sprite Sheet - Green Death_7
       rect:
         serializedVersion: 2
-        x: 203
+        x: 385
         y: 0
-        width: 60
+        width: 76
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -176,12 +176,12 @@ TextureImporter:
       name: Sprite Sheet - Green Death_11
       rect:
         serializedVersion: 2
-        x: 297
+        x: 478
         y: 0
-        width: 60
+        width: 81
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -197,12 +197,12 @@ TextureImporter:
       name: Sprite Sheet - Green Death_12
       rect:
         serializedVersion: 2
-        x: 391
+        x: 574
         y: 0
-        width: 60
+        width: 84
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -218,12 +218,12 @@ TextureImporter:
       name: Sprite Sheet - Green Death_14
       rect:
         serializedVersion: 2
-        x: 480
+        x: 674
         y: 0
-        width: 60
+        width: 82
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -239,12 +239,12 @@ TextureImporter:
       name: Sprite Sheet - Green Death_15
       rect:
         serializedVersion: 2
-        x: 551
-        y: 1
-        width: 60
+        x: 767
+        y: 0
+        width: 83
         height: 31
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -260,12 +260,12 @@ TextureImporter:
       name: Sprite Sheet - Green Death_2
       rect:
         serializedVersion: 2
-        x: 638
+        x: 201
         y: 0
-        width: 80
+        width: 61
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -281,12 +281,12 @@ TextureImporter:
       name: Sprite Sheet - Green Death_3
       rect:
         serializedVersion: 2
-        x: 729
+        x: 294
         y: 0
-        width: 80
+        width: 70
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -294,6 +294,27 @@ TextureImporter:
       bones: []
       spriteID: ffa466c7c0542ae4ba2c25e583fa1b15
       internalID: 1198862656
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite Sheet - Green Death_4
+      rect:
+        serializedVersion: 2
+        x: 860
+        y: 0
+        width: 87
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 195750ff04976a3478f6b550f76ea9e0
+      internalID: 838601233
       vertices: []
       indices: 
       edges: []
