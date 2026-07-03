@@ -41,6 +41,7 @@ public class Player : Character
     [SerializeField]private InventoryManager recycleableInventoryManager;
     [SerializeField]private GameObject cooking;
     [SerializeField] private ShopNPC currentShopNPC;
+    [SerializeField] private Vector3 currentRespawnPosition;
 
     public void Awake()
     {
@@ -219,7 +220,7 @@ public class Player : Character
     {
         base.OnDeath();
         //Invoke("OnInit",2f);
-        Invoke("RespawnAtGuild", 2f);
+        Invoke("RespawnAtSavePoint", 2f);
     }
     public override void OnHit(float damage, UnityEngine.Transform attacker)
     {
@@ -398,19 +399,27 @@ public class Player : Character
             currentShopNPC.Interact(); // Gọi hàm mở giao diện Shop
         }
     }
-    private void RespawnAtGuild()
+    private void RespawnAtSavePoint()
     {
-        coin = 0;
-        PlayerPrefs.SetInt("coin", 0);
-        UIManager.instance.SetCoin(coin);
-
         if (recycleableInventoryManager != null)
         {
-            recycleableInventoryManager.ClearInventory(); // Tùy thuộc vào hàm bạn đã viết ở bước trước
+            recycleableInventoryManager.ClearInventory();
         }
-        OnInit();
-        SceneData.SpawnPointName = "GuildSpawnPoint";
-        SceneManager.LoadScene("GuildScene");
+
+        OnInit(); 
+
+        transform.position = currentRespawnPosition;
+
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+        }
+        Debug.Log("Hồi sinh thành công tại Save Point gần nhất!");
+    }
+    public void UpdateSavePoint(Vector3 newSavePosition)
+    {
+        currentRespawnPosition = newSavePosition;
+        Debug.Log("Đã cập nhật điểm hồi sinh mới tại: " + currentRespawnPosition);
     }
     void StartFootStep()
     {
