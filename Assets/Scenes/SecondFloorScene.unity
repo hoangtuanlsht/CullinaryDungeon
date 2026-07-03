@@ -1007,9 +1007,7 @@ Transform:
   - {fileID: 643262192}
   - {fileID: 336968024}
   - {fileID: 902207858}
-  - {fileID: 1577504538}
   - {fileID: 1506101599}
-  - {fileID: 1656798070}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &313753315
@@ -15323,7 +15321,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1355754786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16367,120 +16365,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1535174208}
   m_CullTransparentMesh: 1
---- !u!1001 &1577504537
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 296548237}
-    m_Modifications:
-    - target: {fileID: 1322164556265231862, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 29
-      objectReference: {fileID: 0}
-    - target: {fileID: 1322164556265231862, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1322164556265231862, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1322164556265231862, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1322164556265231862, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1322164556265231862, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1322164556265231862, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1322164556265231862, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1322164556265231862, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1322164556265231862, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2759026071196874847, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2759026071196874847, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: m_WasSpriteAssigned
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6563795817859880372, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: spawnPoint
-      value: FirstFloorSpawnPointBack
-      objectReference: {fileID: 0}
-    - target: {fileID: 6563795817859880372, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: scenesToLoad.Array.data[0].sceneName
-      value: FirstFloorScene
-      objectReference: {fileID: 0}
-    - target: {fileID: 6563795817859880372, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: scenesToLoad.Array.data[0].sceneAsset
-      value: 
-      objectReference: {fileID: 102900000, guid: bcbca3a076cce3643aede4cfc70ac1fa, type: 3}
-    - target: {fileID: 6563795817859880372, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: scenesToUnLoad.Array.data[0].sceneName
-      value: SecondFloorScene
-      objectReference: {fileID: 0}
-    - target: {fileID: 6563795817859880372, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: scenesToUnLoad.Array.data[0].sceneAsset
-      value: 
-      objectReference: {fileID: 102900000, guid: 0f6c9e089fda96d4f8547688dddc6153, type: 3}
-    - target: {fileID: 7150351010925937572, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: m_Size.x
-      value: 8.648373
-      objectReference: {fileID: 0}
-    - target: {fileID: 7150351010925937572, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: m_Size.y
-      value: 10.952763
-      objectReference: {fileID: 0}
-    - target: {fileID: 7150351010925937572, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: m_Offset.x
-      value: 4.7720776
-      objectReference: {fileID: 0}
-    - target: {fileID: 7150351010925937572, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: m_Offset.y
-      value: 14.512083
-      objectReference: {fileID: 0}
-    - target: {fileID: 7150351010925937572, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.x
-      value: 0.32
-      objectReference: {fileID: 0}
-    - target: {fileID: 7150351010925937572, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.y
-      value: 0.26
-      objectReference: {fileID: 0}
-    - target: {fileID: 8146502887630960497, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-      propertyPath: m_Name
-      value: DoorTeleScene (1)
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
---- !u!4 &1577504538 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1322164556265231862, guid: 341553b84cfa0cf4dab343997f62439c, type: 3}
-  m_PrefabInstance: {fileID: 1577504537}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1583054659
 GameObject:
   m_ObjectHideFlags: 0
@@ -16666,37 +16550,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1635850232}
   m_CullTransparentMesh: 1
---- !u!1 &1656798069
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1656798070}
-  m_Layer: 0
-  m_Name: SecondFloorSpawnPointBack
-  m_TagString: SpawnPoint
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1656798070
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1656798069}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 223.12212, y: -7.43, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 296548237}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1723818351
 GameObject:
   m_ObjectHideFlags: 0

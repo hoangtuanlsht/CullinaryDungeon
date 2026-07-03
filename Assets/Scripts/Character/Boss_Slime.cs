@@ -7,6 +7,7 @@ public class Boss_Slime : Enemy
 {
 
     public GameObject nextMapPrefab;
+    public GameObject backMapPrefab;
     public override void OnInit()
     {
         // Gọi base.OnInit() để chạy các thiết lập cơ bản của Enemy và Character
@@ -20,6 +21,6 @@ public class Boss_Slime : Enemy
     {
         base.OnDeath();
         nextMapPrefab.SetActive(true);
-
+        backMapPrefab.SetActive(true);
     }
 }
