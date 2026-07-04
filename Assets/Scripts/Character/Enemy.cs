@@ -19,7 +19,7 @@ public class Enemy : Character
     [SerializeField] protected float attackCooldown = 2f; // Thời gian nghỉ giữa 2 đòn đánh (tính bằng giây)
     protected float attackTimer = 0f; // Biến đếm ngược thời gian
 
-    [SerializeField] private float knockbackForceX = 2f;
+    [SerializeField] private float knockbackForceX = 3f;
     
     protected bool isRight = true;
     protected bool isAttacking = false;

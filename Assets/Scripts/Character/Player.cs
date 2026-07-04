@@ -13,6 +13,7 @@ public class Player : Character
     public float jumpForce = 10f;    
     [SerializeField] private float attackCooldown = 2f;
     public float healHealth;////
+    public float damage = 10f;
     private float attackTimer;
     [SerializeField] private float knockbackForceX = 3f; // Lực văng ngang
 
@@ -207,7 +208,6 @@ public class Player : Character
         isDead = false;
         isHurt = false;
         isDefending = false;
-        coin = 0;
         ChangedAnim("Idle");
         DeactiveAttack();
         UIManager.instance.SetCoin(coin);
@@ -326,7 +326,7 @@ public class Player : Character
             isDead = true;
             Debug.Log("Dead");
             //Invoke("OnInit", 2f);
-            Invoke("RespawnAtGuild", 2f);
+            Invoke("RespawnAtSavePoint", 2f);
         }
         Interact interact = collision.GetComponent<Interact>();
         if (interact != null)
@@ -401,11 +401,6 @@ public class Player : Character
     }
     private void RespawnAtSavePoint()
     {
-        if (recycleableInventoryManager != null)
-        {
-            recycleableInventoryManager.ClearInventory();
-        }
-
         OnInit(); 
 
         transform.position = currentRespawnPosition;

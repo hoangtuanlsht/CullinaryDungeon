@@ -5,9 +5,14 @@ using UnityEngine;
 
 public class Boss_Slime : Enemy
 {
-
     public GameObject nextMapPrefab;
     public GameObject backMapPrefab;
+    public GameObject levelUp;
+    public Player player;
+    public void Awake()
+    {
+        player = FindObjectOfType<Player>();
+    }
     public override void OnInit()
     {
         // Gọi base.OnInit() để chạy các thiết lập cơ bản của Enemy và Character
@@ -19,6 +24,9 @@ public class Boss_Slime : Enemy
     }
     public override void OnDeath()
     {
+        player.jumpForce = 10f;
+        player.damage = 12f;
+        levelUp.SetActive(true);
         base.OnDeath();
         nextMapPrefab.SetActive(true);
         backMapPrefab.SetActive(true);

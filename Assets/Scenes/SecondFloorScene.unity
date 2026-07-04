@@ -2762,7 +2762,7 @@ MonoBehaviour:
   m_Follow: {fileID: 60290540}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 5
+    OrthographicSize: 8
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -18432,11 +18432,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1229104520433914260, guid: 1f64152e245b23f4a9249d097226373a, type: 3}
       propertyPath: m_Offset.x
-      value: -0.57398796
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1229104520433914260, guid: 1f64152e245b23f4a9249d097226373a, type: 3}
       propertyPath: m_Offset.y
-      value: 3.9275987
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1957383234649942667, guid: 1f64152e245b23f4a9249d097226373a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -18444,7 +18444,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1957383234649942667, guid: 1f64152e245b23f4a9249d097226373a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -10.48
+      value: -6.87
       objectReference: {fileID: 0}
     - target: {fileID: 1957383234649942667, guid: 1f64152e245b23f4a9249d097226373a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -19199,8 +19199,11 @@ PolygonCollider2D:
   m_Points:
     m_Paths:
     - - {x: -13.723351, y: 7.84}
-      - {x: -13.723351, y: -7.84}
-      - {x: 13.723351, y: -7.84}
+      - {x: -13.666557, y: -6.9881353}
+      - {x: 9.094879, y: -7.101718}
+      - {x: 9.082497, y: -5.539515}
+      - {x: 9.964096, y: -4.5647597}
+      - {x: 13.733955, y: -4.598441}
       - {x: 13.723351, y: 7.84}
   m_UseDelaunayMesh: 0
 --- !u!1 &2113902816

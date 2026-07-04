@@ -1091,9 +1091,9 @@ MonoBehaviour:
     sceneAsset: {fileID: 102900000, guid: ee710fa4cd3f4814daa69114a6b6e06e, type: 3}
     sceneName: PersistentGameplay
   levelScene:
-    sceneAsset: {fileID: 102900000, guid: 2cda990e2423bbf4892e6590ba056729, type: 3}
-    sceneName: GuildScene
-  spawnPoint: GuildSceneSpawnPoint
+    sceneAsset: {fileID: 102900000, guid: 21d2e842a6c7ad449b375e47dabdc247, type: 3}
+    sceneName: ThirdFloorScene
+  spawnPoint: ThirdFloorSpawnPoint
 --- !u!4 &360674559
 Transform:
   m_ObjectHideFlags: 0

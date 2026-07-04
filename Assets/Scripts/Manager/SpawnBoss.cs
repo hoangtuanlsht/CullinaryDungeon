@@ -4,14 +4,39 @@ using UnityEngine;
 
 public class SpawnBoss : MonoBehaviour
 {
-    public GameObject bossPrefab;
+    public Boss_Slime bossSlimePrefab;
+    public Boss_Minotaurus bossMinotaurusPrefab;
+    public GruzMother gruzMotherPrefab;
     public GameObject healthBoss;
+
+    public void Awake()
+    {
+        bossSlimePrefab = gameObject.GetComponent<Boss_Slime>();
+        bossMinotaurusPrefab = gameObject.GetComponent<Boss_Minotaurus>();
+        gruzMotherPrefab = gameObject.GetComponent<GruzMother>();
+    }
     public void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            bossPrefab.SetActive(true);
-            healthBoss.SetActive(true);
+            if (bossSlimePrefab != null)
+            {
+                bossSlimePrefab.OnInit();
+                bossSlimePrefab.gameObject.SetActive(true);
+                healthBoss.SetActive(true);
+            }
+            if (bossMinotaurusPrefab != null)
+            {
+                bossMinotaurusPrefab.OnInit();
+                bossMinotaurusPrefab.gameObject.SetActive(true);
+                healthBoss.SetActive(true);
+            }
+            if (gruzMotherPrefab != null)
+            {
+                gruzMotherPrefab.OnInit();
+                gruzMotherPrefab.gameObject.SetActive(true);
+                healthBoss.SetActive(true);
+            }
         }
     }
 }
