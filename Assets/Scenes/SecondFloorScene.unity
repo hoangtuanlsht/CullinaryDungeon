@@ -369,7 +369,9 @@ MonoBehaviour:
   speedRun: 5
   jumpForce: 8
   attackCooldown: 2
+  defendCooldown: 2
   healHealth: 0
+  damage: 10
   knockbackForceX: 3
   footStepSpeed: 0.5
   groundLayer:
@@ -15389,7 +15391,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1355754786
 MonoBehaviour:
   m_ObjectHideFlags: 0

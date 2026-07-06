@@ -29,6 +29,7 @@ public class Player : Character
     private bool isDefending = false;
     private bool isPlayFootStep=false;
     private bool isRunning = false;
+    public bool isDoubleJump = true;
     public float footStepSpeed = 0.5f;
     public LayerMask groundLayer;
 
@@ -70,9 +71,21 @@ public class Player : Character
             defendTimer -= Time.deltaTime;
         }
         //Jumping
+        if(isGrounded && rb.velocity.y <= 0.1f)
+        {
+            isDoubleJump = true;
+        }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            isJumping = true;
+            if (isGrounded)
+            {
+                isJumping = true;
+            }
+            else if (isDoubleJump)
+            {
+                isJumping = true;
+                isDoubleJump = false;
+            }
         }
         //attack
         if (Input.GetKeyDown(KeyCode.C) &&!isDefending)
@@ -133,15 +146,14 @@ public class Player : Character
             rb.velocity = new Vector2(0,rb.velocity.y);
             return;
         }
+        if (isJumping)
+        {
+            if (isPlayFootStep) StopFootStep();
+            Jump();
+            //return;
+        }
         if (isGrounded)
         {
-            if (isJumping)
-            {
-                if (isPlayFootStep) StopFootStep();
-                Jump();
-                return;
-            }
-
             //Change run
             if (rb.velocity.y <= 0.1f)
             {
@@ -273,6 +285,7 @@ public class Player : Character
     {
         ChangedAnim("Jump");
         isJumping = false;
+        rb.velocity = new Vector2(rb.velocity.x,0);
         rb.AddForce(jumpForce * Vector2.up, ForceMode2D.Impulse);
     }
     private void Attack()
