@@ -2591,7 +2591,9 @@ MonoBehaviour:
   speedRun: 220
   jumpForce: 7
   attackCooldown: 1
+  defendCooldown: 2
   healHealth: 0
+  damage: 10
   knockbackForceX: 3
   footStepSpeed: 0.5
   groundLayer:
@@ -2604,6 +2606,7 @@ MonoBehaviour:
   recycleableInventoryManager: {fileID: 0}
   cooking: {fileID: 891278980}
   currentShopNPC: {fileID: 0}
+  currentRespawnPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &816531419
 GameObject:
   m_ObjectHideFlags: 0

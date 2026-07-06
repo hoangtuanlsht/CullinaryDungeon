@@ -260,6 +260,8 @@ MonoBehaviour:
   itemPrefab:
   - {fileID: 9183690583356827673, guid: 9052be5ee16804343902684221b78c4b, type: 3}
   - {fileID: 2319611087485755607, guid: a0f30b3a2fe35764ea4a8efb09f240ec, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
   attackCooldown: 2
   knockbackForceX: 2
 --- !u!50 &2472377210012644814

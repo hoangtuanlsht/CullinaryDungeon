@@ -39,7 +39,10 @@ public class MainMenuManeger : MonoBehaviour
             objectsToHide[i].SetActive(false);
         }
     }
-
+    public void QuitMenu()
+    {
+        Application.Quit();
+    }
     private IEnumerator ProgessLoadingBar()
     {
         Debug.Log("Loading");

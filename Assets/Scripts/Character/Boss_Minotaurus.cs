@@ -7,9 +7,13 @@ public class Boss_Minotaurus : Enemy
 {
     public GameObject levelUp;
     public Player player;
+    public GameObject limitMap;
+    public GameObject limitMap1;
     public void Awake()
     {
         player = FindObjectOfType<Player>();
+        limitMap.SetActive(true);
+        limitMap1.SetActive(true);
     }
     public override void OnInit()
     {
@@ -21,6 +25,7 @@ public class Boss_Minotaurus : Enemy
         player.damage = 12f;
         levelUp.SetActive(true);
         base.OnDeath();
-
+        limitMap.SetActive(false);
+        limitMap1.SetActive(false);
     }
 }

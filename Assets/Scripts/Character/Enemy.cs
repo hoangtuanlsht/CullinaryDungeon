@@ -185,6 +185,10 @@ public class Enemy : Character
     internal void SetTarget(Character character)
     {
         this.target = character;
+        if (isAttacking)
+        {
+            return;
+        }
         if(isAttackInRange())
         {
             ChangeState(new AttackState());

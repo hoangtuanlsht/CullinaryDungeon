@@ -9,12 +9,7 @@ public class SpawnBoss : MonoBehaviour
     public GruzMother gruzMotherPrefab;
     public GameObject healthBoss;
 
-    public void Awake()
-    {
-        bossSlimePrefab = gameObject.GetComponent<Boss_Slime>();
-        bossMinotaurusPrefab = gameObject.GetComponent<Boss_Minotaurus>();
-        gruzMotherPrefab = gameObject.GetComponent<GruzMother>();
-    }
+    
     public void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))

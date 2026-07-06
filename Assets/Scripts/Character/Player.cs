@@ -12,9 +12,11 @@ public class Player : Character
     private float currentSpeed;
     public float jumpForce = 10f;    
     [SerializeField] private float attackCooldown = 2f;
+    [SerializeField] private float defendCooldown = 2f;
     public float healHealth;////
     public float damage = 10f;
     private float attackTimer;
+    private float defendTimer;
     [SerializeField] private float knockbackForceX = 3f; // Lực văng ngang
 
     private float horizontalInput;
@@ -63,6 +65,10 @@ public class Player : Character
         {
             attackTimer -= Time.deltaTime;
         }
+        if (defendCooldown>0)
+        {
+            defendTimer -= Time.deltaTime;
+        }
         //Jumping
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -76,9 +82,7 @@ public class Player : Character
         }
         if (Input.GetKey(KeyCode.F) && isGrounded && !isAttacking && !isHurt && !isDead && !isDefending)
         {
-            isDefending = true;
-            SoundManager.Play("Defend");
-            Invoke("ResetDefend", 0.5f);
+            Defend();
         }
         if (Input.GetKeyDown(KeyCode.G) && isGrounded && !isAttacking &&!isDefending && !isDead)
         {
@@ -255,10 +259,6 @@ public class Player : Character
     {
         isHurt = false;
     }
-    private void ResetDefend()
-    {
-        isDefending = false;
-    }
     private bool CheckGrounded()
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.1f, groundLayer);
@@ -310,6 +310,24 @@ public class Player : Character
     {
         attackArea.SetActive(false);
     }
+    private void Defend()
+    {
+        if (defendTimer > 0)
+        {
+            ChangedAnim("Idle");
+            return;
+        }
+        defendTimer = defendCooldown;
+        isDefending = true;
+        ChangedAnim("Defend");
+        SoundManager.Play("Defend");
+        Invoke("ResetDefend", 0.5f);
+    }
+    private void ResetDefend()
+    {
+        isDefending = false;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Coin"))
@@ -409,12 +427,35 @@ public class Player : Character
         {
             rb.velocity = Vector2.zero;
         }
-        Debug.Log("Hồi sinh thành công tại Save Point gần nhất!");
+        StartCoroutine(ReloadMapAndRespawn());
     }
     public void UpdateSavePoint(Vector3 newSavePosition)
     {
         currentRespawnPosition = newSavePosition;
         Debug.Log("Đã cập nhật điểm hồi sinh mới tại: " + currentRespawnPosition);
+    }
+    private IEnumerator ReloadMapAndRespawn()
+    {
+        // Lấy tên của màn chơi hiện tại (Màn chơi đang chứa quái, vật phẩm...)
+        string currentSceneName = SceneManager.GetActiveScene().name;
+
+        // Chỉ thực hiện Unload nếu màn chơi không phải là gốc PersistentGameplay
+        if (currentSceneName != "PersistentGameplay")
+        {
+            // Hủy Scene màn chơi hiện tại để dọn dẹp quái và đồ vật cũ
+            yield return SceneManager.UnloadSceneAsync(currentSceneName);
+
+            // Nạp lại Scene đó ở chế độ cộng dồn (Additive) để reset lại từ đầu
+            yield return SceneManager.LoadSceneAsync(currentSceneName, LoadSceneMode.Additive);
+
+            // Bắt buộc: Đặt màn chơi vừa load lại làm Active Scene để game nhận diện đúng không gian
+            SceneManager.SetActiveScene(SceneManager.GetSceneByName(currentSceneName));
+        }
+
+        // Sau khi map đã load lại xong toàn bộ, dịch chuyển Player về tọa độ Save Point
+        transform.position = currentRespawnPosition;
+
+        Debug.Log("Đã tải lại map và hồi sinh thành công tại Save Point!");
     }
     void StartFootStep()
     {

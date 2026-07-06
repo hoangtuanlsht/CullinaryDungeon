@@ -325,6 +325,9 @@ MonoBehaviour:
   attackArea: {fileID: 6035164399049098154}
   itemPrefab:
   - {fileID: 8169253012484678060, guid: af5b3b07841fb6743a3f005c63966886, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
   attackCooldown: 2
   knockbackForceX: 2
 --- !u!50 &8475905070946512503

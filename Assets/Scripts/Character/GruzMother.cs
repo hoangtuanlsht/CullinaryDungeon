@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GruzMother : Character
 {
@@ -144,6 +145,7 @@ public class GruzMother : Character
     {
         base.OnDeath();
         rb.velocity = new Vector2(0, rb.velocity.y);
+        Invoke("ReturnToMainMenu", 2f);
     }
     public override void OnDespawn()
     {
@@ -176,6 +178,10 @@ public class GruzMother : Character
         moveDirection.x *= -1;
         attackDirection.x *= -1;
         transform.Rotate(0, 180, 0);
+    }
+    public void ReturnToMainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
     private void OnDrawGizmosSelected()
     {

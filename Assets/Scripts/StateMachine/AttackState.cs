@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class AttackState : IsState
 {
-    float timer;
+    public float timer;
     public void OnEnter(Enemy enemy)
     {
         if(enemy.Target != null)
         {
             //doi huong enemy toi player
             enemy.ChangeDirection(enemy.Target.transform.position.x > enemy.transform.position.x);
-            enemy.StopMoving();
-            enemy.Attack();
         }
+        enemy.StopMoving();
+        enemy.Attack();
         timer = 0;
     }
 
@@ -22,7 +22,19 @@ public class AttackState : IsState
         timer+= Time.deltaTime;
         if (timer >= 1.5f)
         {
-            enemy.ChangeState(new PatrolState());
+            if (enemy.Target == null)
+            {
+                enemy.ChangeState(new IdleState());
+            }
+            else if (enemy.isAttackInRange())
+            {
+                enemy.ChangeState(new AttackState()); // Đánh tiếp
+            }
+            else
+            {
+                enemy.ChangeState(new PatrolState()); // Đuổi theo
+            }
+
         }
     }
 
