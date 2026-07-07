@@ -1700,11 +1700,15 @@ MonoBehaviour:
   maxhealth: 100
   anim: {fileID: 1346082664}
   healthBar: {fileID: 695971160}
-  speed: 150
+  speedWalk: 5
+  speedRun: 5
   jumpForce: 7
   attackCooldown: 2
+  defendCooldown: 2
   healHealth: 0
+  damage: 10
   knockbackForceX: 3
+  isDoubleJump: 1
   footStepSpeed: 0.5
   groundLayer:
     serializedVersion: 2
@@ -1716,6 +1720,7 @@ MonoBehaviour:
   recycleableInventoryManager: {fileID: 0}
   cooking: {fileID: 0}
   currentShopNPC: {fileID: 0}
+  currentRespawnPosition: {x: 0, y: 0, z: 0}
 --- !u!4 &480035049
 Transform:
   m_ObjectHideFlags: 0
@@ -2278,11 +2283,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
-  m_ScreenMatchMode: 0
+  m_ReferenceResolution: {x: 1920, y: 1080}
+  m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
@@ -3276,11 +3281,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
-  m_ScreenMatchMode: 0
+  m_ReferenceResolution: {x: 1920, y: 1080}
+  m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
@@ -4850,11 +4855,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
-  m_ScreenMatchMode: 0
+  m_ReferenceResolution: {x: 1920, y: 1080}
+  m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
@@ -6068,6 +6073,22 @@ PrefabInstance:
     - target: {fileID: 3873789922091579873, guid: 629b4794c4beb6547b2c631ac0bf925b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7131110454642173987, guid: 629b4794c4beb6547b2c631ac0bf925b, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7131110454642173987, guid: 629b4794c4beb6547b2c631ac0bf925b, type: 3}
+      propertyPath: m_ScreenMatchMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7131110454642173987, guid: 629b4794c4beb6547b2c631ac0bf925b, type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 1920
+      objectReference: {fileID: 0}
+    - target: {fileID: 7131110454642173987, guid: 629b4794c4beb6547b2c631ac0bf925b, type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 1080
       objectReference: {fileID: 0}
     - target: {fileID: 7196693391359775809, guid: 629b4794c4beb6547b2c631ac0bf925b, type: 3}
       propertyPath: m_AnchorMax.y

@@ -24,7 +24,6 @@ public class Boss_Slime : Enemy
     }
     public override void OnDeath()
     {
-        player.jumpForce = 10f;
         player.damage = 12f;
         levelUp.SetActive(true);
         base.OnDeath();

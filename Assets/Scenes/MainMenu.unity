@@ -1224,9 +1224,9 @@ MonoBehaviour:
     sceneAsset: {fileID: 102900000, guid: ee710fa4cd3f4814daa69114a6b6e06e, type: 3}
     sceneName: PersistentGameplay
   levelScene:
-    sceneAsset: {fileID: 102900000, guid: 0f6c9e089fda96d4f8547688dddc6153, type: 3}
-    sceneName: SecondFloorScene
-  spawnPoint: SecondFloorSpawnPoint
+    sceneAsset: {fileID: 102900000, guid: 2cda990e2423bbf4892e6590ba056729, type: 3}
+    sceneName: GuildScene
+  spawnPoint: GuildSceneSpawnPoint
 --- !u!4 &360674559
 Transform:
   m_ObjectHideFlags: 0
@@ -3457,11 +3457,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
-  m_ScreenMatchMode: 0
+  m_ReferenceResolution: {x: 1920, y: 1080}
+  m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
@@ -4438,11 +4438,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
-  m_ScreenMatchMode: 0
+  m_ReferenceResolution: {x: 1920, y: 1080}
+  m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
