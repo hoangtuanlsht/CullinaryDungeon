@@ -17,4 +17,4 @@ MonoBehaviour:
   maxStackQuantity: 20
   buyPrice: 11
   sellPriceMulti: 0.5
-  healthRecovery: 60
+  healthRecovery: 70

@@ -15,4 +15,6 @@ MonoBehaviour:
   itemIcon: {fileID: 21300000, guid: 79a35bc2176393e4d9a9ac762866a8f2, type: 3}
   isStackable: 1
   maxStackQuantity: 5
-  healthRecovery: 5
+  buyPrice: 0
+  sellPriceMulti: 0.5
+  healthRecovery: 30

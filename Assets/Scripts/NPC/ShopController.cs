@@ -50,10 +50,13 @@ public class ShopController : MonoBehaviour
         // Mặc định tắt UI Shop khi mới vào game
         shopPanel.SetActive(false);
     }
-
-    // ==========================================
-    // LOGIC MỞ/TẮT CỬA HÀNG
-    // ==========================================
+    private void OnDestroy()
+    {
+        if (instance == this)
+        {
+            instance = null;
+        }
+    }
 
     public void OpenShop(ShopNPC npc)
     {
@@ -76,68 +79,44 @@ public class ShopController : MonoBehaviour
 
         if (clickedData.isShopSide)
         {
-            // ==========================================
-            // LOGIC MUA HÀNG (TỪ SHOP VÀO TÚI)
-            // ==========================================
             int price = itemInfo.buyPrice;
 
-            // 1. Kiểm tra xem người chơi có đủ tiền không
             if (Player.coin >= price)
             {
-                // 2. Trừ tiền & Cập nhật UI
                 Player.coin -= price;
                 PlayerPrefs.SetInt("coin", Player.coin);
                 if (UIManager.instance != null) UIManager.instance.SetCoin(Player.coin);
-
-                // 3. Trừ đồ ở cửa hàng
                 _currentShop.RemoveStock(itemInfo, 1);
-
-                // 4. Thêm đồ vào túi người chơi
                 InventoryManager.Instance.AddItem(itemInfo, 1);
             }
             else
             {
                 Debug.Log("Không đủ tiền mua món đồ này!");
-                // Tại đây bạn có thể gọi hiện một dòng Text màu đỏ báo lỗi trên UI
                 return;
             }
         }
         else
         {
-            // ==========================================
-            // LOGIC BÁN HÀNG (TỪ TÚI RA SHOP)
-            // ==========================================
             int price = itemInfo.GetCellPrice();
 
-            // 1. Cộng tiền cho Player & Cập nhật UI
             Player.coin += price;
             PlayerPrefs.SetInt("coin", Player.coin);
             if (UIManager.instance != null) UIManager.instance.SetCoin(Player.coin);
 
-            // 2. Xóa đồ trong túi người chơi
             InventoryManager.Instance.RemoveItem(itemInfo, 1);
 
-            // 3. Thêm đồ vào cửa hàng (để cửa hàng thu mua và có thể bán lại)
             _currentShop.AddStock(itemInfo, 1);
         }
 
-        // Cuối cùng: Cập nhật lại giao diện cả 2 bên ngay lập tức
         RefreshShopDisplay();
         RefreshPlayerInventoryDisplay();
     }
-    // ==========================================
-    // NẠP DỮ LIỆU TỰ ĐỘNG
-    // ==========================================
-
     private void RefreshShopDisplay()
     {
-        // 1. Xóa sạch List cũ
         shopInventoryList.Clear();
-
-        // 2. Lấy kho hàng từ NPC nạp vào List
         foreach (var stockItem in _currentShop.GetCurrentStock())
         {
-            if (stockItem.quantity > 0) // Chỉ hiện đồ nào còn số lượng
+            if (stockItem.quantity > 0) 
             {
                 shopInventoryList.Add(new ShopItemData
                 {
@@ -148,7 +127,6 @@ public class ShopController : MonoBehaviour
             }
         }
 
-        // 3. Yêu cầu ScrollView render lại (rất tối ưu!)
         shopScrollView.ReloadData();
     }
 
@@ -156,10 +134,8 @@ public class ShopController : MonoBehaviour
     {
         playerInventoryList.Clear();
 
-        // Duyệt qua mảng items của InventoryManager
         foreach (SlotClass slot in InventoryManager.Instance.items)
         {
-            // Chỉ lấy những ô có chứa vật phẩm và số lượng > 0
             if (slot != null && slot.GetItem() != null && slot.GetQuantity() > 0)
             {
                 playerInventoryList.Add(new ShopItemData
@@ -171,7 +147,6 @@ public class ShopController : MonoBehaviour
             }
         }
 
-        // Load lại UI
         playerScrollView.ReloadData();
     }
 }

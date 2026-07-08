@@ -517,7 +517,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.043586493, y: 1.4710541}
+  m_Offset: {x: 0.043586493, y: 1.1624124}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -528,7 +528,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2.5691247, y: 2.9396124}
+  m_Size: {x: 2.5691247, y: 2.322329}
   m_EdgeRadius: 0
 --- !u!114 &4104090460630340492
 MonoBehaviour:
@@ -546,15 +546,30 @@ MonoBehaviour:
   anim: {fileID: 2966588765773004204}
   healthBar: {fileID: 0}
   attackRange: 2
-  moveSpeed: 3
+  moveSpeed: 4
   attackTime: 1
   deAttackTime: 1.5
-  damager: 20
+  damager: 25
   rb: {fileID: 5042644470878511066}
   thrownPrefab: {fileID: 0}
   thrownPoint: {fileID: 0}
   attackArea: {fileID: 3406589817549180136}
-  itemPrefab: []
+  itemPrefab:
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
   attackCooldown: 2
   knockbackForceX: 2
   nextMapPrefab: {fileID: 0}

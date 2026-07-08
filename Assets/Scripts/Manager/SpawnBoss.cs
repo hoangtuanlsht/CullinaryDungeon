@@ -9,7 +9,8 @@ public class SpawnBoss : MonoBehaviour
     public GruzMother gruzMotherPrefab;
     public GameObject healthBoss;
 
-    
+    public float healthBarDelay = 1.5f; 
+
     public void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
@@ -18,20 +19,28 @@ public class SpawnBoss : MonoBehaviour
             {
                 bossSlimePrefab.OnInit();
                 bossSlimePrefab.gameObject.SetActive(true);
-                healthBoss.SetActive(true);
+                StartCoroutine(ShowHealthBarDelayed());
             }
-            if (bossMinotaurusPrefab != null)
+            else if (bossMinotaurusPrefab != null) 
             {
                 bossMinotaurusPrefab.OnInit();
                 bossMinotaurusPrefab.gameObject.SetActive(true);
-                healthBoss.SetActive(true);
+                StartCoroutine(ShowHealthBarDelayed());
             }
-            if (gruzMotherPrefab != null)
+            else if (gruzMotherPrefab != null)
             {
                 gruzMotherPrefab.OnInit();
                 gruzMotherPrefab.gameObject.SetActive(true);
-                healthBoss.SetActive(true);
+                StartCoroutine(ShowHealthBarDelayed());
             }
+        }
+    }
+    private System.Collections.IEnumerator ShowHealthBarDelayed()
+    {
+        yield return new WaitForSeconds(healthBarDelay);
+        if (healthBoss != null)
+        {
+            healthBoss.SetActive(true);
         }
     }
 }

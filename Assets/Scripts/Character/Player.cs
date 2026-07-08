@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static UnityEngine.RuleTile.TilingRuleOutput;
@@ -51,6 +52,7 @@ public class Player : Character
 
     [Header("Respawn")]
     [SerializeField] private Vector3 currentRespawnPosition;
+    private string currentRespawnCameraName; // Tên VCam tương ứng với Save Point hiện tại
 
     [Header("Slope")]
     [SerializeField] private PhysicsMaterial2D fullFriction;
@@ -157,7 +159,7 @@ public class Player : Character
         {
             rb.velocity = Vector2.zero;
             
-            ChangedAnim("Defend"); // Chạy Animation đỡ đòn
+            ChangedAnim("Defend"); 
             return;
         }
         if (isAttacking)
@@ -220,7 +222,7 @@ public class Player : Character
         //Moving
         if (Mathf.Abs(horizontalInput) > 0.1f)
         {
-            if (isOnSlope && isGrounded)
+            if (isOnSlope && isGrounded && rb.velocity.y <= 0.1f)
             {
                 float direction = horizontalInput > 0 ? -1f : 1f;
                 rb.velocity = direction * slopePerpendicular * currentSpeed * Time.fixedDeltaTime;
@@ -494,7 +496,16 @@ public class Player : Character
     public void UpdateSavePoint(Vector3 newSavePosition)
     {
         currentRespawnPosition = newSavePosition;
-        Debug.Log("Đã cập nhật điểm hồi sinh mới tại: " + currentRespawnPosition);
+
+        // Lưu tên Virtual Camera đang active TẠI THỜI ĐIỂM chạm Save Point
+        // Để khi respawn sẽ dùng đúng camera của khu vực Save Point, không phải camera lúc chết
+        CinemachineBrain brain = Camera.main != null ? Camera.main.GetComponent<CinemachineBrain>() : null;
+        if (brain != null && brain.ActiveVirtualCamera != null)
+        {
+            currentRespawnCameraName = brain.ActiveVirtualCamera.VirtualCameraGameObject.name;
+        }
+
+        Debug.Log("Đã cập nhật điểm hồi sinh mới tại: " + currentRespawnPosition + " | Camera: " + currentRespawnCameraName);
     }
     private IEnumerator ReloadMapAndRespawn()
     {
@@ -517,7 +528,43 @@ public class Player : Character
         // Sau khi map đã load lại xong toàn bộ, dịch chuyển Player về tọa độ Save Point
         transform.position = currentRespawnPosition;
 
+        // Khôi phục Virtual Camera theo tên đã lưu tại Save Point (không phải lúc chết)
+        RestoreVirtualCameraForSavePoint();
+
         Debug.Log("Đã tải lại map và hồi sinh thành công tại Save Point!");
+    }
+
+    /// <summary>
+    /// Sau khi scene reload, tìm Virtual Camera có cùng tên đã lưu tại Save Point
+    /// và đặt Priority cao nhất. Camera khác sẽ bị hạ Priority = 0.
+    /// </summary>
+    private void RestoreVirtualCameraForSavePoint()
+    {
+        CinemachineVirtualCamera[] allCams = FindObjectsOfType<CinemachineVirtualCamera>();
+
+        if (allCams.Length == 0 || string.IsNullOrEmpty(currentRespawnCameraName)) return;
+
+        bool found = false;
+
+        // Hạ Priority tất cả camera, nâng camera trùng tên Save Point
+        foreach (CinemachineVirtualCamera cam in allCams)
+        {
+            if (cam.name == currentRespawnCameraName)
+            {
+                cam.Priority = 10;
+                found = true;
+                Debug.Log("Đã khôi phục Virtual Camera theo Save Point: " + cam.name);
+            }
+            else
+            {
+                cam.Priority = 0;
+            }
+        }
+
+        if (!found)
+        {
+            Debug.LogWarning("Không tìm thấy Virtual Camera tên: " + currentRespawnCameraName + " sau khi reload scene.");
+        }
     }
     void StartFootStep()
     {

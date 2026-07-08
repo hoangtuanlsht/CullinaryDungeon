@@ -53,15 +53,19 @@ MonoBehaviour:
   anim: {fileID: 4799161552351721211}
   healthBar: {fileID: 0}
   attackRange: 3
-  moveSpeed: 2
+  moveSpeed: 3
   attackTime: 0.5
   deAttackTime: 2
-  damager: 0
+  damager: 30
   rb: {fileID: 1725335451857161946}
   thrownPrefab: {fileID: 0}
   thrownPoint: {fileID: 0}
   attackArea: {fileID: 7997308484844253857}
   itemPrefab:
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
   - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
   - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
   - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
