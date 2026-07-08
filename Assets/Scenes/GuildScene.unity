@@ -2202,7 +2202,8 @@ EdgeCollider2D:
   m_Offset: {x: 0, y: 0}
   m_EdgeRadius: 0
   m_Points:
-  - {x: 1.9603621, y: -0.556354}
+  - {x: 1.6685308, y: -0.5519573}
+  - {x: 1.9900639, y: -0.55692714}
   - {x: 4.011821, y: -2.0735786}
   m_AdjacentStartPoint: {x: 0, y: 0}
   m_AdjacentEndPoint: {x: 0, y: 0}
@@ -2512,7 +2513,6 @@ GameObject:
   - component: {fileID: 767764445}
   - component: {fileID: 767764447}
   - component: {fileID: 767764446}
-  - component: {fileID: 767764448}
   m_Layer: 0
   m_Name: questBoard
   m_TagString: Untagged
@@ -2632,18 +2632,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &767764448
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 767764444}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52c59599563c1c141a433eec8f4bf95e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &829824256 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 776193288355856992, guid: 9d0239c6fcea91140b35e1ab024cc890, type: 3}
@@ -3114,7 +3102,8 @@ EdgeCollider2D:
   m_EdgeRadius: 0
   m_Points:
   - {x: -2.3344958, y: -2.108089}
-  - {x: -0.29502487, y: -0.51947325}
+  - {x: -0.3527, y: -0.55677617}
+  - {x: -0.037119657, y: -0.55631685}
   m_AdjacentStartPoint: {x: 0, y: 0}
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0

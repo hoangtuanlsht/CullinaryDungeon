@@ -15,4 +15,6 @@ MonoBehaviour:
   itemIcon: {fileID: 21300000, guid: d1f94eb541d98c94c9e0a776707e9c7c, type: 3}
   isStackable: 1
   maxStackQuantity: 20
+  buyPrice: 1
+  sellPriceMulti: 0.5
   itemDescription: "Ch\u1EA5t nh\u1EA7y r\u1EDBt ra t\u1EEB slime"

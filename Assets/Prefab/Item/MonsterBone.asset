@@ -15,4 +15,6 @@ MonoBehaviour:
   itemIcon: {fileID: 21300000, guid: 844a1050d03ba5046bfb86af34a81e47, type: 3}
   isStackable: 1
   maxStackQuantity: 20
+  buyPrice: 2
+  sellPriceMulti: 0.5
   itemDescription: "X\u01B0\u01A1ng qu\xE1i v\u1EADt"
