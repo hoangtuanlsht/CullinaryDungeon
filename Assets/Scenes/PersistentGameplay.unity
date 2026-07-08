@@ -2629,7 +2629,7 @@ GameObject:
   - component: {fileID: 802275184}
   - component: {fileID: 802275187}
   - component: {fileID: 802275186}
-  - component: {fileID: 802275185}
+  - component: {fileID: 802275188}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -2654,51 +2654,6 @@ Transform:
   - {fileID: 1553649134}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &802275185
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 802275183}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.02222836, y: 0.6353004}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.77771616, y: 1.3748446}
-  m_EdgeRadius: 0
 --- !u!50 &802275186
 Rigidbody2D:
   serializedVersion: 4
@@ -2744,16 +2699,16 @@ MonoBehaviour:
   speedWalk: 120
   speedRun: 220
   jumpForce: 6
-  attackCooldown: 1
-  defendCooldown: 2
-  healHealth: 0
-  damage: 10
-  knockbackForceX: 3
   isDoubleJump: 1
   footStepSpeed: 0.5
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  damage: 10
+  attackCooldown: 1
+  defendCooldown: 2
+  knockbackForceX: 3
+  healHealth: 0
   rb: {fileID: 802275186}
   attackArea: {fileID: 1553649133}
   interactUI: {fileID: 524243603}
@@ -2762,6 +2717,45 @@ MonoBehaviour:
   cooking: {fileID: 891278980}
   currentShopNPC: {fileID: 0}
   currentRespawnPosition: {x: 0, y: 0, z: 0}
+  fullFriction: {fileID: 6200000, guid: a188fd586c6329048bbd19c122691b92, type: 2}
+  noFriction: {fileID: 6200000, guid: 62bac300c9921c34c956d5c2fa872e9b, type: 2}
+  maxSlopeAngle: 45
+  slopeCheckDistance: 0.5
+--- !u!70 &802275188
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 802275183}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.08984685, y: 0.6326715}
+  m_Size: {x: 0.7246171, y: 1.3519003}
+  m_Direction: 0
 --- !u!1 &816531419
 GameObject:
   m_ObjectHideFlags: 0

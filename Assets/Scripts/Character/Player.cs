@@ -7,46 +7,63 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class Player : Character
 {
+    [Header("Movement")]
     public float speedWalk = 5f;
     public float speedRun = 5f;
-    private float currentSpeed;
-    public float jumpForce = 10f;    
-    [SerializeField] private float attackCooldown = 2f;
-    [SerializeField] private float defendCooldown = 2f;
-    public float healHealth;////
-    public float damage = 10f;
-    private float attackTimer;
-    private float defendTimer;
-    [SerializeField] private float knockbackForceX = 3f; // Lực văng ngang
-
-    private float horizontalInput;
-    private float verticalInput;
-    private bool isGrounded=true;
-    private bool isJumping=false;
-    private bool isAttacking=false;
-    private bool isDead=false;
-    private bool isHurt = false;
-    private bool isDefending = false;
-    private bool isPlayFootStep=false;
-    private bool isRunning = false;
+    public float jumpForce = 10f;
     public bool isDoubleJump = true;
     public float footStepSpeed = 0.5f;
     public LayerMask groundLayer;
+    private float currentSpeed;
+    private float horizontalInput;
+    private float verticalInput;
 
-    [SerializeField] public static int coin=0;
+    [Header("Combat")]
+    public float damage = 10f;
+    [SerializeField] private float attackCooldown = 2f;
+    [SerializeField] private float defendCooldown = 2f;
+    [SerializeField] private float knockbackForceX = 3f;
+    private float attackTimer;
+    private float defendTimer;
 
+    [Header("Health & Healing")]
+    public float healHealth;
 
-    [SerializeField]public Rigidbody2D rb;
-    private List<string> attackList = new List<string>() {"Attack","Attack1","Attack2"};
+    [Header("State Flags")]
+    private bool isGrounded = true;
+    private bool isJumping = false;
+    private bool isAttacking = false;
+    private bool isDead = false;
+    private bool isHurt = false;
+    private bool isDefending = false;
+    private bool isRunning = false;
+    private bool isPlayFootStep = false;
+
+    [Header("References")]
+    [SerializeField] public Rigidbody2D rb;
     [SerializeField] private GameObject attackArea;
     [SerializeField] public GameObject interactUI;
     [SerializeField] private Interact currentInteract;
     [SerializeField] private ItemClass currentItem;
-    [SerializeField]private InventoryManager recycleableInventoryManager;
-    [SerializeField]private GameObject cooking;
+    [SerializeField] private InventoryManager recycleableInventoryManager;
+    [SerializeField] private GameObject cooking;
     [SerializeField] private ShopNPC currentShopNPC;
+
+    [Header("Respawn")]
     [SerializeField] private Vector3 currentRespawnPosition;
 
+    [Header("Slope")]
+    [SerializeField] private PhysicsMaterial2D fullFriction;
+    [SerializeField] private PhysicsMaterial2D noFriction;
+    [SerializeField] private float maxSlopeAngle = 45f;
+    [SerializeField] private float slopeCheckDistance = 0.5f;
+    private bool isOnSlope = false;
+    private float slopeAngle;
+    private Vector2 slopePerpendicular;
+
+    [Header("Economy")]
+    [SerializeField] public static int coin = 0;
+    private List<string> attackList = new List<string>() { "Attack", "Attack1", "Attack2" };
     public void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -125,6 +142,8 @@ public class Player : Character
     void FixedUpdate()
     {
         isGrounded = CheckGrounded();
+        SlopeCheck();
+        HandleSlopeFriction();
         if (isDead)
         {
             rb.velocity = Vector2.zero;
@@ -201,15 +220,19 @@ public class Player : Character
         //Moving
         if (Mathf.Abs(horizontalInput) > 0.1f)
         {
-            rb.velocity = new Vector2(horizontalInput * currentSpeed*Time.fixedDeltaTime, rb.velocity.y);
+            if (isOnSlope && isGrounded)
+            {
+                float direction = horizontalInput > 0 ? -1f : 1f;
+                rb.velocity = direction * slopePerpendicular * currentSpeed * Time.fixedDeltaTime;
+            }
+            else
+            {
+                rb.velocity = new Vector2(horizontalInput * currentSpeed * Time.fixedDeltaTime, rb.velocity.y);
+            }
             if (horizontalInput > 0)
-            {
                 transform.localScale = new Vector3(1f, 1f, 1f);
-            }
             else if (horizontalInput < 0)
-            {
                 transform.localScale = new Vector3(-1f, 1f, 1f);
-            }
         }
         else if (isGrounded)
         {
@@ -273,13 +296,39 @@ public class Player : Character
     }
     private bool CheckGrounded()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.1f, groundLayer);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.3f, groundLayer);
         
         if (hit.collider != null)
         {
             return true;
         }
         return false;
+    }
+    private void SlopeCheck()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, slopeCheckDistance, groundLayer);
+        if (hit)
+        {
+            slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+            slopePerpendicular = Vector2.Perpendicular(hit.normal).normalized;
+            isOnSlope = slopeAngle > 0f && slopeAngle <= maxSlopeAngle;
+        }
+        else
+        {
+            isOnSlope = false;
+            slopeAngle = 0f;
+        }
+    }
+    private void HandleSlopeFriction()
+    {
+        if (isOnSlope && isGrounded && Mathf.Abs(horizontalInput) < 0.1f)
+        {
+            rb.sharedMaterial = fullFriction;
+        }
+        else
+        {
+            rb.sharedMaterial = noFriction;
+        }
     }
     private void Jump() 
     {
