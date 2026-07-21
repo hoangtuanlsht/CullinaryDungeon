@@ -72,7 +72,6 @@ public class Enemy : Character
             rb.AddForce(new Vector2(knockbackDirection * knockbackForceX, 0), ForceMode2D.Impulse);
             Invoke("ResetHurt", 0.5f);
         }
-        
     }
     public void ResetHurt()
     {
@@ -110,24 +109,28 @@ public class Enemy : Character
     }
     public void Attack()
     {
-        // 1. Kiểm tra xem đã hết thời gian nghỉ chưa
         if (attackTimer > 0)
         {
-            // Nếu chưa, có thể bắt nó đứng im (gọi anim Idle) để chờ
-            ChangedAnim("Idle");
             return;
         }
-        // 2. Nếu đã sẵn sàng, reset lại thời gian chờ
+        if (Target != null)
+        {
+            bool isFaceRight = Target.transform.position.x > transform.position.x;
+
+            if (isRight != isFaceRight)
+            {
+                ChangeDirection(isFaceRight);
+            }
+        }
         attackTimer = attackCooldown;
         isAttacking = true;
         ChangedAnim("Attack");
         Throw();
-        // 3. Thực hiện đòn tấn công như cũ=
         if (thrownPoint == null && thrownPrefab == null)
         {
             Invoke("ActiveAttack",attackTime);
-            Invoke("DeactiveAttack", deAttackTime);
         }
+        Invoke("DeactiveAttack", deAttackTime);
     }
     private void Throw()
     {
@@ -174,7 +177,6 @@ public class Enemy : Character
             ChangeDirection(!isRight);
         }
     }
-
     public void ChangeDirection(bool isRight)
     {
         if (isAttacking) return;
@@ -204,10 +206,7 @@ public class Enemy : Character
     }
     private void OnDrawGizmosSelected()
     {
-        // 1. Chọn màu sắc cho vòng tròn (Ví dụ: Màu đỏ)
         Gizmos.color = Color.red;
-
-        // 2. Vẽ một vòng tròn khung (WireSphere) tại vị trí của nhân vật, với bán kính là attackRange
         Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 }

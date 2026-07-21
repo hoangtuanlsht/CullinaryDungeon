@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
@@ -222,7 +222,7 @@ public class Player : Character
         //Moving
         if (Mathf.Abs(horizontalInput) > 0.1f)
         {
-            if (isOnSlope && isGrounded && rb.velocity.y <= 0.1f)
+            if (isOnSlope && isGrounded && rb.velocity.y <= 0.2f)
             {
                 float direction = horizontalInput > 0 ? -1f : 1f;
                 rb.velocity = direction * slopePerpendicular * currentSpeed * Time.fixedDeltaTime;
@@ -260,6 +260,7 @@ public class Player : Character
     public override void OnDeath()
     {
         base.OnDeath();
+        isDead = true;
         //Invoke("OnInit",2f);
         Invoke("RespawnAtSavePoint", 2f);
     }
@@ -290,7 +291,12 @@ public class Player : Character
             health += healHealth;
             healthBar.SetNewHP(health);
         }
-        
+        else if(health+healHealth > maxhealth)
+        {
+            health = maxhealth;
+            healthBar.SetNewHP(health);
+        }
+
     }
     private void ResetHurt()
     {
@@ -343,9 +349,9 @@ public class Player : Character
     {
         if (attackTimer > 0)
         {
-            ChangedAnim("Idle");
             return;
         }
+        Debug.Log(attackTimer);
         attackTimer = attackCooldown;
         SoundManager.Play("Attack");
         RandomAttack(attackList);
@@ -355,7 +361,6 @@ public class Player : Character
         ActiveAttack();
         Invoke("DeactiveAttack", 0.5f);
     }
-
     private void RandomAttack(List<string> attackList)
     {
         int index = UnityEngine.Random.Range(0, attackList.Count);
@@ -378,7 +383,6 @@ public class Player : Character
     {
         if (defendTimer > 0)
         {
-            ChangedAnim("Idle");
             return;
         }
         defendTimer = defendCooldown;
@@ -493,24 +497,35 @@ public class Player : Character
         }
         StartCoroutine(ReloadMapAndRespawn());
     }
-    public void UpdateSavePoint(Vector3 newSavePosition)
+    public void UpdateSavePoint(Vector3 newSavePosition, string cameraName)
     {
         currentRespawnPosition = newSavePosition;
 
-        // Lưu tên Virtual Camera đang active TẠI THỜI ĐIỂM chạm Save Point
-        // Để khi respawn sẽ dùng đúng camera của khu vực Save Point, không phải camera lúc chết
-        CinemachineBrain brain = Camera.main != null ? Camera.main.GetComponent<CinemachineBrain>() : null;
-        if (brain != null && brain.ActiveVirtualCamera != null)
+        // Gán trực tiếp tên Camera được truyền từ CheckPoint
+        if (!string.IsNullOrEmpty(cameraName))
         {
-            currentRespawnCameraName = brain.ActiveVirtualCamera.VirtualCameraGameObject.name;
+            currentRespawnCameraName = cameraName;
         }
-
         Debug.Log("Đã cập nhật điểm hồi sinh mới tại: " + currentRespawnPosition + " | Camera: " + currentRespawnCameraName);
     }
     private IEnumerator ReloadMapAndRespawn()
     {
         // Lấy tên của màn chơi hiện tại (Màn chơi đang chứa quái, vật phẩm...)
-        string currentSceneName = SceneManager.GetActiveScene().name;
+        string currentSceneName = "";
+        for (int i = 0; i < UnityEngine.SceneManagement.SceneManager.sceneCount; i++)
+        {
+            UnityEngine.SceneManagement.Scene scene = UnityEngine.SceneManagement.SceneManager.GetSceneAt(i);
+            if (scene.name != "PersistentGameplay")
+            {
+                currentSceneName = scene.name;
+                break; // Tìm thấy scene map (khác scene gốc) thì dừng lại
+            }
+        }
+        // Nếu không tìm thấy map nào khác (chỉ có duy nhất PersistentGameplay), thì thoát
+        if (string.IsNullOrEmpty(currentSceneName))
+        {
+            Debug.LogWarning("Không tìm thấy scene map nào để load lại!");
+        }
 
         // Chỉ thực hiện Unload nếu màn chơi không phải là gốc PersistentGameplay
         if (currentSceneName != "PersistentGameplay")
@@ -531,13 +546,9 @@ public class Player : Character
         // Khôi phục Virtual Camera theo tên đã lưu tại Save Point (không phải lúc chết)
         RestoreVirtualCameraForSavePoint();
 
-        Debug.Log("Đã tải lại map và hồi sinh thành công tại Save Point!");
+        Debug.Log("Đã tải lại map và hồi sinh thành công tại Save Point!"+currentSceneName);
     }
 
-    /// <summary>
-    /// Sau khi scene reload, tìm Virtual Camera có cùng tên đã lưu tại Save Point
-    /// và đặt Priority cao nhất. Camera khác sẽ bị hạ Priority = 0.
-    /// </summary>
     private void RestoreVirtualCameraForSavePoint()
     {
         CinemachineVirtualCamera[] allCams = FindObjectsOfType<CinemachineVirtualCamera>();
@@ -546,7 +557,6 @@ public class Player : Character
 
         bool found = false;
 
-        // Hạ Priority tất cả camera, nâng camera trùng tên Save Point
         foreach (CinemachineVirtualCamera cam in allCams)
         {
             if (cam.name == currentRespawnCameraName)

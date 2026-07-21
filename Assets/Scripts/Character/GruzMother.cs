@@ -144,8 +144,10 @@ public class GruzMother : Character
     public override void OnDeath()
     {
         base.OnDeath();
+        CancelInvoke(nameof(OnDespawn));
         rb.velocity = new Vector2(0, rb.velocity.y);
         Invoke("ReturnToMainMenu", 2f);
+        Invoke(nameof(OnDespawn), 2.5f);
     }
     public override void OnDespawn()
     {

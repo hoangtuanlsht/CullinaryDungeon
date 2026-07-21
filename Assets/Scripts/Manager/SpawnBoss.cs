@@ -33,6 +33,7 @@ public class SpawnBoss : MonoBehaviour
                 gruzMotherPrefab.gameObject.SetActive(true);
                 StartCoroutine(ShowHealthBarDelayed());
             }
+             
         }
     }
     private System.Collections.IEnumerator ShowHealthBarDelayed()
@@ -41,6 +42,7 @@ public class SpawnBoss : MonoBehaviour
         if (healthBoss != null)
         {
             healthBoss.SetActive(true);
+            gameObject.SetActive(false);
         }
     }
 }

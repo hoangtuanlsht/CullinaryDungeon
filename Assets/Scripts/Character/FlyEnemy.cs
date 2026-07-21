@@ -65,7 +65,10 @@ public class FlyEnemy : Character
     }
     public override void OnDespawn()
     {
-        base.OnDespawn(); 
+        base.OnDespawn();
+        Destroy(gameObject);
+        Destroy(healthBar.gameObject);
+
     }
     private void OnDrawGizmosSelected()
     {

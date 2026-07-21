@@ -37,12 +37,20 @@ public class ShopController : MonoBehaviour
 
     private void Awake()
     {
-        // Khởi tạo Singleton
-        if (instance == null) { instance = this; }
-        else { Destroy(gameObject); return; }
+        // Khởi tạo Singleton: Xử lý xung đột khi load scene additive
+        if (instance != null && instance != this)
+        {
+            // Nếu có một instance cũ chưa kịp bị hủy (do load bất đồng bộ), hủy nó đi
+            Destroy(instance.gameObject);
+        }
+        instance = this;
 
         _shopDataSource = new InventoryDataSource(this, shopInventoryList);
         _playerDataSource = new InventoryDataSource(this, playerInventoryList);
+
+        // Phải đảm bảo shopPanel đang bật thì ScrollView mới chạy được Coroutine bên trong
+        bool wasActive = shopPanel.activeSelf;
+        if (!wasActive) shopPanel.SetActive(true);
 
         shopScrollView.Initialize(_shopDataSource);
         playerScrollView.Initialize(_playerDataSource);

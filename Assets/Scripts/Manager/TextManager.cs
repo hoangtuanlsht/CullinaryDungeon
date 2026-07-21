@@ -10,15 +10,26 @@ public class TextManager : MonoBehaviour
     [SerializeField] private float timeTextAppear = 2f; // Thời gian giãn cách giữa các chữ
     private float timeText;
     private int currentIndex = 0; // Biến lưu vị trí của text đang hiện
-
+    [Header("Settings")]
+    public bool isIntroText = false;
+    public static bool hasPassedFogOfWar = false;
     private void Start()
     {
-        // Khởi tạo: Ẩn tất cả các text đi, chỉ bật text đầu tiên
+        // 1. Kiểm tra nếu đây là Intro Text và người chơi đã qua sương mù rồi
+        if (isIntroText && hasPassedFogOfWar)
+        {
+            foreach (GameObject txt in listText)
+            {
+                if (txt != null) txt.SetActive(false);
+            }
+            Destroy(gameObject);
+            return; 
+        }
+        // 2. Nếu chưa qua sương mù thì chạy code bình thường
         for (int i = 0; i < listText.Count; i++)
         {
             listText[i].SetActive(i == 0);
         }
-
         timeText = timeTextAppear;
         currentIndex = 0;
     }

@@ -4207,7 +4207,7 @@ MonoBehaviour:
   currentRespawnPosition: {x: 0, y: 0, z: 0}
   fullFriction: {fileID: 6200000, guid: a188fd586c6329048bbd19c122691b92, type: 2}
   noFriction: {fileID: 6200000, guid: 62bac300c9921c34c956d5c2fa872e9b, type: 2}
-  maxSlopeAngle: 45
+  maxSlopeAngle: 60
   slopeCheckDistance: 0.5
 --- !u!70 &802275188
 CapsuleCollider2D:
@@ -4241,8 +4241,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.08984685, y: 0.6326715}
-  m_Size: {x: 0.7246171, y: 1.3519003}
+  m_Offset: {x: 0.08984685, y: 0.6513283}
+  m_Size: {x: 0.7246171, y: 1.3145866}
   m_Direction: 0
 --- !u!1 &816531419
 GameObject:
@@ -8848,11 +8848,11 @@ EdgeCollider2D:
   m_Offset: {x: 0, y: 0}
   m_EdgeRadius: 0
   m_Points:
-  - {x: -0.019949526, y: 0.43890345}
-  - {x: 0.30983165, y: 0.3154617}
-  - {x: 0.35471517, y: -0.20322467}
-  - {x: 0.01270631, y: -0.4033367}
-  - {x: -0.03491327, y: 0.37032434}
+  - {x: -0.124993, y: 1.2542428}
+  - {x: 0.22979954, y: 1.0107512}
+  - {x: 0.2496714, y: 0.37701702}
+  - {x: -0.14235827, y: 0.26694256}
+  - {x: -0.12495074, y: 1.2206786}
   m_AdjacentStartPoint: {x: 0, y: 0}
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
