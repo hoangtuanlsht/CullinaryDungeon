@@ -16,23 +16,43 @@ public class PlayerHunger
     [SerializeField]private float hungerLevel = 100f;
     [SerializeField]private float hungerMaxLevel = 100f;
     [SerializeField]private float hungerSpeed;
-    private int lastReportedLevel = -1;
-    public static event Action<HungerState> OnHungerStateChanged;
-    public static event Action<float> OnHungerLevelChanged;
     private HungerState hungerState;
+
+    private int lastReportedLevel = -1;
+
+    private int pauseRequests;
+    public bool IsPaused => pauseRequests > 0;
+
+    public void RequestPause()
+    {
+        pauseRequests++;
+    }
+    public void ReleasePause()
+    {
+        pauseRequests--;
+        if (pauseRequests < 0)
+        {
+            pauseRequests = 0;
+        }
+    }
+    public float HungerLevel => hungerLevel;
+    public float HungerMaxLevel => hungerMaxLevel;
+    public HungerState HungerState => hungerState;
+    public event Action<HungerState> OnHungerStateChanged;
+    public event Action<float,float> OnHungerLevelChanged;
 
     private void UpdateHungerState()
     {
         HungerState newState;
-        if (hungerLevel >= 75f)
+        if (hungerLevel >= hungerMaxLevel*0.75)
         {
             newState = HungerState.Full;
         }
-        else if (hungerLevel >= 50f)
+        else if (hungerLevel >= hungerMaxLevel*0.5)
         {
             newState = HungerState.Normal;
         }
-        else if (hungerLevel >= 25f)
+        else if (hungerLevel >= hungerMaxLevel*0.25)
         {
             newState = HungerState.Hungry;
         }
@@ -44,7 +64,7 @@ public class PlayerHunger
         if (newHungerLevel != lastReportedLevel)
         {
             lastReportedLevel = newHungerLevel;
-            OnHungerLevelChanged?.Invoke(newHungerLevel);
+            OnHungerLevelChanged?.Invoke(newHungerLevel,hungerMaxLevel);
         }
         if (newState != hungerState)
         {
@@ -52,13 +72,14 @@ public class PlayerHunger
             OnHungerStateChanged?.Invoke(hungerState);
         } 
     }
-    public void UpdateStarving(float deltaTime)
+    public void UpdateHungerLevel(float deltaTime)
     {
+        if (IsPaused) return;
         hungerLevel -= hungerSpeed * deltaTime;
         hungerLevel = Mathf.Clamp(hungerLevel, 0f, hungerMaxLevel);
         UpdateHungerState();
     }
-    public void UpdateHungerLevel(float food)
+    public void EatFood(float food)
     {
         if(food < 0)
         {
@@ -74,4 +95,10 @@ public class PlayerHunger
         }
         UpdateHungerState();
     }
+    public void AtLeastHunger(float ratio)
+    {
+        hungerLevel = Mathf.Max(hungerLevel, ratio*hungerMaxLevel);
+        UpdateHungerState();
+    }
+    public bool IsFull => hungerLevel >= hungerMaxLevel;
 }

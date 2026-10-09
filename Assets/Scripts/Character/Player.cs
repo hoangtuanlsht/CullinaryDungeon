@@ -80,11 +80,14 @@ public class Player : Character
     [SerializeField] private LayerMask poundHitLayer;            // tick Ground + layer của Enemy
     private readonly Collider2D[] poundHits = new Collider2D[16];
 
-    [Header("HungerBar(Module 8)")]
-    //[SerializeField] private HungerBar hungerBar;
+    [Header("Hunger(Module 8)")]
     [SerializeField] private PlayerHunger playerHunger = new PlayerHunger();
     public PlayerHunger PlayerHunger => playerHunger;
-
+    [SerializeField] private float starveDamagePerSecond = 2f;   // mất máu mỗi giây khi Starving
+    [SerializeField] private float fullRegenPerSecond = 1f;      // hồi máu mỗi giây khi Full
+    [SerializeField] [Range(0f,1f)] private float starveHealthFloor = 0.2f;     // sàn: 20% máu tối đa
+    private float timeHungerEffect = 0f;              // đếm thời gian để áp dụng hiệu ứng đói
+    [SerializeField][Range(0f, 1f)] float respawnHungerRatio = 0.5f;
     public void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -103,8 +106,7 @@ public class Player : Character
         interaction = new PlayerInteraction(interactUI, recycleableInventoryManager);
 
         abilities.OnUnlocked += a => Debug.Log($"Mở khóa kỹ năng: {a}");
-        PlayerHunger.OnHungerStateChanged += s => Debug.Log($"Trạng thái đói: {s}");
-        PlayerHunger.OnHungerLevelChanged += v => Debug.Log($"Độ no: {v:0}");
+
     }
     void Update()
     {
@@ -136,7 +138,7 @@ public class Player : Character
         movement.IsRunning = input.RunHeld;
         if (!isDead)
         {
-            playerHunger.UpdateStarving(Time.deltaTime);
+            playerHunger.UpdateHungerLevel(Time.deltaTime);
         }        
     }
     void FixedUpdate()
@@ -242,6 +244,52 @@ public class Player : Character
         if (IsDead || amount <= 0f) return;
         SetHealth(health + amount);
     }
+    public void Feed(float amount)
+    {
+        if (IsDead || amount <= 0f) return;
+        PlayerHunger.EatFood(amount);
+    }
+    public bool TryConsumeFood(ConsumableItem item)
+    {
+        if(item == null || isDead) return false;
+        bool canHeal = item.healthRecovery > 0f && health < MaxHealth;
+        bool canFeed = item.hungerRecovery > 0f && !PlayerHunger.IsFull;
+
+        if(!canHeal && !canFeed) return false;
+        Feed(item.hungerRecovery);
+        Heal(item.healthRecovery);
+        return true;
+    }
+    private void ApplyHungerEffects(float deltaTime)
+    {
+        if (playerHunger.IsPaused) return;
+        HungerState state = playerHunger.HungerState;
+        if(state != HungerState.Full && state != HungerState.Starving)
+        {
+            timeHungerEffect = 0f;
+            return;
+        }
+        timeHungerEffect += deltaTime;
+        if(timeHungerEffect < 1f) return;        // áp dụng mỗi giây
+        timeHungerEffect -= 1f;
+
+        if (state == HungerState.Starving)
+        {
+            float floor = maxhealth * starveHealthFloor;
+            if(health > floor)
+            {
+                float newHealth = health - starveDamagePerSecond;
+                SetHealth(Mathf.Max(newHealth, floor));
+            }
+        }
+        else if(state == HungerState.Full)
+        {
+            if(health < maxhealth)
+            {
+                SetHealth(health + fullRegenPerSecond);
+            }
+        }
+    }
     // Cac ham noi bo duoi day duoc PlayerMovement/PlayerCombat (plain class, khong co Invoke/
     // InvokeRepeating rieng) nho Player thuc thi ho - giu dung co che timing goc.
     internal void StartFootStepLoop()
@@ -288,7 +336,7 @@ public class Player : Character
     private void RespawnAtSavePoint()
     {
         OnInit();
-
+        playerHunger.AtLeastHunger(respawnHungerRatio);
         transform.position = currentRespawnPosition;
 
         if (rb != null)

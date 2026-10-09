@@ -19,7 +19,6 @@ public class Character : MonoBehaviour
     [SerializeField] private Animator anim;
     [SerializeField] protected HealthBar healthBar;
     
-
     public bool IsDead => health <= 0f;
     public void Start()
     {

@@ -4428,7 +4428,11 @@ MonoBehaviour:
   playerHunger:
     hungerLevel: 100
     hungerMaxLevel: 100
-    hungerSpeed: 2
+    hungerSpeed: 0
+  starveDamagePerSecond: 5
+  fullRegenPerSecond: 10
+  starveHealthFloor: 0.2
+  respawnHungerRatio: 0.5
 --- !u!70 &802275188
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -9805,7 +9809,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2038482281087964007, guid: 7a28285e89f0cd54a9f456757dd0b385, type: 3}
       propertyPath: damager
-      value: 22
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 2038482281087964007, guid: 7a28285e89f0cd54a9f456757dd0b385, type: 3}
       propertyPath: healthBar
@@ -10316,7 +10320,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1685349501
 Transform:
   m_ObjectHideFlags: 0
@@ -11250,6 +11254,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1793193042}
   m_CullTransparentMesh: 1
+--- !u!1001 &1806336478
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 243665444399960157, guid: ad8a347dcc96dce4a9bcd67cc32187a1, type: 3}
+      propertyPath: m_Name
+      value: Desert
+      objectReference: {fileID: 0}
+    - target: {fileID: 2619509071044295449, guid: ad8a347dcc96dce4a9bcd67cc32187a1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -5.170309
+      objectReference: {fileID: 0}
+    - target: {fileID: 2619509071044295449, guid: ad8a347dcc96dce4a9bcd67cc32187a1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.5374284
+      objectReference: {fileID: 0}
+    - target: {fileID: 2619509071044295449, guid: ad8a347dcc96dce4a9bcd67cc32187a1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2619509071044295449, guid: ad8a347dcc96dce4a9bcd67cc32187a1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2619509071044295449, guid: ad8a347dcc96dce4a9bcd67cc32187a1, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2619509071044295449, guid: ad8a347dcc96dce4a9bcd67cc32187a1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2619509071044295449, guid: ad8a347dcc96dce4a9bcd67cc32187a1, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2619509071044295449, guid: ad8a347dcc96dce4a9bcd67cc32187a1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2619509071044295449, guid: ad8a347dcc96dce4a9bcd67cc32187a1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2619509071044295449, guid: ad8a347dcc96dce4a9bcd67cc32187a1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ad8a347dcc96dce4a9bcd67cc32187a1, type: 3}
 --- !u!1 &1845365141
 GameObject:
   m_ObjectHideFlags: 0
@@ -12395,6 +12456,7 @@ GameObject:
   - component: {fileID: 2042162441}
   - component: {fileID: 2042162440}
   - component: {fileID: 2042162438}
+  - component: {fileID: 2042162443}
   m_Layer: 5
   m_Name: Canvas-Status-Player
   m_TagString: Untagged
@@ -12507,6 +12569,20 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 2
   m_TargetDisplay: 0
+--- !u!114 &2042162443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2042162437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 326c89cebe3de8c4f9c93dfd1d2e2671, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageFill: {fileID: 1492814613}
+  player: {fileID: 802275187}
 --- !u!1 &2042368651
 GameObject:
   m_ObjectHideFlags: 0
@@ -13963,3 +14039,4 @@ SceneRoots:
   - {fileID: 613869320}
   - {fileID: 1685349501}
   - {fileID: 1011653033}
+  - {fileID: 1806336478}

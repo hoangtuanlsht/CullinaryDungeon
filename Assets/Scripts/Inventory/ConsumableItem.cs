@@ -6,6 +6,7 @@ using UnityEngine;
 public class ConsumableItem : ItemItem
 {
     public float healthRecovery;
+    public float hungerRecovery;
     public override ItemItem GetItem()
     {
         return this;

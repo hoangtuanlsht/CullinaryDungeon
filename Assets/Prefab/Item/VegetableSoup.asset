@@ -19,3 +19,4 @@ MonoBehaviour:
   buyPrice: 10
   sellPriceMulti: 0.5
   healthRecovery: 40
+  hungerRecovery: 10

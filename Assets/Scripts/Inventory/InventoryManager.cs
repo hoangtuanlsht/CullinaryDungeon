@@ -256,8 +256,16 @@ public class InventoryManager : Singleton<InventoryManager>, IRecyclableScrollRe
         if (slot != null && slot.GetItem() is ConsumableItem consumable)
         {
             // Gọi hàm hồi máu cho Player
-            UseItem(consumable);
-
+            if (player.TryConsumeFood(consumable))
+            {
+                Debug.Log("Đã sử dụng vật phẩm: " + consumable.ItemName);
+            }
+            else
+            {
+                Debug.Log("Không thể sử dụng vật phẩm: " + consumable.ItemName);
+                CloseUseItemUI(); // Đóng UI nếu không thể sử dụng
+                return;
+            }
             // Trừ đi 1 vật phẩm
             if (slot.GetQuantity() > 1)
             {
@@ -284,10 +292,6 @@ public class InventoryManager : Singleton<InventoryManager>, IRecyclableScrollRe
             uiUseItem.SetActive(false);
         }
         selectedSlotIndex = -1;
-    }
-    public void UseItem(ConsumableItem itemClass)///
-    {
-        player.Heal(itemClass.healthRecovery);
     }
     private void EndMove(int index)
     {
