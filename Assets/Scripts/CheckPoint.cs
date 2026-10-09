@@ -2,7 +2,7 @@ using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Cinemachine;
+//using Cinemachine;
 
 public class CheckPoint : MonoBehaviour
 {

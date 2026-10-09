@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7abb90928d553342ad4f3c11f9ffc83, type: 3}
   m_Name: MonsterEyes
   m_EditorClassIdentifier: 
+  itemName: MonsterEye
   itemIcon: {fileID: 21300000, guid: 4461c87bad5222349b14c22b26d43b95, type: 3}
   isStackable: 1
   maxStackQuantity: 20

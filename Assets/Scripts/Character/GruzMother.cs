@@ -35,6 +35,9 @@ public class GruzMother : Character
     private bool isFacingLeft = true;
     private Rigidbody2D rb;
     private Animator animGruz;
+
+    private IGruzState currentState;
+
     private void Awake()
     {
         moveDirection.Normalize();
@@ -48,30 +51,35 @@ public class GruzMother : Character
     // Update is called once per frame
     private void Update()
     {
-        isTouchingUp = Physics2D.OverlapCircle(groundCheckUp.position,groundCheckRadius,groundLayer);
-        isTouchingDown = Physics2D.OverlapCircle(groundCheckDown.position,groundCheckRadius,groundLayer);
-        isTouchingWall = Physics2D.OverlapCircle(groundCheckWall.position,groundCheckRadius,groundLayer);
-        //IdleState();
-        //AttackUpAndDownState();
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            AttackPlayer();
-        }
-        //FlipTowardsPlayer();
+        isTouchingUp = Physics2D.OverlapCircle(groundCheckUp.position, groundCheckRadius, groundLayer);
+        isTouchingDown = Physics2D.OverlapCircle(groundCheckDown.position, groundCheckRadius, groundLayer);
+        isTouchingWall = Physics2D.OverlapCircle(groundCheckWall.position, groundCheckRadius, groundLayer);
+        currentState?.OnExecute(this);
     }
-    void RandomStatePicker()
-    {
-        int randomState = Random.Range(0, 2);
-        if (randomState == 0)
-        {
-            animGruz.SetTrigger("AttackUpAndDown");
-        }
-        else if(randomState == 1)
-        {
-            animGruz.SetTrigger("AttackPlayer");
-        }
 
+    public void ChangeState(IGruzState newState)
+    {
+        currentState?.OnExit(this);
+        currentState = newState;
+        currentState?.OnEnter(this);
     }
+
+    // animGruz đang private -> state bên ngoài muốn bắn trigger animation
+    // phải qua hàm public này, không đổi animGruz thành public (giữ encapsulation).
+    public void TriggerAnim(string triggerName)
+    {
+        animGruz.SetTrigger(triggerName);
+    }
+
+    // GruzDiveState cần biết cú lao đã kết thúc chưa
+    // (AttackPlayer() tự đặt hasPlayerPos = false khi chạm tường/đất).
+    public bool HasPlayerPos => hasPlayerPos;
+    public override void OnInit()
+    {
+        base.OnInit();
+        ChangeState(new GruzPatrolState());
+    }
+
     public void IdleState()
     {
         if (isTouchingUp && isGoingUp)
@@ -155,7 +163,7 @@ public class GruzMother : Character
         Destroy(healthBar.gameObject);
         Destroy(gameObject);
     }
-    private void FlipTowardsPlayer()
+    public void FlipTowardsPlayer()
     {
         float playerDirection = player.transform.position.x - transform.position.x;
         if(playerDirection > 0 && isFacingLeft)

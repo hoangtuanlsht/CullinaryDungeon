@@ -572,6 +572,7 @@ MonoBehaviour:
   - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
   attackCooldown: 1.5
   knockbackForceX: 2
+  stats: {fileID: 11400000, guid: 0a0c63314beefe84e890cfc2100b7c31, type: 2}
   nextMapPrefab: {fileID: 0}
   backMapPrefab: {fileID: 0}
   levelUp: {fileID: 4047155232962251935, guid: 583b5e2f94f085944a1d025f38831860, type: 3}

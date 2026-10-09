@@ -12,9 +12,12 @@ public class HealthBar : MonoBehaviour
     float maxHp;
     private Transform target;
 
+    private Character owner;
+
+
     void Update()
     {
-        imageFill.fillAmount = Mathf.Lerp(imageFill.fillAmount,hp / maxHp,Time.deltaTime * 5f);
+        imageFill.fillAmount = Mathf.Lerp(imageFill.fillAmount,hp / maxHp,Time.deltaTime * 2f);
         transform.position = target.position + offset;
     }
     public void OnInit(float maxHp, Transform target)
@@ -24,9 +27,25 @@ public class HealthBar : MonoBehaviour
         hp = maxHp;
         imageFill.fillAmount = 1f;
     }
-    public void SetNewHP(float hp)
+    //public void SetNewHP(float hp)
+    //{
+    //    this.hp = hp;
+    //    imageFill.fillAmount = hp / maxHp;
+    //}
+    public void Bind(Character newOwner)
     {
-        this.hp = hp;
+        if (owner != null) owner.OnHealthChanged -= HandleHealthChanged;
+        owner = newOwner;
+        target = newOwner.transform;
+        owner.OnHealthChanged += HandleHealthChanged;
+    }
+    private void HandleHealthChanged(float current, float max)
+    {
+        maxHp = max; hp = current;
         imageFill.fillAmount = hp / maxHp;
+    }
+    private void OnDestroy()
+    {
+        if (owner != null) owner.OnHealthChanged -= HandleHealthChanged;
     }
 }

@@ -1011,7 +1011,7 @@ SpriteRenderer:
   m_Size: {x: 3.33, y: 4.3}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &145302070
@@ -1493,7 +1493,7 @@ SpriteRenderer:
   m_Size: {x: 3.18, y: 0.93}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &254468088
@@ -1945,7 +1945,7 @@ SpriteRenderer:
   m_Size: {x: 1.66, y: 0.72}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &356035494
@@ -2861,7 +2861,7 @@ SpriteRenderer:
   m_Size: {x: 0.66, y: 1.03}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &517344757 stripped
@@ -3772,7 +3772,7 @@ SpriteRenderer:
   m_Size: {x: 2.62, y: 2.06}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1001 &869230168
@@ -7466,7 +7466,7 @@ SpriteRenderer:
   m_Size: {x: 1.05, y: 0.94}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1001 &1408936870
@@ -9568,23 +9568,22 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  bodyCollider: {fileID: 0}
   damage: 10
   attackCooldown: 2
   defendCooldown: 2
-  knockbackForceX: 3
-  healHealth: 0
   rb: {fileID: 1799837531}
   attackArea: {fileID: 1693803752}
   interactUI: {fileID: 0}
-  currentItem: {fileID: 0}
   recycleableInventoryManager: {fileID: 0}
   cooking: {fileID: 0}
-  currentShopNPC: {fileID: 0}
   currentRespawnPosition: {x: 0, y: 0, z: 0}
   fullFriction: {fileID: 0}
   noFriction: {fileID: 0}
   maxSlopeAngle: 45
   slopeCheckDistance: 0.5
+  knockbackForceX: 3
+  hasDoubleJump: 0
 --- !u!4 &1799837533
 Transform:
   m_ObjectHideFlags: 0
@@ -13180,7 +13179,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 3
-      m_TileSpriteIndex: 7
+      m_TileSpriteIndex: 8
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -15685,10 +15684,10 @@ Tilemap:
     m_Data: {fileID: 0}
   - m_RefCount: 181
     m_Data: {fileID: 954597662, guid: dd76de39d3050244fb05c5eca844ed55, type: 3}
-  - m_RefCount: 1
-    m_Data: {fileID: 875469122, guid: dd76de39d3050244fb05c5eca844ed55, type: 3}
   - m_RefCount: 0
     m_Data: {fileID: 0}
+  - m_RefCount: 1
+    m_Data: {fileID: 875469122, guid: dd76de39d3050244fb05c5eca844ed55, type: 3}
   - m_RefCount: 23
     m_Data: {fileID: 1146757387, guid: dd76de39d3050244fb05c5eca844ed55, type: 3}
   - m_RefCount: 14

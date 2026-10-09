@@ -10,8 +10,7 @@ public class Chest : MonoBehaviour,Interact
         Debug.Log("Mở rương! Nhận "+coinAmount+" vàng!");
         GetComponent<Collider2D>().enabled = false;
         SoundManager.Play("ChestOpen");
-        Player.coin += coinAmount; 
-        UIManager.instance.SetCoin(Player.coin); 
+        PlayerWallet.Add(coinAmount);
         Invoke("OnDestroy", 1f);
     }
     public void OnDestroy()

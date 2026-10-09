@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEditor.Rendering;
 using UnityEngine;
 
@@ -24,10 +25,11 @@ public class Boss_Slime : Enemy
     }
     public override void OnDeath()
     {
-        player.damage = 12f;
+        GrantReward();
         levelUp.SetActive(true);
         base.OnDeath();
         nextMapPrefab.SetActive(true);
         backMapPrefab.SetActive(true);
     }
+    
 }

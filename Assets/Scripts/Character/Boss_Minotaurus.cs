@@ -21,7 +21,7 @@ public class Boss_Minotaurus : Enemy
     }
     public override void OnDeath()
     {
-        player.damage = 15f;
+        GrantReward();
         levelUp.SetActive(true);
         base.OnDeath();
         limitMap.SetActive(false);

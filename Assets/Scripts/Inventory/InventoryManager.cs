@@ -1,11 +1,13 @@
+using PolyAndCode.UI;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
-using PolyAndCode.UI;
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
-public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
+public class InventoryManager : Singleton<InventoryManager>, IRecyclableScrollRectDataSource
 {
     [Header("UI References")]
     [SerializeField] private RecyclableScrollRect scrollRect;
@@ -13,11 +15,12 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
     public GameObject inventory;
 
     [Header("Data")]
-    [SerializeField]private int totalSlots = 30;
+    [SerializeField] private int totalSlots = 30;
     [SerializeField] public SlotClass[] items;
     [SerializeField] private SlotClass[] startingItems;
 
     [Header("Moving/Dragging")]
+    [SerializeField] private PlayerInputReader input;
     [SerializeField] private SlotClass movingSlot = new SlotClass();
     private SlotClass originalSlot;
     private SlotClass tempSlot = new SlotClass();
@@ -29,11 +32,12 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
     [SerializeField] private GameObject uiUseItem;
     private int selectedSlotIndex = -1; // Lưu vị trí ô đang được chọn để dùng
 
-    private static InventoryManager instance;
-    public static InventoryManager Instance { get { return instance; } }
+
 
     [Header("Crafting System")]
     public List<CraftingRecipe> recipes;
+    [SerializeField] private List<RecipeData> recipeAssets = new List<RecipeData>();  // mới
+
     public SlotClass[] craftingSlots = new SlotClass[4];
     public SlotClass resultSlot = new SlotClass();
 
@@ -43,10 +47,6 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
     //[SerializeField] private List<SlotClass> items = new List<SlotClass>();
 
 
-    private void Awake()
-    {
-        instance = this;
-    }
     private void Start()
     {
         items = new SlotClass[totalSlots];
@@ -80,15 +80,15 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
         {
             scrollRect.Initialize(this); // Gọi hàm này để thiết lập DataSource và đúc Cell
         }
-        inventory.GetComponent<RectTransform>().anchoredPosition = new Vector3 (600,1000,0);
+        inventory.GetComponent<RectTransform>().anchoredPosition = new Vector3(600, 1000, 0);
         player = GameObject.Find("Player").GetComponent<Player>();
     }
     private void Update()
     {
-        if (isMoving && movingSlot.GetItem()!= null)
+        if (isMoving && movingSlot.GetItem() != null)
         {
             itemCursor.enabled = true;
-            itemCursor.transform.position = Input.mousePosition;
+            itemCursor.transform.position = Mouse.current.position.ReadValue();
             itemCursor.sprite = movingSlot.GetItem().itemIcon;
         }
         else
@@ -96,10 +96,10 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
             itemCursor.enabled = false;
             itemCursor.sprite = null;
         }
-        if (Input.GetKeyDown(KeyCode.B))
+        if (input.InventoryPressed)
         {
             Vector3 posInventory = inventory.GetComponent<RectTransform>().anchoredPosition;
-            if((inventory.GetComponent<RectTransform>().anchoredPosition == new Vector2(500, 1000)) && PauseController.IsGamePause)
+            if ((inventory.GetComponent<RectTransform>().anchoredPosition == new Vector2(500, 1000)) && PauseController.IsGamePause)
             {
                 return;
             }
@@ -116,7 +116,7 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
     {
         //Casting to the implemented Cell
         var item = cell as CellItemData;
-        item.ConfigureCell(this,items[index], index);
+        item.ConfigureCell(this, items[index], index);
     }
     public void AddItem(ItemItem item, int quantity)
     {
@@ -172,13 +172,13 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
     }
     public SlotClass ContainItem(ItemItem item)
     {
-        foreach(SlotClass slot in items)
+        foreach (SlotClass slot in items)
         {
-            if(slot != null && slot.GetItem() == item)
+            if (slot != null && slot.GetItem() == item)
             {
                 return slot;
             }
-        }return null;
+        } return null;
     }
     public void OnLeftClickSlot(int slotIndex)
     {
@@ -209,7 +209,7 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
                     if (uiUseItem != null)
                     {
                         uiUseItem.SetActive(true);
-                        uiUseItem.transform.position = Input.mousePosition + new Vector3(100,0,0);
+                        uiUseItem.transform.position = (Vector3)Mouse.current.position.ReadValue() + new Vector3(100, 0, 0);
                     }
                     return; // Thoát hàm để không chạy logic chia đồ ở dưới
                 }
@@ -287,8 +287,7 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
     }
     public void UseItem(ConsumableItem itemClass)///
     {
-        player.healHealth = itemClass.healthRecovery;
-        player.Healing();
+        player.Heal(itemClass.healthRecovery);
     }
     private void EndMove(int index)
     {
@@ -492,4 +491,44 @@ public class InventoryManager : MonoBehaviour,IRecyclableScrollRectDataSource
         System.Array.Clear(items, 0, items.Length);
         scrollRect.ReloadData();
     }
+#if UNITY_EDITOR
+    [ContextMenu("Module4/ RecipeData")]
+    private void CreateRecipeData()
+    {
+        const string root = "Assets/Data";
+        const string folder = root + "/Recipes";
+        if (!UnityEditor.AssetDatabase.IsValidFolder(root))
+        {
+            UnityEditor.AssetDatabase.CreateFolder("Assets", "Data");
+        }
+        if (!UnityEditor.AssetDatabase.IsValidFolder(folder))
+        {
+            UnityEditor.AssetDatabase.CreateFolder(root, "Recipes");
+        }
+        UnityEditor.Undo.RecordObject(this, "Migrate recipes");
+        recipeAssets.Clear();   // chạy lại lần 2 không bị nhân đôi trong list
+
+        for (int i = 0; i < recipes.Count; i++)
+        {
+            CraftingRecipe old = recipes[i];
+
+            RecipeData asset = ScriptableObject.CreateInstance<RecipeData>();
+            asset.EditorSetValues(old.recipeName,
+                                  new List<ItemItem>(old.requiredItems),   // mảng → List, giữ nguyên thứ tự + null
+                                  old.resultItem,
+                                  old.resultQuantity);
+
+            string fileName = string.IsNullOrWhiteSpace(old.recipeName) ? $"Recipe_{i}" : old.recipeName;
+            string path = UnityEditor.AssetDatabase.GenerateUniqueAssetPath($"{folder}/{fileName}.asset");
+            UnityEditor.AssetDatabase.CreateAsset(asset, path);
+
+            recipeAssets.Add(asset);
+            Debug.Log($"[{i}] Tạo {path}", asset);
+        }
+
+        UnityEditor.AssetDatabase.SaveAssets();
+        UnityEditor.EditorUtility.SetDirty(this);
+        Debug.Log($"Đã chuyển {recipes.Count} công thức sang {folder}");
+    }
+#endif
 }

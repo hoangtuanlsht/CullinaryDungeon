@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68af7bff741d62e4e8333bed4a9fdc3f, type: 3}
+  m_Name: Desert
+  m_EditorClassIdentifier: 
+  recipeName: Desert
+  requireItems:
+  - {fileID: 11400000, guid: d2ea583bd7cef564d8949476a798e35c, type: 2}
+  - {fileID: 11400000, guid: b1a1027712a83d1449f93b8ff0c12e33, type: 2}
+  - {fileID: 11400000, guid: b1a1027712a83d1449f93b8ff0c12e33, type: 2}
+  - {fileID: 0}
+  resultItem: {fileID: 11400000, guid: c4698771b19ec484794ae7c961ac8ef4, type: 2}
+  resultQuantity: 1

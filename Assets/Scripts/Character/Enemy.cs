@@ -26,6 +26,10 @@ public class Enemy : Character
     protected bool isHurt = false;
     protected Character target;
     public Character Target => target;
+
+    [Header("Data (Module 4)")]
+    [SerializeField] private EnemyStats stats;
+    public EnemyStats Stats => stats;
     private void Update()
     {
         if (isHurt)
@@ -43,10 +47,26 @@ public class Enemy : Character
     }
     public override void OnInit()
     {
+        ApplyStats();
         base.OnInit();
 
         ChangeState(new IdleState());
         DeactiveAttack();
+    }
+    public void ApplyStats()
+    {
+        if (stats != null)
+        {
+            maxhealth = stats.MaxHealth;
+            moveSpeed = stats.MoveSpeed;
+            knockbackForceX = stats.KnockbackForceX;
+            attackRange = stats.AttackRange;
+            damager = stats.Damage;
+            attackCooldown = stats.AttackCooldown;
+            attackTime = stats.AttackTime;
+            deAttackTime = stats.DeAttackTime;
+            itemPrefab = new List<ItemClass>(stats.Drops);
+        }
     }
     public override void OnDespawn()
     {
@@ -209,4 +229,41 @@ public class Enemy : Character
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
     }
+    protected void GrantReward()
+    {
+        if (stats == null)
+        {
+            Debug.LogWarning($"{name}: chưa gán EnemyStats.", this);
+            return;
+        }
+        Player p = FindObjectOfType<Player>();
+        if (p == null) return;
+
+        if (stats.RewardPlayerDamage > 0f) p.damage = stats.RewardPlayerDamage;
+        p.Abilities.Unlock(stats.RewardAbility);       // None thì Unlock tự bỏ qua
+    }
+#if UNITY_EDITOR
+    [ContextMenu("Module 4/New_EnemyStats_To_CurrentStats")]
+    private void CreateStatsFromCurrentValues()
+    {
+        const string root = "Assets/Data";
+        const string folder = root + "/Enemies";
+        if (!UnityEditor.AssetDatabase.IsValidFolder(root))
+            UnityEditor.AssetDatabase.CreateFolder("Assets", "Data");
+        if (!UnityEditor.AssetDatabase.IsValidFolder(folder))
+            UnityEditor.AssetDatabase.CreateFolder(root, "Enemies");
+
+        EnemyStats asset = ScriptableObject.CreateInstance<EnemyStats>();
+        asset.EditorSetValues(maxhealth, moveSpeed, knockbackForceX, attackRange, damager,
+                              attackCooldown, attackTime, deAttackTime, itemPrefab);
+
+        string path = UnityEditor.AssetDatabase.GenerateUniqueAssetPath($"{folder}/{gameObject.name}_Stats.asset");
+        UnityEditor.AssetDatabase.CreateAsset(asset, path);
+        UnityEditor.AssetDatabase.SaveAssets();
+
+        stats = asset;
+        UnityEditor.EditorUtility.SetDirty(this);
+        Debug.Log($"Đã tạo {path} và gán vào {name}", asset);
+    }
+#endif
 }

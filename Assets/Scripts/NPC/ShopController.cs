@@ -14,12 +14,11 @@ public class ShopItemData
     public bool isShopSide;       // True: Của Shop (Mua) | False: Của Player (Bán)
 }
 
-public class ShopController : MonoBehaviour
+public class ShopController : Singleton<ShopController>
 {
     // ==========================================
     // TẠO SINGLETON
     // ==========================================
-    public static ShopController instance { get; private set; }
 
     [Header("UI References")]
     public GameObject shopPanel;            // Cái Bảng UI tổng (để bật/tắt)
@@ -34,17 +33,10 @@ public class ShopController : MonoBehaviour
     private InventoryDataSource _shopDataSource;
     private InventoryDataSource _playerDataSource;
     private ShopNPC _currentShop;
-
-    private void Awake()
+    
+    protected override void Awake()
     {
-        // Khởi tạo Singleton: Xử lý xung đột khi load scene additive
-        if (instance != null && instance != this)
-        {
-            // Nếu có một instance cũ chưa kịp bị hủy (do load bất đồng bộ), hủy nó đi
-            Destroy(instance.gameObject);
-        }
-        instance = this;
-
+        base.Awake();
         _shopDataSource = new InventoryDataSource(this, shopInventoryList);
         _playerDataSource = new InventoryDataSource(this, playerInventoryList);
 
@@ -57,13 +49,6 @@ public class ShopController : MonoBehaviour
 
         // Mặc định tắt UI Shop khi mới vào game
         shopPanel.SetActive(false);
-    }
-    private void OnDestroy()
-    {
-        if (instance == this)
-        {
-            instance = null;
-        }
     }
 
     public void OpenShop(ShopNPC npc)
@@ -89,11 +74,8 @@ public class ShopController : MonoBehaviour
         {
             int price = itemInfo.buyPrice;
 
-            if (Player.coin >= price)
+            if (PlayerWallet.TrySpend(price))
             {
-                Player.coin -= price;
-                PlayerPrefs.SetInt("coin", Player.coin);
-                if (UIManager.instance != null) UIManager.instance.SetCoin(Player.coin);
                 _currentShop.RemoveStock(itemInfo, 1);
                 InventoryManager.Instance.AddItem(itemInfo, 1);
             }
@@ -107,9 +89,7 @@ public class ShopController : MonoBehaviour
         {
             int price = itemInfo.GetCellPrice();
 
-            Player.coin += price;
-            PlayerPrefs.SetInt("coin", Player.coin);
-            if (UIManager.instance != null) UIManager.instance.SetCoin(Player.coin);
+            PlayerWallet.Add(price);
 
             InventoryManager.Instance.RemoveItem(itemInfo, 1);
 

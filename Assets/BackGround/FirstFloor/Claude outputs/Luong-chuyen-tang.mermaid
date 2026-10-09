@@ -1,0 +1,33 @@
+flowchart TD
+    A["Player chạm cửa hoặc bấm E<br/>(SceneDoor)"] --> B{"Có SceneTransitionManager<br/>trong PersistentGameplay?"}
+    B -- Không --> B1["In lỗi đỏ<br/>Không làm gì"]
+    B -- Có --> C["SceneDoor.Use()<br/>gọi TravelTo(scene đích, tên cửa đích, scene hiện tại)"]
+
+    C --> D{"IsBusy?"}
+    D -- "Đang chuyển dở" --> D1["Bỏ qua yêu cầu"]
+    D -- Rảnh --> E["Bắt đầu TravelRoutine<br/>IsBusy = true"]
+
+    E --> F["Lưu vận tốc Player<br/>(velocityBefore)"]
+    F --> G["Player.BeginTransition()<br/>khóa điều khiển, tắt vật lý,<br/>xóa tham chiếu cửa/NPC cũ"]
+    G --> H["ScreenFader.FadeTo(1)<br/>màn hình tối dần 0,25 giây"]
+    H --> I["Gỡ tầng cũ<br/>UnloadSceneAsync"]
+    I --> J["Tải tầng mới<br/>LoadSceneAsync (Additive)"]
+    J --> K["SetActiveScene(tầng mới)"]
+    K --> L["FindDoor(tầng mới, tên cửa đích)"]
+
+    L --> M{"Tìm thấy cửa?"}
+    M -- Không --> M1["In lỗi đỏ<br/>EndTransition tại chỗ<br/>(Player vẫn được mở khóa)"]
+    M -- Có --> M2["Player.EndTransition()<br/>dời tới Spawn của cửa đích,<br/>quay đúng hướng, trả lại đà,<br/>bật vật lý, mở khóa điều khiển"]
+
+    M1 --> N
+    M2 --> N["Chờ 1 nhịp vật lý + 1 khung hình"]
+    N --> O["RoomTracker nhận vùng mới<br/>Room.Activate() bật camera của vùng"]
+    O --> P["ScreenFader.FadeTo(0)<br/>màn hình sáng dần 0,25 giây"]
+    P --> Q["IsBusy = false<br/>Xong"]
+
+    classDef err fill:#5a1e1e,stroke:#c0392b,color:#fff
+    classDef fade fill:#1e2a4a,stroke:#5b8def,color:#fff
+    classDef player fill:#1e4a2c,stroke:#4caf70,color:#fff
+    class B1,D1,M1 err
+    class H,P fade
+    class G,M2 player

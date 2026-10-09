@@ -5,7 +5,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Item",menuName ="New Item")]
 public abstract class ItemItem :ScriptableObject
 {
-    public string itemName { get; set; }
+    [SerializeField] private string itemName;
+    public string ItemName => itemName;
 
     public Sprite itemIcon;
     public bool isStackable = true;

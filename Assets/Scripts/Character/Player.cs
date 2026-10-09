@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
+[RequireComponent(typeof(PlayerInputReader))]
 public class Player : Character
 {
     [Header("Movement")]
@@ -15,137 +16,140 @@ public class Player : Character
     public bool isDoubleJump = true;
     public float footStepSpeed = 0.5f;
     public LayerMask groundLayer;
-    private float currentSpeed;
-    private float horizontalInput;
-    private float verticalInput;
+    [SerializeField] private CapsuleCollider2D bodyCollider;
+    private PlayerInputReader input;
+
 
     [Header("Combat")]
     public float damage = 10f;
     [SerializeField] private float attackCooldown = 2f;
     [SerializeField] private float defendCooldown = 2f;
-    [SerializeField] private float knockbackForceX = 3f;
-    private float attackTimer;
-    private float defendTimer;
 
-    [Header("Health & Healing")]
-    public float healHealth;
 
     [Header("State Flags")]
     private bool isGrounded = true;
-    private bool isJumping = false;
-    private bool isAttacking = false;
     private bool isDead = false;
     private bool isHurt = false;
-    private bool isDefending = false;
-    private bool isRunning = false;
-    private bool isPlayFootStep = false;
 
     [Header("References")]
     [SerializeField] public Rigidbody2D rb;
     [SerializeField] private GameObject attackArea;
     [SerializeField] public GameObject interactUI;
-    [SerializeField] private Interact currentInteract;
-    [SerializeField] private ItemClass currentItem;
     [SerializeField] private InventoryManager recycleableInventoryManager;
     [SerializeField] private GameObject cooking;
-    [SerializeField] private ShopNPC currentShopNPC;
 
     [Header("Respawn")]
     [SerializeField] private Vector3 currentRespawnPosition;
-    private string currentRespawnCameraName; // Tên VCam tương ứng với Save Point hiện tại
+    private string currentRespawnCameraName; // Ten VCam tuong ung voi Save Point hien tai
+    private Coroutine respawnRoutine;
+    private Coroutine hurtRoutine;
 
     [Header("Slope")]
     [SerializeField] private PhysicsMaterial2D fullFriction;
     [SerializeField] private PhysicsMaterial2D noFriction;
     [SerializeField] private float maxSlopeAngle = 45f;
     [SerializeField] private float slopeCheckDistance = 0.5f;
-    private bool isOnSlope = false;
-    private float slopeAngle;
-    private Vector2 slopePerpendicular;
 
-    [Header("Economy")]
-    [SerializeField] public static int coin = 0;
-    private List<string> attackList = new List<string>() { "Attack", "Attack1", "Attack2" };
+
+    [Header("Knockback")]
+    [SerializeField] private float knockbackForceX = 3f;
+
+    private PlayerMovement movement;
+    private PlayerCombat combat;
+    private PlayerInteraction interaction;
+    private Coroutine footStepLoop;
+
+
+    [Header("Abilities")]
+    [SerializeField] private PlayerAbilities abilities = new PlayerAbilities();
+    public PlayerAbilities Abilities => abilities;
+
+    [Header("Wall Jump (Module 7)")]
+    public LayerMask wallLayer;                                  // tường nào bám được
+    public float wallSlideSpeed = 2f;                            // ô/giây khi trượt
+    public Vector2 wallJumpVelocity = new Vector2(4f, 8f);       // x: bật ra khỏi tường, y: bật lên
+    public float wallJumpLockTime = 0.15f;                       // bỏ qua phím ngang trong lúc này
+    private bool controlLocked;
+
+    [Header("Ground Pound (Module 7)")]
+    public float poundWindup = 0.15f;        // khựng lại trên không trước khi lao xuống
+    public float poundSpeed = 20f;
+    public float poundLandLock = 0.2f;       // đứng khựng sau khi chạm đất
+    [SerializeField] private float poundDamage = 20f;
+    [SerializeField] private float poundRadius = 1.5f;
+    [SerializeField] private LayerMask poundHitLayer;            // tick Ground + layer của Enemy
+    private readonly Collider2D[] poundHits = new Collider2D[16];
+
+    [Header("HungerBar(Module 8)")]
+    //[SerializeField] private HungerBar hungerBar;
+    [SerializeField] private PlayerHunger playerHunger = new PlayerHunger();
+    public PlayerHunger PlayerHunger => playerHunger;
+
     public void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        coin = PlayerPrefs.GetInt("coin", 0);
+        // trong Awake(), ngay sau rb = GetComponent<Rigidbody2D>();
+        input = GetComponent<PlayerInputReader>();
+        PlayerWallet.Load();
         if (interactUI != null)
         {
             interactUI.SetActive(false);
         }
-        recycleableInventoryManager = GameObject.Find("InventoryManager").GetComponent<InventoryManager>();
+        if (recycleableInventoryManager == null) Debug.LogError("Chưa gán InventoryManager!", this);
 
+        // dòng tạo movement: thêm tham số cuối
+        movement = new PlayerMovement(this, rb, groundLayer, fullFriction, noFriction, maxSlopeAngle, slopeCheckDistance, bodyCollider, input);
+        combat = new PlayerCombat(this, attackArea, attackCooldown, defendCooldown);
+        interaction = new PlayerInteraction(interactUI, recycleableInventoryManager);
+
+        abilities.OnUnlocked += a => Debug.Log($"Mở khóa kỹ năng: {a}");
+        PlayerHunger.OnHungerStateChanged += s => Debug.Log($"Trạng thái đói: {s}");
+        PlayerHunger.OnHungerLevelChanged += v => Debug.Log($"Độ no: {v:0}");
     }
     void Update()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
-        if (attackTimer > 0)
+        if (controlLocked) return;
+        movement.ReadJumpInput();
+
+        if (input.AttackPressed && !combat.IsDefending && !movement.IsPounding)
         {
-            attackTimer -= Time.deltaTime;
+            if (!movement.TryStartPound()) combat.TryAttack();     // trên không + giữ Xuống → dậm; còn lại → đánh thường
         }
-        if (defendCooldown>0)
+        if (input.DefendHeld && isGrounded && !combat.IsAttacking && !isHurt && !isDead && !combat.IsDefending)
         {
-            defendTimer -= Time.deltaTime;
+            combat.TryDefend();
         }
-        //Jumping
-        if(isGrounded && rb.velocity.y <= 0.1f)
+        if (input.CraftPressed && isGrounded && !combat.IsAttacking && !combat.IsDefending && !isDead)
         {
-            isDoubleJump = true;
+            cooking.SetActive(!cooking.activeSelf);
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (input.InteractPressed)
         {
-            if (isGrounded)
-            {
-                isJumping = true;
-            }
-            else if (isDoubleJump)
-            {
-                isJumping = true;
-                isDoubleJump = false;
-            }
-        }
-        //attack
-        if (Input.GetKeyDown(KeyCode.C) &&!isDefending)
-        {
-            Attack();
-            
-        }
-        if (Input.GetKey(KeyCode.F) && isGrounded && !isAttacking && !isHurt && !isDead && !isDefending)
-        {
-            Defend();
-        }
-        if (Input.GetKeyDown(KeyCode.G) && isGrounded && !isAttacking &&!isDefending && !isDead)
-        {
-            bool isCooking = !cooking.activeSelf;
-            cooking.SetActive(isCooking);
-        }
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            TryInteract();
+            interaction.TryInteract();
         }
         if (PauseController.IsGamePause)
         {
             rb.velocity = Vector2.zero;
-            StopFootStep();
+            movement.StopFootStepIfPlaying();
             return;
         }
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        movement.IsRunning = input.RunHeld;
+        if (!isDead)
         {
-            isRunning = true;
-        }
-        else if (Input.GetKeyUp(KeyCode.LeftShift))
-        {
-            isRunning = false;
-        }
-        
-    }   
+            playerHunger.UpdateStarving(Time.deltaTime);
+        }        
+    }
     void FixedUpdate()
     {
-        isGrounded = CheckGrounded();
-        SlopeCheck();
-        HandleSlopeFriction();
+        if (controlLocked) return;
+        bool blockMovement = isDead || isHurt || combat.IsDefending || combat.IsAttacking;
+        movement.PhysicsTick(blockMovement);
+        float maxFallSpeed = movement.IsPounding ? poundSpeed : 15f; if (rb.velocity.y < -maxFallSpeed)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, -maxFallSpeed);
+        }
+        isGrounded = movement.IsGrounded;
+
         if (isDead)
         {
             rb.velocity = Vector2.zero;
@@ -155,103 +159,27 @@ public class Player : Character
         {
             return;
         }
-        if (isDefending)
+        if (combat.IsDefending)
         {
             rb.velocity = Vector2.zero;
-            
-            ChangedAnim("Defend"); 
+            ChangedAnim("Defend");
             return;
         }
-        if (isAttacking)
-        {
-            rb.velocity = new Vector2(0,rb.velocity.y);
-            return;
-        }
-        if (isJumping)
-        {
-            if (isPlayFootStep) StopFootStep();
-            Jump();
-            //return;
-        }
-        if (isGrounded)
-        {
-            //Change run
-            if (rb.velocity.y <= 0.1f)
-            {
-                //Change run
-                if (Mathf.Abs(horizontalInput) > 0.1f )
-                {
-                    if (isRunning == false)
-                    {
-                        currentSpeed = speedWalk;
-                        ChangedAnim("Run");
-                        if (!isPlayFootStep || !IsInvoking(nameof(PlayFootStep)))
-                        {
-                            StopFootStep();
-                            StartFootStep();
-                        }
-                    }
-                    if(isRunning == true)
-                    {
-                        currentSpeed = speedRun;
-                        ChangedAnim("Fast");
-                        if (!isPlayFootStep || !IsInvoking(nameof(PlayFootRun)))
-                        {
-                            StopFootStep();
-                            StartFootStep();
-                        }
-                    }
-                                  
-                }
-                else
-                {
-                    ChangedAnim("Idle");
-                    StopFootStep();
-                }
-            }
-        }
-
-        //change fall
-        if (!isGrounded && rb.velocity.y < 0)
-        {
-            isJumping = false;
-            ChangedAnim("Fall");
-            if (isPlayFootStep) StopFootStep();
-        }
-
-        //Moving
-        if (Mathf.Abs(horizontalInput) > 0.1f)
-        {
-            if (isOnSlope && isGrounded && rb.velocity.y <= 0.2f)
-            {
-                float direction = horizontalInput > 0 ? -1f : 1f;
-                rb.velocity = direction * slopePerpendicular * currentSpeed * Time.fixedDeltaTime;
-            }
-            else
-            {
-                rb.velocity = new Vector2(horizontalInput * currentSpeed * Time.fixedDeltaTime, rb.velocity.y);
-            }
-            if (horizontalInput > 0)
-                transform.localScale = new Vector3(1f, 1f, 1f);
-            else if (horizontalInput < 0)
-                transform.localScale = new Vector3(-1f, 1f, 1f);
-        }
-        else if (isGrounded)
+        if (combat.IsAttacking)
         {
             rb.velocity = new Vector2(0, rb.velocity.y);
+            return;
         }
     }
     public override void OnInit()
     {
         base.OnInit();
-        isJumping = false;
-        isAttacking = false;
         isDead = false;
+        if (hurtRoutine != null) { StopCoroutine(hurtRoutine); hurtRoutine = null; }
         isHurt = false;
-        isDefending = false;
         ChangedAnim("Idle");
-        DeactiveAttack();
-        UIManager.instance.SetCoin(coin);
+        combat.ForceIdle();
+        movement.ResetTransientState();
     }
     public override void OnDespawn()
     {
@@ -262,232 +190,104 @@ public class Player : Character
         base.OnDeath();
         isDead = true;
         //Invoke("OnInit",2f);
-        Invoke("RespawnAtSavePoint", 2f);
+        ScheduleRespawn(2f);
     }
     public override void OnHit(float damage, UnityEngine.Transform attacker)
     {
-        if (isDefending)
+        if (combat.IsDefending)
         {
-            Debug.Log("Đã đỡ đòn! Không nhận sát thương.");
+            Debug.Log("Da do don! Khong nhan sat thuong.");
             return;
         }
         base.OnHit(damage, attacker);
         if (!IsDead)
         {
-            Debug.Log("Player bị thương!");
+            Debug.Log("Player bi thuong!");
             ChangedAnim("Hurt");
             isHurt = true;
 
             rb.velocity = Vector2.zero;
             float knockbackDirection = transform.position.x < attacker.position.x ? -1f : 1f;
-            rb.AddForce(new Vector2(knockbackDirection * knockbackForceX, 0),ForceMode2D.Impulse);
-            Invoke(nameof(ResetHurt), 0.5f);
+            rb.AddForce(new Vector2(knockbackDirection * knockbackForceX, 0), ForceMode2D.Impulse);
+            if (hurtRoutine != null) StopCoroutine(hurtRoutine);
+            hurtRoutine = StartCoroutine(HurtRoutine());
         }
     }
-    public void Healing()
-    {
-        if (health+healHealth <=maxhealth)
-        {
-            health += healHealth;
-            healthBar.SetNewHP(health);
-        }
-        else if(health+healHealth > maxhealth)
-        {
-            health = maxhealth;
-            healthBar.SetNewHP(health);
-        }
+    public void AnimEvent_HitboxOn() => combat.SetHitbox(true);
+    public void AnimEvent_HitboxOff() => combat.SetHitbox(false);
+    /// PlayerMovement gọi khi cú dậm chạm đất. Trả về true nếu có sàn bị phá (để lao tiếp).
 
-    }
-    private void ResetHurt()
+    internal bool OnPoundLanded()
     {
-        isHurt = false;
-    }
-    private bool CheckGrounded()
-    {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.3f, groundLayer);
-        
-        if (hit.collider != null)
+        SoundManager.Play("Attack");         // tạm dùng tiếng có sẵn
+        bool broke = false;
+        int count = Physics2D.OverlapCircleNonAlloc(transform.position, poundRadius, poundHits, poundHitLayer);
+        for (int i = 0; i < count; i++)
         {
-            return true;
+            Collider2D c = poundHits[i];
+            if (c.TryGetComponent(out BreakableFloor floor))
+            {
+                floor.Break();
+                broke = true;
+            }
+            else if (c.CompareTag("Enemy") && c.TryGetComponent(out Character enemy))
+            {
+                enemy.OnHit(poundDamage, transform);
+            }
         }
-        return false;
+        return broke;
     }
-    private void SlopeCheck()
+    public void Heal(float amount)
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, slopeCheckDistance, groundLayer);
-        if (hit)
+        if (IsDead || amount <= 0f) return;
+        SetHealth(health + amount);
+    }
+    // Cac ham noi bo duoi day duoc PlayerMovement/PlayerCombat (plain class, khong co Invoke/
+    // InvokeRepeating rieng) nho Player thuc thi ho - giu dung co che timing goc.
+    internal void StartFootStepLoop()
+    {
+        StopFootStepLoop();
+        footStepLoop = StartCoroutine(FootStepRoutine());
+    }
+    internal void StopFootStepLoop()
+    {
+        if (footStepLoop != null) { StopCoroutine(footStepLoop); footStepLoop = null; }
+    }
+    private IEnumerator FootStepRoutine()
+    {
+        var wait = new WaitForSeconds(footStepSpeed);      // tạo 1 lần, không cấp phát lại mỗi vòng
+        while (true)
         {
-            slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-            slopePerpendicular = Vector2.Perpendicular(hit.normal).normalized;
-            isOnSlope = slopeAngle > 0f && slopeAngle <= maxSlopeAngle;
+            SoundManager.Play(movement.IsRunning ? "Run" : "Step");   // sửa lỗi 3: hỏi lại mỗi nhịp
+            yield return wait;
         }
-        else
-        {
-            isOnSlope = false;
-            slopeAngle = 0f;
-        }
-    }
-    private void HandleSlopeFriction()
-    {
-        if (isOnSlope && isGrounded && Mathf.Abs(horizontalInput) < 0.1f)
-        {
-            rb.sharedMaterial = fullFriction;
-        }
-        else
-        {
-            rb.sharedMaterial = noFriction;
-        }
-    }
-    private void Jump() 
-    {
-        ChangedAnim("Jump");
-        isJumping = false;
-        rb.velocity = new Vector2(rb.velocity.x,0);
-        rb.AddForce(jumpForce * Vector2.up, ForceMode2D.Impulse);
-    }
-    private void Attack()
-    {
-        if (attackTimer > 0)
-        {
-            return;
-        }
-        Debug.Log(attackTimer);
-        attackTimer = attackCooldown;
-        SoundManager.Play("Attack");
-        RandomAttack(attackList);
-        
-        isAttacking = true;
-        Invoke("ResetAttack", 0.5f);
-        ActiveAttack();
-        Invoke("DeactiveAttack", 0.5f);
-    }
-    private void RandomAttack(List<string> attackList)
-    {
-        int index = UnityEngine.Random.Range(0, attackList.Count);
-        ChangedAnim(attackList[index]);
-    }
-
-    private void ResetAttack()
-    {
-        isAttacking = false;
-    }
-    private void ActiveAttack()
-    {
-        attackArea.SetActive(true);
-    }
-    private void DeactiveAttack()
-    {
-        attackArea.SetActive(false);
-    }
-    private void Defend()
-    {
-        if (defendTimer > 0)
-        {
-            return;
-        }
-        defendTimer = defendCooldown;
-        isDefending = true;
-        ChangedAnim("Defend");
-        SoundManager.Play("Defend");
-        Invoke("ResetDefend", 0.5f);
-    }
-    private void ResetDefend()
-    {
-        isDefending = false;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Coin"))
         {
-            coin++;
-            PlayerPrefs.SetInt("coin", coin);
-            UIManager.instance.SetCoin(coin);
+            PlayerWallet.Add(1);
             Destroy(collision.gameObject);
         }
-        if(collision.CompareTag("DeadZone"))
+        if (collision.CompareTag("DeadZone"))
         {
             //health = 0;
             ChangedAnim("Dead");
             isDead = true;
             Debug.Log("Dead");
             //Invoke("OnInit", 2f);
-            Invoke("RespawnAtSavePoint", 2f);
+            ScheduleRespawn(2f);
         }
-        Interact interact = collision.GetComponent<Interact>();
-        if (interact != null)
-        {
-            currentInteract = interact;
-            if (interactUI != null)
-            {
-                interactUI.SetActive(true);
-                interactUI.transform.position = collision.transform.position + new Vector3(0, 0.5f,0);
-            }
-        }
-        ItemClass item = collision.GetComponent<ItemClass>();
-        if (item != null) 
-        {
-            currentItem = item;
-            interactUI.SetActive(true);
-            interactUI.transform.position = currentItem.transform.position + new Vector3(0, 0.5f, 0);
-        }
-        ShopNPC shop = collision.GetComponent<ShopNPC>();
-        if (shop != null)
-        {
-            currentShopNPC = shop;
-            if (interactUI != null)
-            {
-                interactUI.SetActive(true);
-                interactUI.transform.position = collision.transform.position + new Vector3(0, 0.5f, 0);
-            }
-        }
+        interaction.HandleTriggerEnter(collision);
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        Interact interact = collision.GetComponent<Interact>();
-        if (interact != null && interact == currentInteract)
-        {
-            currentInteract = null;
-            if (interactUI != null) interactUI.SetActive(false);
-        }
-        ItemClass item = collision.GetComponent <ItemClass>();
-        if (item != null && item == currentItem)
-        {
-            currentItem = null;
-            if(interactUI != null) interactUI.SetActive(false);
-        }
-        ShopNPC shop = collision.GetComponent<ShopNPC>();
-        if (shop != null && shop == currentShopNPC)
-        {
-            currentShopNPC = null;
-            if (interactUI != null) interactUI.SetActive(false);
-
-            // Tự động đóng Shop nếu người chơi đi ra xa
-            if (ShopController.instance != null) ShopController.instance.CloseShop();
-        }
-    }
-    private void TryInteract()
-    {
-        if (currentInteract != null)
-        {
-            currentInteract.InteractWithObject();
-        }
-        if(currentItem != null)
-        {
-            recycleableInventoryManager.AddItem(currentItem.itemData, currentItem.amount);
-            Destroy(currentItem.gameObject);
-
-            currentItem = null;
-            if(interactUI != null) interactUI.SetActive(false);
-        }
-        if (currentShopNPC != null)
-        {
-            currentShopNPC.Interact(); // Gọi hàm mở giao diện Shop
-        }
+        interaction.HandleTriggerExit(collision);
     }
     private void RespawnAtSavePoint()
     {
-        OnInit(); 
+        OnInit();
 
         transform.position = currentRespawnPosition;
 
@@ -501,16 +301,14 @@ public class Player : Character
     {
         currentRespawnPosition = newSavePosition;
 
-        // Gán trực tiếp tên Camera được truyền từ CheckPoint
         if (!string.IsNullOrEmpty(cameraName))
         {
             currentRespawnCameraName = cameraName;
         }
-        Debug.Log("Đã cập nhật điểm hồi sinh mới tại: " + currentRespawnPosition + " | Camera: " + currentRespawnCameraName);
+        Debug.Log("Da cap nhat diem hoi sinh moi tai: " + currentRespawnPosition + " | Camera: " + currentRespawnCameraName);
     }
     private IEnumerator ReloadMapAndRespawn()
     {
-        // Lấy tên của màn chơi hiện tại (Màn chơi đang chứa quái, vật phẩm...)
         string currentSceneName = "";
         for (int i = 0; i < UnityEngine.SceneManagement.SceneManager.sceneCount; i++)
         {
@@ -518,37 +316,26 @@ public class Player : Character
             if (scene.name != "PersistentGameplay")
             {
                 currentSceneName = scene.name;
-                break; // Tìm thấy scene map (khác scene gốc) thì dừng lại
+                break;
             }
         }
-        // Nếu không tìm thấy map nào khác (chỉ có duy nhất PersistentGameplay), thì thoát
         if (string.IsNullOrEmpty(currentSceneName))
         {
-            Debug.LogWarning("Không tìm thấy scene map nào để load lại!");
+            Debug.LogWarning("Khong tim thay scene map nao de load lai!");
         }
-
-        // Chỉ thực hiện Unload nếu màn chơi không phải là gốc PersistentGameplay
-        if (currentSceneName != "PersistentGameplay")
+        else
         {
-            // Hủy Scene màn chơi hiện tại để dọn dẹp quái và đồ vật cũ
             yield return SceneManager.UnloadSceneAsync(currentSceneName);
-
-            // Nạp lại Scene đó ở chế độ cộng dồn (Additive) để reset lại từ đầu
             yield return SceneManager.LoadSceneAsync(currentSceneName, LoadSceneMode.Additive);
-
-            // Bắt buộc: Đặt màn chơi vừa load lại làm Active Scene để game nhận diện đúng không gian
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(currentSceneName));
         }
 
-        // Sau khi map đã load lại xong toàn bộ, dịch chuyển Player về tọa độ Save Point
         transform.position = currentRespawnPosition;
 
-        // Khôi phục Virtual Camera theo tên đã lưu tại Save Point (không phải lúc chết)
         RestoreVirtualCameraForSavePoint();
 
-        Debug.Log("Đã tải lại map và hồi sinh thành công tại Save Point!"+currentSceneName);
+        Debug.Log("Da tai lai map va hoi sinh thanh cong tai Save Point!" + currentSceneName);
     }
-
     private void RestoreVirtualCameraForSavePoint()
     {
         CinemachineVirtualCamera[] allCams = FindObjectsOfType<CinemachineVirtualCamera>();
@@ -563,7 +350,7 @@ public class Player : Character
             {
                 cam.Priority = 10;
                 found = true;
-                Debug.Log("Đã khôi phục Virtual Camera theo Save Point: " + cam.name);
+                Debug.Log("Da khoi phuc Virtual Camera theo Save Point: " + cam.name);
             }
             else
             {
@@ -573,34 +360,59 @@ public class Player : Character
 
         if (!found)
         {
-            Debug.LogWarning("Không tìm thấy Virtual Camera tên: " + currentRespawnCameraName + " sau khi reload scene.");
+            Debug.LogWarning("Khong tim thay Virtual Camera ten: " + currentRespawnCameraName + " sau khi reload scene.");
         }
     }
-    void StartFootStep()
+    private void ScheduleRespawn(float delay)
     {
-        isPlayFootStep = true;
-        if(isRunning == false)
+        if (respawnRoutine != null) return;                // đã hẹn rồi thì không hẹn lần hai
+        respawnRoutine = StartCoroutine(RespawnAfter(delay));
+    }
+
+    private IEnumerator RespawnAfter(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        respawnRoutine = null;
+        RespawnAtSavePoint();
+    }
+
+    private IEnumerator HurtRoutine()
+    {
+        yield return new WaitForSeconds(0.5f);
+        isHurt = false;
+        hurtRoutine = null;
+    }
+    public void BeginTransition()
+    {
+        input.SetGameplayEnabled(false);
+        controlLocked = true;
+        interaction.ClearAll();              // cửa/NPC ở scene cũ sắp bị huỷ, không được giữ tham chiếu
+        movement.StopFootStepIfPlaying();
+        rb.velocity = Vector2.zero;
+        rb.simulated = false;                // không rơi trong lúc scene đang load
+    }
+
+    public void EndTransition(Vector3 position, ExitDirection dir, Vector2 velocityBefore)
+    {
+        transform.position = position;
+        rb.simulated = true;
+
+        if (dir == ExitDirection.Left || dir == ExitDirection.Right)
         {
-            InvokeRepeating(nameof(PlayFootStep), 0f, footStepSpeed);
+            float sign = dir == ExitDirection.Left ? -1f : 1f;
+            transform.localScale = new Vector3(sign, 1f, 1f);          // giữ hướng nhìn
+            rb.velocity = new Vector2(sign * Mathf.Abs(velocityBefore.x), 0f);
         }
-        else if(isRunning == true)
+        else if (dir == ExitDirection.Up)
         {
-            InvokeRepeating(nameof(PlayFootRun), 0f, footStepSpeed);
+            rb.velocity = new Vector2(0f, jumpForce);                  // chui lên từ lỗ sàn → bật lên qua mép (không bị cắt nhảy nếu đã sửa theo A1 mục 3)
         }
-        
-    }
-    void StopFootStep()
-    {
-        isPlayFootStep = false;
-        CancelInvoke(nameof(PlayFootStep));
-        CancelInvoke(nameof(PlayFootRun));
-    }
-    void PlayFootStep()
-    {
-        SoundManager.Play("Step");
-    }
-    void PlayFootRun()
-    {
-        SoundManager.Play("Run");
+        else // Down
+        {
+            rb.velocity = new Vector2(0f, Mathf.Min(velocityBefore.y, 0f)); // giữ đà rơi
+        }
+        input.SetGameplayEnabled(true);
+        controlLocked = false;
     }
 }
+

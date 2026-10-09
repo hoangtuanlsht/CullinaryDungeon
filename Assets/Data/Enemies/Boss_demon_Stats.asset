@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5675feeb124a624e9f9515be17bd2d9, type: 3}
+  m_Name: Boss_demon_Stats
+  m_EditorClassIdentifier: 
+  maxHealth: 200
+  moveSpeed: 4
+  knockbackForceX: 2
+  attackRange: 2
+  damage: 25
+  attackCooldown: 1.5
+  attackTime: 1
+  deAttackTime: 1.5
+  drops:
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
+  rewardAbility: 1
+  rewardPlayerDamage: 12

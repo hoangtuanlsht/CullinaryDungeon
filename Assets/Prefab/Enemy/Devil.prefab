@@ -264,6 +264,7 @@ MonoBehaviour:
   - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
   attackCooldown: 2
   knockbackForceX: 2
+  stats: {fileID: 11400000, guid: a794b2894b352004ca15fea63ad4abbe, type: 2}
 --- !u!50 &2472377210012644814
 Rigidbody2D:
   serializedVersion: 4

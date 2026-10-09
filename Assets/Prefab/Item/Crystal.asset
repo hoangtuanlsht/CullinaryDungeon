@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 732380e82b84067429715712c3607fb6, type: 3}
   m_Name: Crystal
   m_EditorClassIdentifier: 
+  itemName: Crystal
   itemIcon: {fileID: 21300000, guid: 8f6d58fd471ba8a45a4b681953e29c26, type: 3}
   isStackable: 1
   maxStackQuantity: 20
+  buyPrice: 0
+  sellPriceMulti: 0.5

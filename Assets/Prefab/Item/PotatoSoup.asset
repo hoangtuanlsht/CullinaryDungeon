@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d20599c9ceda9be44b85c6c90a6980c9, type: 3}
   m_Name: PotatoSoup
   m_EditorClassIdentifier: 
+  itemName: PotatoSoup
   itemIcon: {fileID: 21300000, guid: 38e71371c3400c34598571ca07f64434, type: 3}
   isStackable: 1
   maxStackQuantity: 5
+  buyPrice: 0
+  sellPriceMulti: 0.5
   healthRecovery: 5

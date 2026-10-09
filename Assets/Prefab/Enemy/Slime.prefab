@@ -138,6 +138,7 @@ MonoBehaviour:
   - {fileID: -2121992204275407441, guid: 596a2095d65f8f94b8aece22bf48f683, type: 3}
   attackCooldown: 2
   knockbackForceX: 2
+  stats: {fileID: 11400000, guid: e5999bce18200f548b01d9d39c7f5658, type: 2}
 --- !u!1 &4626757178591922119
 GameObject:
   m_ObjectHideFlags: 0

@@ -32,10 +32,10 @@ public class ShopNPC : MonoBehaviour // Nếu bạn có Interface IInteractable 
     // Hàm này gọi khi người chơi bấm nút Tương tác với NPC
     public void Interact()
     {
-        if (ShopController.instance != null)
+        if (ShopController.Instance != null)
         {
             // Mở cửa hàng và truyền chính con NPC này vào Controller
-            ShopController.instance.OpenShop(this);
+            ShopController.Instance.OpenShop(this);
         }
     }
     public void RemoveStock(ItemItem item, int amount)
