@@ -71,10 +71,10 @@ public class PlayerInteraction
         {
             currentInteract.InteractWithObject();
         }
-        if (currentItem != null)
+        if (currentItem != null && currentItem.isActiveAndEnabled)
         {
             inventory.AddItem(currentItem.itemData, currentItem.amount);
-            UnityEngine.Object.Destroy(currentItem.gameObject);
+            PoolManager.Despawn(currentItem.gameObject);
 
             currentItem = null;
             HideInteractUI();

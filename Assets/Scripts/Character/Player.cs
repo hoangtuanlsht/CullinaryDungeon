@@ -317,7 +317,7 @@ public class Player : Character
         if (collision.CompareTag("Coin"))
         {
             PlayerWallet.Add(1);
-            Destroy(collision.gameObject);
+            PoolManager.Despawn(collision.gameObject);
         }
         if (collision.CompareTag("DeadZone"))
         {
