@@ -139,6 +139,7 @@ public class Player : Character
         if (!isDead)
         {
             playerHunger.UpdateHungerLevel(Time.deltaTime);
+            ApplyHungerEffects(Time.deltaTime);
         }        
     }
     void FixedUpdate()

@@ -1,36 +1,55 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Flame : MonoBehaviour
+/// [Module 9] Đạn lửa của Devil. Lấy từ PoolManager, không Instantiate/Destroy.
+public class Flame : MonoBehaviour, IPoolable
 {
     public ParticleSystem hitVFX;
     public Rigidbody2D rb;
-    [SerializeField]private float speed;
-    [SerializeField]private float damage;
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private float speed;
+    [SerializeField] private float damage;
+    [SerializeField, Min(0.1f)] private float lifetime = 5f;
+    [Tooltip("Chạm layer này thì nổ (tường, sàn). Để Nothing = bay xuyên tường như cũ.")]
+    [SerializeField] private LayerMask blockingLayers;
+
+    private Cooldown life;          // struct của Module 6
+    private bool alive;
+
+    public void OnSpawned()
     {
-        OnInit();
+        alive = true;
+        rb.velocity = transform.right * speed;
+        life.Start(lifetime);
     }
 
-    // Update is called once per frame
-    private void OnInit(){
-        rb.velocity = transform.right * speed;
-        Invoke(nameof(OnDespawn), 5f);
-    }
-    private void OnDespawn()
+    public void OnDespawned()
     {
-        Destroy(gameObject);
+        alive = false;
+    }
+
+    private void Update()
+    {
+        if (alive && life.IsReady) PoolManager.Despawn(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.CompareTag("Player"))
+        if (!alive) return;                                         // đã nổ trong frame này rồi
+
+        if (collision.CompareTag("Player"))
         {
             collision.GetComponent<Character>().OnHit(damage, transform);
-            Instantiate(hitVFX, transform.position, transform.rotation);
-            OnDespawn();
+            Explode();
         }
+        else if ((blockingLayers.value & (1 << collision.gameObject.layer)) != 0)
+        {
+            Explode();
+        }
+    }
+
+    private void Explode()
+    {
+        alive = false;
+        if (hitVFX != null) PoolManager.Spawn(hitVFX, transform.position, transform.rotation);
+        PoolManager.Despawn(gameObject);
     }
 }

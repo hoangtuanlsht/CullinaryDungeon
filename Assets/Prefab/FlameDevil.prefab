@@ -208,6 +208,10 @@ MonoBehaviour:
   rb: {fileID: 9101849471219090506}
   speed: 2
   damage: 15
+  lifetime: 5
+  blockingLayers:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!212 &-5257685320607308032
 SpriteRenderer:
   m_ObjectHideFlags: 0

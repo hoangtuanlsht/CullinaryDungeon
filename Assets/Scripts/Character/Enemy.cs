@@ -52,6 +52,14 @@ public class Enemy : Character
 
         ChangeState(new IdleState());
         DeactiveAttack();
+        if (thrownPrefab != null)
+        {
+            PoolManager.Prewarm(thrownPrefab, 3);
+            if (thrownPrefab.hitVFX != null)
+            {
+                PoolManager.Prewarm(thrownPrefab.hitVFX, 2);
+            }
+        }
     }
     public void ApplyStats()
     {
@@ -76,7 +84,7 @@ public class Enemy : Character
         {
             foreach (var item in itemPrefab)
             {
-                Instantiate(item, transform.position, transform.rotation);
+                PoolManager.Spawn(item, transform.position, Quaternion.identity);
             }
         }
     }
@@ -146,6 +154,7 @@ public class Enemy : Character
         isAttacking = true;
         ChangedAnim("Attack");
         Throw();
+        
         if (thrownPoint == null && thrownPrefab == null)
         {
             Invoke("ActiveAttack",attackTime);
@@ -156,8 +165,7 @@ public class Enemy : Character
     {
         if(thrownPrefab != null && thrownPoint != null)
         {
-            Debug.Log("Throw");
-            Instantiate(thrownPrefab, thrownPoint.position, thrownPoint.rotation);
+            PoolManager.Spawn(thrownPrefab, thrownPoint.position, thrownPoint.rotation);
         }
 
     }
