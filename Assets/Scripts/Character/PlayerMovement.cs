@@ -30,6 +30,7 @@ public class PlayerMovement
     private float currentSpeed;
     private bool canCutJump;      // mỗi lần nhảy chỉ được cắt 1 lần
     private bool cutRequested;    // đã nhả Space trước khi lực nhảy kịp áp
+    private bool lockAnim;
 
     [Header("Sound")]
     private bool isPlayFootStep;
@@ -95,10 +96,11 @@ public class PlayerMovement
     /// Gọi trong FixedUpdate() của Player, sau khi các cờ trạng thái (dead/hurt/attack/defend)
     /// đã được tính. blockMovement = true khi Player đang dead/hurt/attack/defend — lúc đó
     /// combat/hurt handling đã tự set velocity, movement không được ghi đè lên.
-    public void PhysicsTick(bool blockMovement)
+    public void PhysicsTick(bool blockMovement, bool animLocked)
     {
         horizontalInput = input.MoveX;
         IsGrounded = CheckGrounded();
+        lockAnim = animLocked;
         SlopeCheck();
         HandleSlopeFriction();
 
@@ -125,27 +127,31 @@ public class PlayerMovement
                     if (!IsRunning)
                     {
                         currentSpeed = owner.speedWalk;
-                        owner.ChangedAnim("Run");
+                        PlayAnim("Run");
                     }
                     else
                     {
                         currentSpeed = owner.speedRun;
-                        owner.ChangedAnim("Fast");
+                        PlayAnim("Fast");
                     }
                     if (!isPlayFootStep) StartFootStep();
                 }
                 else
                 {
-                    owner.ChangedAnim("Idle");
+                    PlayAnim("Idle");
                     StopFootStep();
                 }
             }
         }
-
+        if(!IsGrounded && rb.velocity.y > 0.1f)
+        {
+            PlayAnim("Jump");
+            if (isPlayFootStep) StopFootStep();
+        }
         if (!IsGrounded && rb.velocity.y < 0)
         {
             isJumping = false;
-            owner.ChangedAnim("Fall");
+            PlayAnim("Fall");
             if (isPlayFootStep) StopFootStep();
         }
 
@@ -162,8 +168,7 @@ public class PlayerMovement
                 if (!IsGrounded && IsBlockedAhead(horizontalInput)) vx = 0f;
                 rb.velocity = new Vector2(vx, rb.velocity.y);
             }
-
-            owner.transform.localScale = new Vector3(horizontalInput > 0 ? 1f : -1f, 1f, 1f);
+            if(!lockAnim) owner.transform.localScale = new Vector3(horizontalInput > 0 ? 1f : -1f, 1f, 1f);
         }
         else if (IsGrounded)
         {
@@ -239,10 +244,14 @@ public class PlayerMovement
     {
         rb.sharedMaterial = (isOnSlope && IsGrounded && Mathf.Abs(horizontalInput) < 0.1f) ? fullFriction : noFriction;
     }
-
+    public void PlayAnim(string animName)
+    {
+        if (lockAnim) return;
+        owner.ChangedAnim(animName);
+    }
     private void Jump()
     {
-        owner.ChangedAnim("Jump");
+        PlayAnim("Jump");
         isJumping = false;
         rb.velocity = new Vector2(rb.velocity.x, 0);
 
@@ -270,8 +279,8 @@ public class PlayerMovement
                 }
                 owner.isDoubleJump = true;                                          // chạm tường trả lại nhảy đôi
                 rb.velocity = new Vector2(0f, Mathf.Max(rb.velocity.y, -owner.wallSlideSpeed));
-                owner.transform.localScale = new Vector3(wallDir, 1f, 1f);
-                owner.ChangedAnim("Fall");
+                owner.transform.localScale = new Vector3(-wallDir, 1f, 1f);
+                PlayAnim("Fall");
                 return true;
 
             case MoveState.WallJumpLock:
@@ -331,7 +340,7 @@ public class PlayerMovement
         canCutJump = false;                                       // bật tường có độ cao cố định
         rb.velocity = new Vector2(-wallDir * owner.wallJumpVelocity.x, owner.wallJumpVelocity.y);
         owner.transform.localScale = new Vector3(-wallDir, 1f, 1f);
-        owner.ChangedAnim("Jump");
+        PlayAnim("Jump");
         SetState(MoveState.WallJumpLock, owner.wallJumpLockTime);
     }
     public bool TryStartPound()
@@ -339,10 +348,9 @@ public class PlayerMovement
         if (!owner.Abilities.Has(Ability.GroundPound)) return false;
         if (IsGrounded || state != MoveState.Normal) return false;
         if (input.MoveY >= 0f) return false;                      // phải đang giữ Xuống
-
         isJumping = false;
         wallJumpRequested = false;
-        owner.ChangedAnim("Fall");
+        PlayAnim("Fall");
         SetState(MoveState.PoundWindup, owner.poundWindup);
         return true;
     }

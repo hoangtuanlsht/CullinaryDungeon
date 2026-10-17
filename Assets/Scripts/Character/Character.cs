@@ -39,6 +39,7 @@ public class Character : MonoBehaviour
             anim.SetTrigger(currentAnimName);
         }
     }
+    
     public virtual void OnInit()
     {
         if (healthBar != null) healthBar.Bind(this);

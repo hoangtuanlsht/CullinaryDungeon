@@ -115,8 +115,13 @@ public class Player : Character
 
         if (input.AttackPressed && !combat.IsDefending && !movement.IsPounding)
         {
-            if (!movement.TryStartPound()) combat.TryAttack();     // trên không + giữ Xuống → dậm; còn lại → đánh thường
+            bool pounded = !combat.IsAttacking && movement.TryStartPound();
+            if (!pounded) combat.BufferAttack();          // trước đây là combat.TryAttack()
         }
+
+        bool canAttack = !combat.IsDefending && !movement.IsPounding && !isHurt && !isDead
+                         && !PauseController.IsGamePause;
+        combat.Tick(canAttack);
         if (input.DefendHeld && isGrounded && !combat.IsAttacking && !isHurt && !isDead && !combat.IsDefending)
         {
             combat.TryDefend();
@@ -145,8 +150,8 @@ public class Player : Character
     void FixedUpdate()
     {
         if (controlLocked) return;
-        bool blockMovement = isDead || isHurt || combat.IsDefending || combat.IsAttacking;
-        movement.PhysicsTick(blockMovement);
+        bool blockMovement = isDead || isHurt || combat.IsDefending;
+        movement.PhysicsTick(blockMovement , combat.IsAttacking);
         float maxFallSpeed = movement.IsPounding ? poundSpeed : 15f; if (rb.velocity.y < -maxFallSpeed)
         {
             rb.velocity = new Vector2(rb.velocity.x, -maxFallSpeed);
@@ -170,7 +175,7 @@ public class Player : Character
         }
         if (combat.IsAttacking)
         {
-            rb.velocity = new Vector2(0, rb.velocity.y);
+            //rb.velocity = new Vector2(0, rb.velocity.y);
             return;
         }
     }
@@ -208,7 +213,7 @@ public class Player : Character
             Debug.Log("Player bi thuong!");
             ChangedAnim("Hurt");
             isHurt = true;
-
+            combat.ClearAttackBuffer();
             rb.velocity = Vector2.zero;
             float knockbackDirection = transform.position.x < attacker.position.x ? -1f : 1f;
             rb.AddForce(new Vector2(knockbackDirection * knockbackForceX, 0), ForceMode2D.Impulse);
@@ -219,7 +224,6 @@ public class Player : Character
     public void AnimEvent_HitboxOn() => combat.SetHitbox(true);
     public void AnimEvent_HitboxOff() => combat.SetHitbox(false);
     /// PlayerMovement gọi khi cú dậm chạm đất. Trả về true nếu có sàn bị phá (để lao tiếp).
-
     internal bool OnPoundLanded()
     {
         SoundManager.Play("Attack");         // tạm dùng tiếng có sẵn
@@ -311,7 +315,6 @@ public class Player : Character
             yield return wait;
         }
     }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Coin"))
@@ -440,7 +443,6 @@ public class Player : Character
         rb.velocity = Vector2.zero;
         rb.simulated = false;                // không rơi trong lúc scene đang load
     }
-
     public void EndTransition(Vector3 position, ExitDirection dir, Vector2 velocityBefore)
     {
         transform.position = position;

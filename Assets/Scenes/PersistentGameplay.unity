@@ -1294,7 +1294,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8644281265865025605, guid: 42b9593c33bf3544188cc6b700eab3ba, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4619,7 +4619,7 @@ MonoBehaviour:
     m_Bits: 64
   bodyCollider: {fileID: 802275188}
   damage: 10
-  attackCooldown: 1
+  attackCooldown: 0.4
   defendCooldown: 2
   rb: {fileID: 802275186}
   attackArea: {fileID: 1553649133}
@@ -9518,6 +9518,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Devil
       objectReference: {fileID: 0}
+    - target: {fileID: 6412467830576759394, guid: bf68a00c099d1024f8defba8038462a5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7217166053075233597, guid: bf68a00c099d1024f8defba8038462a5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.08
@@ -10278,7 +10282,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3097246439290522402, guid: 7a28285e89f0cd54a9f456757dd0b385, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9127631214036487347, guid: 7a28285e89f0cd54a9f456757dd0b385, type: 3}
       propertyPath: m_LocalPosition.x
@@ -12628,7 +12632,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8644281265865025605, guid: 42b9593c33bf3544188cc6b700eab3ba, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
