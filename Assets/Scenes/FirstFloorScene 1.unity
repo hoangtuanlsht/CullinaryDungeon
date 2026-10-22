@@ -3685,6 +3685,7 @@ MonoBehaviour:
     quantity: 2
   - item: {fileID: 11400000, guid: eb7008b49b074e54ea329168795b0e00, type: 2}
     quantity: 1
+  input: {fileID: 0}
   movingSlot:
     item: {fileID: 0}
     quantity: 0
@@ -5906,7 +5907,7 @@ Transform:
   m_GameObject: {fileID: 322446177}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.5300026, y: 10.72, z: -0.42217427}
+  m_LocalPosition: {x: 29.8, y: 33.4, z: -0.42217427}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5924,6 +5925,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baaf849636cdd3a4ea1bfae626012989, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  checkpointId: F1_CP01
   areaCamera: {fileID: 83009341}
 --- !u!61 &322446180
 BoxCollider2D:
@@ -99028,6 +99030,7 @@ GameObject:
   - component: {fileID: 1977574656}
   - component: {fileID: 1977574657}
   - component: {fileID: 1977574659}
+  - component: {fileID: 1977574660}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -99062,6 +99065,9 @@ MonoBehaviour:
   damage: 10
   attackCooldown: 1
   defendCooldown: 2
+  hitStopDuration: 0.05
+  recoilForce: 3
+  recoilTime: 0.1
   rb: {fileID: 1977574655}
   attackArea: {fileID: 1303569922}
   interactUI: {fileID: 1315420891}
@@ -99073,7 +99079,30 @@ MonoBehaviour:
   maxSlopeAngle: 60
   slopeCheckDistance: 0.5
   knockbackForceX: 3
-  hasDoubleJump: 1
+  abilities:
+    unlocked: 0
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  wallSlideSpeed: 2
+  wallJumpVelocity: {x: 4, y: 8}
+  wallJumpLockTime: 0.15
+  poundWindup: 0.15
+  poundSpeed: 20
+  poundLandLock: 0.2
+  poundDamage: 20
+  poundRadius: 1.5
+  poundHitLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  playerHunger:
+    hungerLevel: 100
+    hungerMaxLevel: 100
+    hungerSpeed: 0
+  starveDamagePerSecond: 2
+  fullRegenPerSecond: 1
+  starveHealthFloor: 0.2
+  respawnHungerRatio: 0.5
 --- !u!50 &1977574655
 Rigidbody2D:
   serializedVersion: 4
@@ -99184,6 +99213,18 @@ MonoBehaviour:
   player: {fileID: 1977574654}
   fader: {fileID: 1645719357}
   fadeDuration: 0.25
+--- !u!114 &1977574660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1977574653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da9cb297fee019244802dc7c89b70c6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1986883497
 GameObject:
   m_ObjectHideFlags: 0

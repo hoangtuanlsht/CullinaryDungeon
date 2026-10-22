@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
 [RequireComponent(typeof(PlayerInputReader))]
@@ -24,7 +25,11 @@ public class Player : Character
     public float damage = 10f;
     [SerializeField] private float attackCooldown = 2f;
     [SerializeField] private float defendCooldown = 2f;
-
+    private AttackArea attackOnHit;
+    [SerializeField] private float hitStopDuration = 0.05f;
+    private Coroutine hitStopRoutine;
+    [SerializeField] private float recoilForce = 3f;
+    [SerializeField] private float recoilTime = 0.1f;
 
     [Header("State Flags")]
     private bool isGrounded = true;
@@ -50,7 +55,6 @@ public class Player : Character
     [SerializeField] private float maxSlopeAngle = 45f;
     [SerializeField] private float slopeCheckDistance = 0.5f;
 
-
     [Header("Knockback")]
     [SerializeField] private float knockbackForceX = 3f;
 
@@ -58,7 +62,6 @@ public class Player : Character
     private PlayerCombat combat;
     private PlayerInteraction interaction;
     private Coroutine footStepLoop;
-
 
     [Header("Abilities")]
     [SerializeField] private PlayerAbilities abilities = new PlayerAbilities();
@@ -93,7 +96,7 @@ public class Player : Character
         rb = GetComponent<Rigidbody2D>();
         // trong Awake(), ngay sau rb = GetComponent<Rigidbody2D>();
         input = GetComponent<PlayerInputReader>();
-        PlayerWallet.Load();
+        attackOnHit = attackArea.GetComponent<AttackArea>();
         if (interactUI != null)
         {
             interactUI.SetActive(false);
@@ -106,7 +109,7 @@ public class Player : Character
         interaction = new PlayerInteraction(interactUI, recycleableInventoryManager);
 
         abilities.OnUnlocked += a => Debug.Log($"Mở khóa kỹ năng: {a}");
-
+        attackOnHit.OnAttackHit += (target) => HandleAttackHit(target);
     }
     void Update()
     {
@@ -210,7 +213,6 @@ public class Player : Character
         base.OnHit(damage, attacker);
         if (!IsDead)
         {
-            Debug.Log("Player bi thuong!");
             ChangedAnim("Hurt");
             isHurt = true;
             combat.ClearAttackBuffer();
@@ -349,7 +351,7 @@ public class Player : Character
         }
         StartCoroutine(ReloadMapAndRespawn());
     }
-    public void UpdateSavePoint(Vector3 newSavePosition, string cameraName)
+    public void UpdateSavePoint(Vector3 newSavePosition, string cameraName, string checkPointId = null, string sceneName = null)
     {
         currentRespawnPosition = newSavePosition;
 
@@ -427,7 +429,38 @@ public class Player : Character
         respawnRoutine = null;
         RespawnAtSavePoint();
     }
-
+    private void HandleAttackHit(UnityEngine.Transform target)
+    {
+        if (combat.TryRegisterHit())
+        {
+            Debug.Log($"Da chem trung");
+            movement.ApplyRecoil(target,recoilForce,recoilTime);
+            StartHitStop();
+        }
+    }
+    private void StartHitStop()
+    {
+        // TODO 1: nếu game đang pause thì không làm gì
+        if(PauseController.IsGamePause) return;
+        // TODO 2: nếu đang có một hitstop chạy dở thì dừng nó lại
+        //         (gợi ý: bạn đã làm việc này với hurtRoutine trong OnHit)
+        if (hitStopRoutine != null) { StopCoroutine(hitStopRoutine); hitStopRoutine = null; }
+        hitStopRoutine = StartCoroutine(HitStopRoutine());
+    }
+    private IEnumerator HitStopRoutine()
+    {
+        // TODO 3: dừng thời gian
+        Time.timeScale = 0f;
+        // TODO 4: chờ hitStopDuration theo thời gian THẬT
+        yield return new WaitForSecondsRealtime(hitStopDuration);
+        // TODO 5: trả thời gian về bình thường — nhưng chỉ khi không đang pause
+        if(!PauseController.IsGamePause) Time.timeScale = 1f;
+        else
+        {
+            Time.timeScale = 0f;
+        }
+        hitStopRoutine = null;
+    }
     private IEnumerator HurtRoutine()
     {
         yield return new WaitForSeconds(0.5f);
@@ -464,6 +497,12 @@ public class Player : Character
         }
         input.SetGameplayEnabled(true);
         controlLocked = false;
+    }
+    private void OnDisable()
+    {
+        if (hitStopRoutine == null) return;              // không có hitstop → không phải việc của mình
+        if (!PauseController.IsGamePause) Time.timeScale = 1f;
+        hitStopRoutine = null;
     }
 }
 

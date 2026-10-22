@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Egg
   m_EditorClassIdentifier: 
   itemName: Egg
+  itemId: item_egg
   itemIcon: {fileID: 21300000, guid: ce993d5f7ca6ea8459974fd88e71861d, type: 3}
   isStackable: 1
   maxStackQuantity: 10

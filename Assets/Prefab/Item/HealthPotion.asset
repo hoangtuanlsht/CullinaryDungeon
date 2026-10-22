@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: HealthPotion
   m_EditorClassIdentifier: 
   itemName: HealthPotion
+  itemId: item_healthpotion
   itemIcon: {fileID: 21300000, guid: 117b17facff65dc42b1b57deb7c21551, type: 3}
   isStackable: 1
   maxStackQuantity: 20
   buyPrice: 8
   sellPriceMulti: 0.5
   healthRecovery: 50
+  hungerRecovery: 0

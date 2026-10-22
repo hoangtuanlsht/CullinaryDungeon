@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 2220556793095013860}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.57, z: 0}
   m_LocalScale: {x: 5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -199,7 +199,7 @@ Transform:
   m_GameObject: {fileID: 6035164399049098154}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.41, y: -0.13, z: 0}
+  m_LocalPosition: {x: 0.41, y: 0.57, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -274,6 +274,7 @@ GameObject:
   - component: {fileID: 6040677098908712481}
   - component: {fileID: 8475905070946512503}
   - component: {fileID: 4777511145645728781}
+  - component: {fileID: -4081311193306860634}
   m_Layer: 8
   m_Name: Skeleton
   m_TagString: Enemy
@@ -390,7 +391,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.248088, y: -0.22496223}
+  m_Offset: {x: -0.248088, y: 0.65}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -403,6 +404,21 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.8237753, y: 1.3551216}
   m_EdgeRadius: 0
+--- !u!114 &-4081311193306860634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7217097081155875171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cbcf91a1b0a94f4ab873feed2a88c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 0}
+  flashMaterial: {fileID: 2100000, guid: 2ba587615a567124193ec8117525b258, type: 2}
+  flashDuration: 0.08
 --- !u!1 &7840362227032855903
 GameObject:
   m_ObjectHideFlags: 0

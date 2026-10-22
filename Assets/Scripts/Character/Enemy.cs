@@ -30,6 +30,12 @@ public class Enemy : Character
     [Header("Data (Module 4)")]
     [SerializeField] private EnemyStats stats;
     public EnemyStats Stats => stats;
+    [Header("Hit")]
+    private HitFeedback hitFeedback;
+    private void Awake()
+    {
+        hitFeedback = GetComponent<HitFeedback>();
+    }
     private void Update()
     {
         if (isHurt)
@@ -91,6 +97,7 @@ public class Enemy : Character
     public override void OnHit(float damage,UnityEngine.Transform attacker)
     {
         base.OnHit(damage,attacker);
+        if (hitFeedback  != null) hitFeedback.Play();
         if (!IsDead)
         {
             isHurt = true;

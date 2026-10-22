@@ -34,7 +34,7 @@ public class PlayerMovement
 
     [Header("Sound")]
     private bool isPlayFootStep;
-    private enum MoveState { Normal, WallSlide, WallJumpLock, PoundWindup, PoundFall, PoundLand }
+    private enum MoveState { Normal, WallSlide, WallJumpLock,Recoil, PoundWindup, PoundFall, PoundLand }
 
     [Header("State machine (Module 7)")]
     private MoveState state = MoveState.Normal;
@@ -287,6 +287,10 @@ public class PlayerMovement
                 if (stateTimer <= 0f) { SetState(MoveState.Normal); return false; }
                 return true;                                                        // giữ vận tốc đã đặt
 
+            case MoveState.Recoil:
+                if (stateTimer <= 0f) { SetState(MoveState.Normal); return false; }
+                return true;                                                        // giữ vận tốc đã đặt
+
             case MoveState.PoundWindup:
                 rb.velocity = Vector2.zero;                               // treo trên không
                 if (stateTimer <= 0f) SetState(MoveState.PoundFall);
@@ -342,6 +346,13 @@ public class PlayerMovement
         owner.transform.localScale = new Vector3(-wallDir, 1f, 1f);
         PlayAnim("Jump");
         SetState(MoveState.WallJumpLock, owner.wallJumpLockTime);
+    }
+    public void ApplyRecoil(Transform enemy, float recoilForce, float recoilTime)
+    {
+        if(state != MoveState.Normal) return;
+        float dir = Mathf.Sign(owner.transform.position.x - enemy.position.x );
+        rb.velocity = new Vector2(dir * recoilForce, rb.velocity.y);
+        SetState(MoveState.Recoil, recoilTime);
     }
     public bool TryStartPound()
     {

@@ -198,6 +198,7 @@ GameObject:
   - component: {fileID: 6347995328583462344}
   - component: {fileID: 5025343760200270385}
   - component: {fileID: 6346168761321871418}
+  - component: {fileID: 687544299515404648}
   m_Layer: 8
   m_Name: Bat-IdleFly_0
   m_TagString: Enemy
@@ -396,3 +397,18 @@ MonoBehaviour:
     m_Bits: 64
   dirX: -1
   dirY: 0.25
+--- !u!114 &687544299515404648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7429380514043486685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cbcf91a1b0a94f4ab873feed2a88c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 0}
+  flashMaterial: {fileID: 2100000, guid: 2ba587615a567124193ec8117525b258, type: 2}
+  flashDuration: 0.08

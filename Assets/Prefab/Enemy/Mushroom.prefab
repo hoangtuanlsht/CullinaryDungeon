@@ -134,7 +134,7 @@ Transform:
   m_GameObject: {fileID: 3544789318344000011}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.68, y: 0, z: 0}
+  m_LocalPosition: {x: 0.68, y: 0.49, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -261,6 +261,7 @@ GameObject:
   - component: {fileID: 2639822787984981971}
   - component: {fileID: 4888338235132067202}
   - component: {fileID: 2293867733612801346}
+  - component: {fileID: -8700444604223083341}
   m_Layer: 8
   m_Name: Mushroom
   m_TagString: Enemy
@@ -375,7 +376,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.0049989223}
+  m_Offset: {x: 0, y: 0.6}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -388,6 +389,21 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1.2188563}
   m_EdgeRadius: 0
+--- !u!114 &-8700444604223083341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5675400309122342380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cbcf91a1b0a94f4ab873feed2a88c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 0}
+  flashMaterial: {fileID: 2100000, guid: 2ba587615a567124193ec8117525b258, type: 2}
+  flashDuration: 0.08
 --- !u!1 &9081491450594437118
 GameObject:
   m_ObjectHideFlags: 0
@@ -417,7 +433,7 @@ Transform:
   m_GameObject: {fileID: 9081491450594437118}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.45, z: 0}
   m_LocalScale: {x: 5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

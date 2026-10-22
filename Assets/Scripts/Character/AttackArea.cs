@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,8 @@ public class AttackArea : MonoBehaviour
     private GruzMother gruzMother;
     private FlyEnemy flyEnemy;
     private Player player;
+    public event Action<UnityEngine.Transform> OnAttackHit;
+    
     public void Awake()
     {
         enemy = GetComponentInParent<Enemy>();
@@ -24,6 +27,7 @@ public class AttackArea : MonoBehaviour
         else if(collision.CompareTag("Enemy") && player != null)
         {
             collision.GetComponent<Character>().OnHit(player.damage, transform.parent);
+            OnAttackHit?.Invoke(collision.transform);
         }
         if (collision.CompareTag("Player") && gruzMother!= null)
         {

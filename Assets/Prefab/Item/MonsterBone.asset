@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: MonsterBone
   m_EditorClassIdentifier: 
   itemName: MonsterBone
+  itemId: item_monsterbone
   itemIcon: {fileID: 21300000, guid: 844a1050d03ba5046bfb86af34a81e47, type: 3}
   isStackable: 1
   maxStackQuantity: 20

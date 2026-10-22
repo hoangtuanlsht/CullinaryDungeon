@@ -21,6 +21,7 @@ public class PlayerCombat
     private const float resetAttackIndexTime = 1f;
     private float lastAttackTime = 0f;
     private bool HasBufferedAttack => Time.time - lastAttackPressTime <= AttackBufferWindow;
+    private bool hasHitThisSwing = false;
 
     private readonly List<string> attackList = new List<string> { "Attack", "Attack1", "Attack2" };
     public bool IsAttacking { get; private set; }
@@ -60,6 +61,7 @@ public class PlayerCombat
     private void PerformAttack()
     {
         attackCd.Start(attackCooldown);
+        hasHitThisSwing = false;
         SoundManager.Play("Attack");
         if (attackIndex >= attackList.Count || Time.time - lastAttackTime > resetAttackIndexTime)
         {
@@ -84,6 +86,15 @@ public class PlayerCombat
     public void SetHitbox(bool on)
     {
         if (attackArea != null) attackArea.SetActive(on && IsAttacking);
+    }
+    public bool TryRegisterHit()
+    {
+        // nếu đã trúng rồi → trả về false
+        if(hasHitThisSwing) return false;
+        // nếu chưa → đánh dấu đã trúng, trả về true
+        hasHitThisSwing = true;
+        return true;
+        
     }
 
     /// Điều kiện gọi (phím F giữ, isGrounded, !isAttacking, !isHurt, !isDead, !isDefending)
@@ -112,6 +123,7 @@ public class PlayerCombat
         Stop(ref defendRoutine);
         IsAttacking = false;
         IsDefending = false;
+        hasHitThisSwing = false;
         if (attackArea != null) attackArea.SetActive(false);
         ClearAttackBuffer();
     }

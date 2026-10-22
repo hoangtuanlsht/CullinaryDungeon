@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Brocoli
   m_EditorClassIdentifier: 
   itemName: Brocoli
+  itemId: item_brocoli
   itemIcon: {fileID: 21300000, guid: 35d3bb71bb16ee8419bd959039d60fb3, type: 3}
   isStackable: 1
   maxStackQuantity: 20

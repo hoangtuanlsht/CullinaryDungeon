@@ -18,6 +18,7 @@ public class InventoryManager : Singleton<InventoryManager>, IRecyclableScrollRe
     [SerializeField] private int totalSlots = 30;
     [SerializeField] public SlotClass[] items;
     [SerializeField] private SlotClass[] startingItems;
+    private bool slotsReady;
 
     [Header("Moving/Dragging")]
     [SerializeField] private PlayerInputReader input;
@@ -48,34 +49,8 @@ public class InventoryManager : Singleton<InventoryManager>, IRecyclableScrollRe
 
 
     private void Start()
-    {
-        items = new SlotClass[totalSlots];
-        for (int i = 0; i < items.Length; i++)
-        {
-            items[i] = new SlotClass();
-        }
-
-        for (int i = 0; i < startingItems.Length; i++)
-        {
-            items[i] = new SlotClass();
-        }
-        for (int i = 0; i < startingItems.Length; i++)
-        {
-            if (startingItems[i].GetQuantity() >= 1)
-            {
-                items[i] = startingItems[i];
-            }
-
-        }
-        craftingSlots = new SlotClass[4];
-        for (int i = 0; i < craftingSlots.Length; i++)
-        {
-            // Tạo mới một instance SlotClass cho từng ô để ô đó sẵn sàng chứa item
-            craftingSlots[i] = new SlotClass();
-        }
-
-        // Khởi tạo instance cho ô chứa kết quả chế tạo
-        resultSlot = new SlotClass();
+    {        
+        if (!slotsReady) InitSlots(giveStartingItems: true);
         if (scrollRect != null)
         {
             scrollRect.Initialize(this); // Gọi hàm này để thiết lập DataSource và đúc Cell
@@ -107,6 +82,74 @@ public class InventoryManager : Singleton<InventoryManager>, IRecyclableScrollRe
             PauseController.SetPause(posInventory.y == 1000 ? true : false);
 
         }
+    }
+    /// [Module 10] Dựng lại toàn bộ ô. Gọi từ Start (game mới) hoặc từ RestoreFrom (nạp save).
+    private void InitSlots(bool giveStartingItems)
+    {
+        items = new SlotClass[totalSlots];
+        for (int i = 0; i < items.Length; i++) items[i] = new SlotClass();
+        if (giveStartingItems && startingItems != null)
+        {
+            for (int i = 0; i < startingItems.Length && i < items.Length; i++)
+            {
+                SlotClass s = startingItems[i];
+                if (s != null && s.GetItem() != null && s.GetQuantity() >= 1)
+                {
+                    items[i] = new SlotClass(s.GetItem(),s.GetQuantity());
+                }
+            }
+        }
+        craftingSlots = new SlotClass[4];
+        for(int i = 0;i < craftingSlots.Length; i++) craftingSlots[i] = new SlotClass();
+        resultSlot = new SlotClass();
+        movingSlot.RemoveItem();
+        isMoving = false;
+        slotsReady = true;
+    }
+    public void CaptureTo(InventorySave dst)
+    {
+        dst.slots.Clear();
+        dst.loose.Clear();
+
+        for (int i = 0; i < items.Length; i++)
+        {
+            SlotClass s = items[i];     // có thể null sau ClearInventory()
+            if (s == null || s.GetItem() == null || s.GetQuantity() <= 0) continue;
+            dst.slots.Add(new SlotSave { index = i ,itemId = s.GetItem().ItemId, quantity = s.GetQuantity() });
+        }
+
+        AddLoose(dst, movingSlot);
+        foreach (SlotClass c in craftingSlots) AddLoose(dst, c);
+        // resultSlot không lưu: nó chỉ là bản xem trước, suy ra lại từ craftingSlots
+    }
+    private static void AddLoose(InventorySave dst, SlotClass s)
+    {
+        if (s == null || s.GetItem() == null || s.GetQuantity() <= 0) return;
+        dst.loose.Add(new SlotSave { index = -1 ,itemId = s.GetItem().ItemId,quantity = s.GetQuantity() });
+    }
+    private void RestoreFrom(in InventorySave src, ItemDatabase db)
+    {
+        InitSlots(giveStartingItems:false);
+        foreach (SlotSave s in src.slots)
+        {  
+            if(s.index < 0 || s.index >= items.Length)
+            {
+                Debug.LogWarning($"Save: ô {s.index} ngoài túi ({items.Length} ô), bỏ qua {s.itemId}");
+                continue;
+            }
+            if(!db.TryGet(s.itemId,out ItemItem item))
+            {
+                Debug.LogWarning($"Save: không còn item '{s.itemId}', bỏ qua");
+                continue;
+            }
+            items[s.index] = new SlotClass(item, s.quantity);
+        }
+        foreach (SlotSave s in src.loose)
+        {
+            if(db.TryGet(s.itemId, out ItemItem item)) AddItem(item, s.quantity);
+            else Debug.LogWarning($"Save: không còn item '{s.itemId}', bỏ qua");
+        }
+        UpdateCraftingUI();
     }
     public int GetItemCount()
     {

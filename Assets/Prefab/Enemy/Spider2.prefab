@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5216081877180574682}
   - component: {fileID: 3005669168347266337}
   - component: {fileID: 4821864394299079202}
+  - component: {fileID: -2157584333880618841}
   m_Layer: 8
   m_Name: Spider2
   m_TagString: Enemy
@@ -139,6 +140,21 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.6647311, y: 0.7443341}
   m_EdgeRadius: 0
+--- !u!114 &-2157584333880618841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 369143911390426246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cbcf91a1b0a94f4ab873feed2a88c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 0}
+  flashMaterial: {fileID: 2100000, guid: 2ba587615a567124193ec8117525b258, type: 2}
+  flashDuration: 0.08
 --- !u!1 &1297166788296147592
 GameObject:
   m_ObjectHideFlags: 0
@@ -338,7 +354,7 @@ Transform:
   m_GameObject: {fileID: 1342121157469523156}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.5277778, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

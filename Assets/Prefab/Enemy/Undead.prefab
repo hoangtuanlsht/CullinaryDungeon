@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1338628338248451892}
   - component: {fileID: 652285972028203779}
   - component: {fileID: 4193544493847440810}
+  - component: {fileID: -4361343284231965476}
   m_Layer: 8
   m_Name: Undead
   m_TagString: Enemy
@@ -138,6 +139,21 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.6811166, y: 1.1297338}
   m_EdgeRadius: 0
+--- !u!114 &-4361343284231965476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 29235039120004825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cbcf91a1b0a94f4ab873feed2a88c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 0}
+  flashMaterial: {fileID: 2100000, guid: 2ba587615a567124193ec8117525b258, type: 2}
+  flashDuration: 0.08
 --- !u!1 &2703618551031641032
 GameObject:
   m_ObjectHideFlags: 0
@@ -427,7 +443,7 @@ Transform:
   m_GameObject: {fileID: 6046101504241278477}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

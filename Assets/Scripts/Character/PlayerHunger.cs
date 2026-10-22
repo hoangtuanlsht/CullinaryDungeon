@@ -100,5 +100,12 @@ public class PlayerHunger
         hungerLevel = Mathf.Max(hungerLevel, ratio*hungerMaxLevel);
         UpdateHungerState();
     }
+    /// [Module 10] Nạp từ save. Ép HUD cập nhật dù số mới trùng số cũ.
+    public void Restore(float level)
+    {
+        hungerLevel = Mathf.Clamp(level, 0f, hungerMaxLevel);
+        lastReportedLevel = -1;
+        UpdateHungerState();
+    }
     public bool IsFull => hungerLevel >= hungerMaxLevel;
 }
