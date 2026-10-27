@@ -29,7 +29,7 @@ public class PlayerSave
 {
     public float damage;
     public int coin;
-    public string abilities;
+    public int abilities;
     public float hunger;
     public string sceneName;
     public string checkpointId;

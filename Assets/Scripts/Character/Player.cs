@@ -48,6 +48,10 @@ public class Player : Character
     private string currentRespawnCameraName; // Ten VCam tuong ung voi Save Point hien tai
     private Coroutine respawnRoutine;
     private Coroutine hurtRoutine;
+    public string RespawnSceneName { get; private set; }
+    public string RespawnCheckPointId { get; private set; }
+    public event Action OnSavePointChanged;
+
 
     [Header("Slope")]
     [SerializeField] private PhysicsMaterial2D fullFriction;
@@ -359,7 +363,21 @@ public class Player : Character
         {
             currentRespawnCameraName = cameraName;
         }
+        if (!string.IsNullOrEmpty(checkPointId))
+        {
+            RespawnCheckPointId = checkPointId;
+            RespawnSceneName = sceneName;
+        }
+        OnSavePointChanged?.Invoke();
         Debug.Log("Da cap nhat diem hoi sinh moi tai: " + currentRespawnPosition + " | Camera: " + currentRespawnCameraName);
+    }
+    /// [Module 10] Nạp save: đặt điểm hồi sinh mà KHÔNG bắn OnSavePointChanged (đang nạp, không phải vừa chạm checkpoint).
+    public void RestoreSavePoint(Vector3 position, string checkpointId, string sceneName)
+    {
+        currentRespawnPosition = position;
+        currentRespawnCameraName = null;
+        RespawnCheckPointId= checkpointId;
+        RespawnSceneName = sceneName;
     }
     private IEnumerator ReloadMapAndRespawn()
     {

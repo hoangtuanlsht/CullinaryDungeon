@@ -127,7 +127,7 @@ public class InventoryManager : Singleton<InventoryManager>, IRecyclableScrollRe
         if (s == null || s.GetItem() == null || s.GetQuantity() <= 0) return;
         dst.loose.Add(new SlotSave { index = -1 ,itemId = s.GetItem().ItemId,quantity = s.GetQuantity() });
     }
-    private void RestoreFrom(in InventorySave src, ItemDatabase db)
+    public void RestoreFrom(InventorySave src, ItemDatabase db)
     {
         InitSlots(giveStartingItems:false);
         foreach (SlotSave s in src.slots)
