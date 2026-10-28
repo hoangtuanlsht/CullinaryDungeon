@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,54 +12,53 @@ public class MainMenuManeger : MonoBehaviour
     [SerializeField] private GameObject[] objectsToHide;
 
     [SerializeField] private SceneField persistentGameplay;
-    [SerializeField] private SceneField levelScene;
-    [SerializeField] private string spawnPoint;
 
-    private List<AsyncOperation> sceneToLoad = new List<AsyncOperation>();
+    [Header("Module 10")]
+    [SerializeField] private Button continueButton;
+    [SerializeField] private GameObject confirmNewGamePanel;  // "Xoá save cũ và chơi lại?" + 2 nút
+
     void Awake()
     {
         loadingBarObject.SetActive(false);
+        if(confirmNewGamePanel != null) confirmNewGamePanel.SetActive(false);
+        if (continueButton != null) continueButton.interactable = SaveMigrator.CanContinue();
     }
 
-    // Update is called once per frame
-    public void StartGame()
+    public void ContinueGame()
     {
-        HideMenu();
+        SceneData.ContinueRequested = true;
+        StartLoading();
+    }
+    public void NewGame()
+    {
+        if (SaveSystem.HasSave() && confirmNewGamePanel != null) confirmNewGamePanel.SetActive(true);
+        else ConfirmNewGame(); 
+    }
+    // Nút "Đồng ý" trong panel xác nhận
+    public void ConfirmNewGame()
+    {
+        SaveSystem.DeleteSave();
+        SceneData.ContinueRequested=false;
+        StartLoading();
+    }
+    public void CancelNewGame() => confirmNewGamePanel.SetActive(false);
 
+    public void QuitMenu() => Application.Quit();
+    private void StartLoading()
+    {
+        foreach(GameObject go in objectsToHide) go.SetActive(false);
+        if(confirmNewGamePanel != null) confirmNewGamePanel.SetActive(false);
         loadingBarObject.SetActive(true);
-        sceneToLoad.Add(SceneManager.LoadSceneAsync(persistentGameplay));
-        sceneToLoad.Add(SceneManager.LoadSceneAsync(levelScene, LoadSceneMode.Additive));
-        
-        StartCoroutine(ProgessLoadingBar());
-
+        StartCoroutine(Load());
     }
-    private void HideMenu()
+    private IEnumerator Load()
     {
-        for(int i =0;i<objectsToHide.Length;i++)
+        AsyncOperation op = SceneManager.LoadSceneAsync(persistentGameplay);// Single: MainMenu bị unload
+        while (!op.isDone)
         {
-            objectsToHide[i].SetActive(false);
+            loadingBar.fillAmount = op.progress / 0.9f;  // progress dừng ở 0.9 cho tới lúc kích hoạt
+            yield return null;
         }
     }
-    public void QuitMenu()
-    {
-        Application.Quit();
-    }
-    private IEnumerator ProgessLoadingBar()
-    {
-        Debug.Log("Loading");
-        float loadPregess = 0f;
-        for(int i = 0; i < sceneToLoad.Count; i++)
-        {
-            while (!sceneToLoad[i].isDone)
-            {
-                Debug.Log("scenetoload");
-                SceneData.SpawnPointName = spawnPoint;
-                loadPregess += sceneToLoad[i].progress;
-                loadingBar.fillAmount = loadPregess / sceneToLoad.Count;
-                yield return null;
-            }
-        }
-        
 
-    }
 }
