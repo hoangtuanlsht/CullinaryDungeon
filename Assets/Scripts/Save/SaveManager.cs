@@ -11,10 +11,17 @@ public class SaveManager : Singleton<SaveManager>
     [SerializeField] private InventoryManager inventory;
     [SerializeField] private ItemDatabase itemDatabase;
 
+    private float playTime;
+
     public event Action OnSaved;
 
     public bool IsLoading { get; set; }
     private bool dirty;
+    
+    private void Update()
+    {
+        if (!IsLoading && !PauseController.IsGamePause) playTime += Time.unscaledDeltaTime;    
+    }
     // ---------- Tự lưu ----------
 
     private void OnEnable()

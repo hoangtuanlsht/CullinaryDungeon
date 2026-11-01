@@ -1517,6 +1517,9 @@ MonoBehaviour:
   damage: 10
   attackCooldown: 2
   defendCooldown: 2
+  hitStopDuration: 0.05
+  recoilForce: 3
+  recoilTime: 0.1
   rb: {fileID: 480035046}
   attackArea: {fileID: 2056640386}
   interactUI: {fileID: 1771547406}
@@ -3583,6 +3586,10 @@ PrefabInstance:
     - target: {fileID: 634887806470148251, guid: ace05167d88b209469164ba4a95ace34, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5775198434244589780, guid: ace05167d88b209469164ba4a95ace34, type: 3}
+      propertyPath: chestId
+      value: GU_Chest01
       objectReference: {fileID: 0}
     - target: {fileID: 5775198434244589780, guid: ace05167d88b209469164ba4a95ace34, type: 3}
       propertyPath: coinAmount

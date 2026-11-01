@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class SaveMigrator
 {
-    public const int CurrentVersion = 1;
+    public const int CurrentVersion = 2;
 
     /// Nâng cấp tại chỗ lên CurrentVersion. false nếu không dùng được (hỏng, hoặc mới hơn bản game).
     public static bool TryUpgrade(SaveData d)
@@ -19,13 +19,21 @@ public static class SaveMigrator
         {
             switch (d.version)
             {
-                // case 1: Migrate_1_to_2(d); break;    ← buổi 10.5
+                case 1:
+                    Migrate_1_to_2(d); break;
                 default:
                     Debug.LogError($"Thiếu bước nâng cấp từ phiên bản {d.version}");
                     return false;
             }
         }
         return true;
+    }
+    /// v1 chưa có thời gian chơi. JsonUtility đã để 0; ghi rõ ra đây để mọi bước nâng cấp đều có một hàm,
+    /// kể cả bước mà giá trị mặc định tình cờ đã đúng.
+    private static void Migrate_1_to_2(SaveData d)
+    {
+        d.playTimeSecond = 0f;
+        d.version = 2;
     }
     //MainMenu dùng để bật/tắt nút Continue.
     public static bool CanContinue() => SaveSystem.TryLoad(out SaveData d) && TryUpgrade(d);

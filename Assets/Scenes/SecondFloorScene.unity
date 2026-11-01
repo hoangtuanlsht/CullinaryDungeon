@@ -1206,6 +1206,7 @@ GameObject:
   - component: {fileID: 60290543}
   - component: {fileID: 60290542}
   - component: {fileID: 60290541}
+  - component: {fileID: 60290544}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -1329,6 +1330,9 @@ MonoBehaviour:
   damage: 10
   attackCooldown: 2
   defendCooldown: 2
+  hitStopDuration: 0.05
+  recoilForce: 3
+  recoilTime: 0.1
   rb: {fileID: 60290542}
   attackArea: {fileID: 1975172797}
   interactUI: {fileID: 0}
@@ -1340,7 +1344,42 @@ MonoBehaviour:
   maxSlopeAngle: 45
   slopeCheckDistance: 0.5
   knockbackForceX: 3
-  hasDoubleJump: 0
+  abilities:
+    unlocked: 0
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  wallSlideSpeed: 2
+  wallJumpVelocity: {x: 4, y: 8}
+  wallJumpLockTime: 0.15
+  poundWindup: 0.15
+  poundSpeed: 20
+  poundLandLock: 0.2
+  poundDamage: 20
+  poundRadius: 1.5
+  poundHitLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  playerHunger:
+    hungerLevel: 100
+    hungerMaxLevel: 100
+    hungerSpeed: 0
+  starveDamagePerSecond: 2
+  fullRegenPerSecond: 1
+  starveHealthFloor: 0.2
+  respawnHungerRatio: 0.5
+--- !u!114 &60290544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60290539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da9cb297fee019244802dc7c89b70c6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &80813235
 GameObject:
   m_ObjectHideFlags: 0
@@ -1910,7 +1949,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &162280808
 Transform:
   m_ObjectHideFlags: 0
@@ -3913,7 +3952,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &634421628
 Transform:
   m_ObjectHideFlags: 0
@@ -5662,6 +5701,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baaf849636cdd3a4ea1bfae626012989, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  checkpointId: 
   areaCamera: {fileID: 1179511231}
 --- !u!1 &1026267095
 GameObject:
@@ -15929,6 +15969,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baaf849636cdd3a4ea1bfae626012989, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  checkpointId: 
   areaCamera: {fileID: 396408895}
 --- !u!61 &1506101601
 BoxCollider2D:
@@ -19069,7 +19110,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2113902817
 Transform:
   m_ObjectHideFlags: 0

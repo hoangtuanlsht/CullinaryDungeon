@@ -22,6 +22,7 @@ public class SaveData
     public PlayerSave player = new();
     public WorldSave world = new();
     public InventorySave inventory = new();
+    public float playTimeSecond; //v2
 }
 //PlayerSave
 [Serializable]
