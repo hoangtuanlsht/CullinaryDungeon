@@ -11,6 +11,8 @@ using UnityEngine.Tilemaps;
 /// - Mê cung + trạm tiếp tế: nền ảnh hang F3_CaveBG.png
 /// - Hành lang kỵ sĩ + hành lang đá: tile KnightDungeon (tường/sàn/trần/nền), R21 giữ nền hall.png làm cổng
 /// - Platform gỗ + xương: tile Dungeon2
+/// - Đất mê cung/tiếp tế: đá rêu xanh lam (main_lev_buildA); đồ trang trí gothic (tileset.png), chợ (Medieval Props_Decor),
+///   đuốc lửa xanh / đuốc đứng / đèn tường / tinh thể có animation (SpriteFrameAnimator)
 /// Chạy: Tools > Culinaria > Build Third Floor (F3). Chạy lại bao nhiêu lần cũng được (xóa sạch rồi dựng lại).
 public static class ThirdFloorBuilder
 {
@@ -40,6 +42,13 @@ public static class ThirdFloorBuilder
     const string TM = "Assets/TileMap/";
     const string KD = "Assets/TileMap/KnightDungeon/";
     const string D2 = "Assets/TileMap/Dungeon2/Dungeon Tile Set_";
+    const string RS = "Assets/Resouces/";
+    const string CaveSheet = RS + "main_lev_buildA.png";
+    const string GothicSheet = RS + "tileset.png";
+    const string MedievalSheet = RS + "MedievalVillageExteriorv1.0/RawAssets/Props_Decor.png";
+    const string SconceSheet = RS + "MedievalVillageExteriorv1.0/RawAssets/Sconce_Spritesheet.png";
+    const string CaveTileFolder = "Assets/TileMap/F3Cave";
+    const int PropOrder = -5;            // đồ trang trí: sau đất (0) và sau nhân vật, trước ảnh nền (-11..-20)
 
     // ===================== DỮ LIỆU =====================
     enum Zone { Supply, Cave, Hall, Corridor }
@@ -111,6 +120,7 @@ public static class ThirdFloorBuilder
         WriteTilemaps(out Transform gridT);
         BuildBackgroundSprites();
         BuildStairs();
+        BuildProps();
         BuildRooms();
         BuildDoorsAndInteract();
         BuildNPCs();
@@ -394,6 +404,29 @@ static Material BrightMaterial(string path, float k)
 
     static int Hash(int x, int y) => Mathf.Abs((x * 73856093) ^ (y * 19349663));
 
+    // ===================== SPRITE TỪ GÓI MỚI =====================
+    static Dictionary<string, Sprite> caveSpr, gothicSpr, medSpr, sconceSpr;
+    static Dictionary<string, Sprite> Sheet(string path) => AssetDatabase.LoadAllAssetsAtPath(path).OfType<Sprite>().GroupBy(s => s.name).ToDictionary(g => g.Key, g => g.First());
+    static Sprite Get(Dictionary<string, Sprite> d, string n) { if (d != null && d.TryGetValue(n, out var s)) return s; log.Add("THIẾU sprite: " + n); return null; }
+    static Sprite GS(string n) { if (gothicSpr == null) gothicSpr = Sheet(GothicSheet); return Get(gothicSpr, n); }
+    static Sprite MS(string n) { if (medSpr == null) medSpr = Sheet(MedievalSheet); return Get(medSpr, n); }
+    static Sprite[] Frames(params string[] files) => files.Select(f => AssetDatabase.LoadAssetAtPath<Sprite>(RS + "Anim/" + f + ".png")).ToArray();
+
+    /// Tile asset (lưu trong Assets/TileMap/F3Cave) từ ô 16px caveA_{c}_{r} của main_lev_buildA. Va chạm theo ô lưới.
+    static TileBase CaveTile(int c, int r)
+    {
+        string n = $"caveA_{c}_{r}", p = $"{CaveTileFolder}/{n}.asset";
+        var t = AssetDatabase.LoadAssetAtPath<Tile>(p);
+        if (t != null) return t;
+        if (caveSpr == null) caveSpr = Sheet(CaveSheet);
+        if (!caveSpr.TryGetValue(n, out var s)) { log.Add("THIẾU ô đá: " + n); return null; }
+        if (!AssetDatabase.IsValidFolder(CaveTileFolder)) AssetDatabase.CreateFolder("Assets/TileMap", "F3Cave");
+        t = ScriptableObject.CreateInstance<Tile>();
+        t.sprite = s; t.colliderType = Tile.ColliderType.Grid;
+        AssetDatabase.CreateAsset(t, p);
+        return t;
+    }
+
     static void WriteTilemaps(out Transform gridT)
     {
         var gridGo = new GameObject("Grid", typeof(Grid));
@@ -412,7 +445,13 @@ static Material BrightMaterial(string path, float k)
         TileBase[] kBg = { K("Bricks1BG"), K("Bricks2BG"), K("Bricks3BG"), K("Bricks4BG") };
 
         var kBgTm = NewTilemap(gridT, "F3_BG_KnightDungeon", -12, Color.white, 0, bgMat);
-        var ground = NewTilemap(gridT, "F3_Ground", 0, GroundTint, 6);
+        var ground = NewTilemap(gridT, "F3_Ground", 0, Color.white, 6);
+        // Đá rêu xanh lam (biến thể 3, bố cục phải của main_lev_buildA)
+        TileBase[] cSurf = Enumerable.Range(59, 10).Select(c => CaveTile(c, 61)).ToArray();     // mặt trên có rêu
+        TileBase[] cUnder = Enumerable.Range(59, 10).Select(c => CaveTile(c, 62)).ToArray();    // ngay dưới mặt trên / vách
+        TileBase[] cCeil = Enumerable.Range(59, 10).Select(c => CaveTile(c, 78)).ToArray();     // trần, rêu rủ xuống
+        TileBase[] cAboveCeil = Enumerable.Range(59, 10).Select(c => CaveTile(c, 77)).ToArray();
+        TileBase[] cDeep = { CaveTile(45, 63), CaveTile(46, 63), CaveTile(45, 64), CaveTile(46, 64) };
         var kGround = NewTilemap(gridT, "F3_Ground_KnightDungeon", 0, Color.white, 6, bright);
         var decor = NewTilemap(gridT, "F3_Decor", 1, DecorTint);
         var lavaTm = NewTilemap(gridT, "F3_DeadZone_Lava", 2, Color.white);
@@ -446,7 +485,14 @@ static Material BrightMaterial(string path, float k)
                 else
                 {
                     gp.Add(new Vector3Int(x, y, 0));
-                    gt.Add(UseTopTile && openAbove && topT != null ? topT : solidT);
+                    int h = Hash(x, y);
+                    bool openSide = !Solid(x - 1, y) || !Solid(x + 1, y);
+                    TileBase ct = openAbove ? cSurf[h % 10]
+                        : openBelow ? cCeil[h % 10]
+                        : (!Solid(x, y + 2) && !Lava(x, y + 2)) || openSide ? cUnder[h % 10]
+                        : !Solid(x, y - 2) ? cAboveCeil[h % 10]
+                        : cDeep[h % 4];
+                    gt.Add(ct ?? solidT);
                 }
             }
             if (lava[i, j])
@@ -483,9 +529,7 @@ static Material BrightMaterial(string path, float k)
             }
             else if (plat[i, j])
             {
-                platTm.SetTile(p, stoneT); nStone++;
-                platTm.SetColor(p, GroundTint);
-                if (FlipPlatformTile) { platTm.SetTileFlags(p, TileFlags.None); platTm.SetColor(p, GroundTint); platTm.SetTransformMatrix(p, Matrix4x4.Scale(new Vector3(1, -1, 1))); }
+                platTm.SetTile(p, cSurf[Hash(x, y) % 10] ?? stoneT); nStone++;   // gờ đá rêu, đúng chiều
             }
         }
         var ptc = platTm.gameObject.AddComponent<TilemapCollider2D>();
@@ -582,6 +626,184 @@ static Material BrightMaterial(string path, float k)
         log.Add($"Cầu thang KnightDungeon: {stairs.Count} mảnh");
     }
 
+// ===================== ĐỒ TRANG TRÍ GÓI MỚI =====================
+    /// Đặt sprite cho mép khớp ô: v -1 đáy chạm đáy ô cy, +1 đỉnh chạm đỉnh ô cy, 0 giữa; h tương tự theo cột cx.
+    static GameObject Prop(Transform parent, string name, Sprite s, float cx, float cy, int v, int h, bool flip = false, float alpha = 1f, int order = PropOrder)
+    {
+        if (s == null) return null;
+        var go = new GameObject(name); go.transform.SetParent(parent);
+        var sr = go.AddComponent<SpriteRenderer>(); sr.sprite = s; sr.sortingOrder = order; sr.flipX = flip; sr.color = new Color(1, 1, 1, alpha);
+        var b = s.bounds;
+        float minXb = flip ? -b.max.x : b.min.x, maxXb = flip ? -b.min.x : b.max.x;
+        float ax = (h < 0 ? cx : h > 0 ? cx + 1 : cx + 0.5f) * cs.x;
+        float ay = (v < 0 ? cy : v > 0 ? cy + 1 : cy + 0.5f) * cs.y;
+        float ox = h < 0 ? -minXb : h > 0 ? -maxXb : -(minXb + maxXb) / 2f;
+        float oy = v < 0 ? -b.min.y : v > 0 ? -b.max.y : -b.center.y;
+        go.transform.position = new Vector3(ax + ox, ay + oy, 0);
+        return go;
+    }
+    static void Anim(GameObject go, Sprite[] frames, float fps)
+    {
+        if (go == null || frames == null || frames.Length == 0 || frames.Any(f => f == null)) { if (go != null) log.Add("THIẾU khung animation cho " + go.name); return; }
+        go.AddComponent<SpriteFrameAnimator>().Setup(frames, fps);
+    }
+    static int SW(Sprite s) => s == null ? 1 : Mathf.CeilToInt(s.bounds.size.x / cs.x - 0.01f);
+    static int Hc(Sprite s) => s == null ? 1 : Mathf.CeilToInt(s.bounds.size.y / cs.y - 0.01f);
+
+    /// Đồ đứng trên sàn tại cột x (tự tìm sàn nâng). Trả về null nếu không đủ chỗ.
+    static GameObject FloorProp(Transform p, string name, Sprite s, int x, RoomDef r, bool flip = false)
+    {
+        if (s == null) return null;
+        int w = SW(s), h = Hc(s), y = Stand(x, r.iy0);
+        if (!Fits(x, y, w, h, true)) return null;
+        Claim(x, y, w, h);
+        return Prop(p, name, s, x + (w - 1) / 2f, y, -1, 0, flip);
+    }
+    /// Đồ treo trên vách nền, đáy đặt ở ô (x,y).
+    static GameObject WallProp(Transform p, string name, Sprite s, int x, int y, bool flip = false, float alpha = 1f)
+    {
+        if (s == null) return null;
+        int w = SW(s), h = Hc(s);
+        if (!Fits(x, y, w, h, false)) return null;
+        Claim(x, y, w, h);
+        return Prop(p, name, s, x + (w - 1) / 2f, y, -1, 0, flip, alpha);
+    }
+
+    static void BuildProps()
+    {
+        var root = Group("______Props_____").transform;
+        var rnd = new System.Random(7707);
+        int n = 0;
+        Transform Sub(string s) { var g = new GameObject(s); g.transform.SetParent(root); return g.transform; }
+        var tLight = Sub("Lights"); var tDeco = Sub("Deco"); var tCrystal = Sub("Crystals");
+
+        Sprite[] torchA = Frames("torchA1", "torchA2", "torchA3", "torchA4");      // lửa xanh, gắn vách phải
+        Sprite[] torchB = Frames("torchB1", "torchB2", "torchB3", "torchB4");      // lửa xanh, gắn vách trái
+        Sprite[] torchC = Frames("torchC1", "torchC2", "torchC3", "torchC4");      // lửa xanh, cây đứng
+        Sprite[] diamond = Frames("diamond1", "diamond2", "diamond3", "diamond4", "diamond5");
+        Sprite[] glowTorch = { GS("g_torch0"), GS("g_torch1"), GS("g_torch2"), GS("g_torch3") };
+        Sprite[] fireplace = { GS("g_fireplace0"), GS("g_fireplace1") };
+        if (sconceSpr == null) sconceSpr = Sheet(SconceSheet);
+        Sprite[] sconce = { Get(sconceSpr, "sconce_0_0"), Get(sconceSpr, "sconce_1_0"), Get(sconceSpr, "sconce_2_0"), Get(sconceSpr, "sconce_0_1"), Get(sconceSpr, "sconce_1_1"), Get(sconceSpr, "sconce_2_1") };
+        Sprite[] hangs = { GS("g_banner1"), GS("g_halberds"), GS("g_banner2"), GS("g_shield"), GS("g_swords"), GS("g_painting") };
+        int hallPicEnd = rooms[HallGateRoom].ix0 + 57;
+
+        foreach (var r in rooms.Values)
+        {
+            if (r.id == "F3_R18") continue;
+            int stand = r.iy0;
+
+            // ---- Mê cung: đuốc lửa xanh gắn 2 vách (mỗi 15 hàng với giếng cao), đuốc đứng giữa phòng rộng, tinh thể tím ----
+            if (r.zone == Zone.Cave)
+            {
+                for (int y = stand + 3; y <= r.iy1 - 3; y += 15)
+                {
+                    if (Solid(r.ix0 - 1, y) && Solid(r.ix0 - 1, y + 1) && Fits(r.ix0, y, 1, 2, false))
+                    { Claim(r.ix0, y, 1, 2); Anim(Prop(tLight, "TorchBlue_L_" + r.id, torchB[0], r.ix0, y, -1, -1), torchB, 8); n++; }
+                    if (Solid(r.ix1 + 1, y) && Solid(r.ix1 + 1, y + 1) && Fits(r.ix1, y, 1, 2, false))
+                    { Claim(r.ix1, y, 1, 2); Anim(Prop(tLight, "TorchBlue_R_" + r.id, torchA[0], r.ix1, y, -1, 1), torchA, 8); n++; }
+                }
+                if (r.r.width >= 30)
+                {
+                    int mx = (r.ix0 + r.ix1) / 2;
+                    for (int dx = 0; dx < 6; dx++)
+                    {
+                        var go = FloorProp(tLight, "TorchBlue_Stand_" + r.id, torchC[0], mx + (dx % 2 == 0 ? dx : -dx), r);
+                        if (go != null) { Anim(go, torchC, 7); n++; break; }
+                    }
+                }
+                if (r.r.width >= 12)
+                    for (int k = 0; k < 2; k++)
+                    {
+                        int x = rnd.Next(r.ix0 + 2, r.ix1 - 2), y = Stand(x, stand);
+                        if (!Fits(x, y, 2, 1, true)) continue;
+                        Claim(x, y, 2, 1);
+                        Anim(Prop(tCrystal, "Crystal_" + r.id, diamond[0], x, y, -1, 0), diamond, 6);
+                        Anim(Prop(tCrystal, "Crystal_" + r.id, diamond[0], x + 0.6f, y, -1, 0), diamond, 6);
+                        n += 2;
+                    }
+            }
+
+            // ---- Hành lang kỵ sĩ + hầm mộ + tiền sảnh ----
+            if (r.zone == Zone.Hall && r.r.width >= 20)
+            {
+                int k = 0;
+                for (int x = r.ix0 + 4; x <= r.ix1 - 4; x += 9, k++)
+                {
+                    GameObject go = null;
+                    if (k % 3 == 1) go = FloorProp(tDeco, "Statue_" + r.id, GS(k % 2 == 0 ? "g_statue1" : "g_statue2"), x, r);
+                    if (go == null) { go = FloorProp(tLight, "GlowTorch_" + r.id, glowTorch[0], x, r); Anim(go, glowTorch, 8); }
+                    if (go != null) n++;
+                }
+                for (int x = r.ix0 + 8; x <= r.ix1 - 8; x += 16)
+                    if (WallProp(tDeco, "WallHang_" + r.id, hangs[rnd.Next(hangs.Length)], x, Stand(x, stand) + 7) != null) n++;
+            }
+            if (r.zone == Zone.Corridor)
+            {
+                // Nến treo tường (chỉ hành lang đá), cờ ở dãy II, cửa sổ gothic + rèm ở III và V
+                for (int x = r.ix0 + 4; x <= r.ix1 - 4; x += 10)
+                    if (x >= hallPicEnd && WallProp(tDeco, "WallCandles_" + r.id, GS("g_candelabra"), x, Stand(x, stand) + 4) != null) n++;
+                if (r.id == "F3_R22")
+                    for (int x = hallPicEnd + 2; x <= r.ix1 - 3; x += 7)
+                        if (WallProp(tDeco, "Banner_" + r.id, GS(x % 2 == 0 ? "g_banner1" : "g_banner2"), x, Stand(x, stand) + 7) != null) n++;
+                if (r.id == "F3_R23" || r.id == "F3_R25")
+                {
+                    int mx = (r.ix0 + r.ix1) / 2 - 1, wy = Stand(mx, stand) + 6;
+                    if (WallProp(tDeco, "GothicWindow_" + r.id, GS("g_gothicWindow"), mx, wy) != null) n++;
+                    if (WallProp(tDeco, "Curtain_" + r.id, GS("g_curtainRed"), mx - 4, wy + 1) != null) n++;
+                    if (WallProp(tDeco, "Curtain_" + r.id, GS("g_curtainRed"), mx + 4, wy + 1, true) != null) n++;
+                }
+            }
+
+            // ---- Mạng nhện (chỉ phòng có nhện): góc trần trái/phải ----
+            if (spiderRooms.Contains(r.id))
+            {
+                var wl = GS("g_webL"); var wr = GS("g_webR");
+                if (wl != null && Solid(r.ix0 - 1, r.iy1) && Solid(r.ix0, r.iy1 + 1)) { Prop(tDeco, "Web_" + r.id, wl, r.ix0, r.iy1, 1, -1, false, 0.8f); n++; }
+                if (wr != null && Solid(r.ix1 + 1, r.iy1) && Solid(r.ix1, r.iy1 + 1)) { Prop(tDeco, "Web_" + r.id, wr, r.ix1, r.iy1, 1, 1, false, 0.8f); n++; }
+            }
+        }
+
+        // ---- Các điểm đặt riêng ----
+        var R = rooms;
+        void F(string nm, Sprite s, int x, string room, bool flip = false) { if (FloorProp(tDeco, nm, s, x, R[room], flip) != null) n++; }
+        void FA(string nm, Sprite[] f, float fps, int x, string room, Transform par) { var g = FloorProp(par, nm, f[0], x, R[room]); if (g != null) { Anim(g, f, fps); n++; } }
+        void WA(string nm, Sprite[] f, float fps, int x, int y) { var g = WallProp(tLight, nm, f[0], x, y); if (g != null) { Anim(g, f, fps); n++; } }
+
+        // Cổng tiếp tế R01: lò sưởi, bàn ghế, kệ sách, đèn tường 2 bên lò sưởi
+        FA("Fireplace", fireplace, 5, 24, "F3_R01", tLight);
+        WA("Sconce", sconce, 9, 21, 4); WA("Sconce", sconce, 9, 28, 4);
+        F("StoneTable", GS("g_stoneTable"), 16, "F3_R01"); F("Bench", GS("g_bench"), 19, "F3_R01");
+        F("Bookshelf", GS("g_bookshelf0"), 31, "F3_R01"); F("Bookshelf", GS("g_bookshelf1"), 33, "F3_R01");
+        F("Barrel", GS("g_barrel"), 36, "F3_R01"); F("BarrelSide", GS("g_barrelSide"), 37, "F3_R01");
+        // Chợ R02: xe hàng, thùng hàng giữa các thương nhân (52.5 / 62.5 / 72.5), cờ dây trên cao, đèn tường
+        F("Cart", MS("m_cart"), 43, "F3_R02");
+        F("CrateStack", MS("m_crateStack"), 56, "F3_R02");
+        F("Crate", MS("m_crate"), 66, "F3_R02"); F("Barrel", MS("m_barrel"), 68, "F3_R02");
+        F("Barrel", MS("m_barrel"), 76, "F3_R02"); F("Crate", MS("m_crate"), 78, "F3_R02"); F("CrateStack", MS("m_crateStack"), 79, "F3_R02");
+        var bunting = MS("m_bunting");
+        if (bunting != null)
+            for (float bx = 44; bx + bunting.bounds.size.x <= 82; bx += bunting.bounds.size.x)
+            { Prop(tDeco, "Bunting", bunting, bx, 8, 1, -1); n++; }
+        WA("Sconce", sconce, 9, 47, 5); WA("Sconce", sconce, 9, 81, 5);
+        // Hầm mộ nhện R19: quan tài
+        F("Coffin", GS("g_coffinA"), -14, "F3_R19"); F("Coffin", GS("g_coffinB"), -10, "F3_R19"); F("Coffin", GS("g_coffinA"), -5, "F3_R19");
+        // Cột đá ở chỗ vách cũ giữa R13|R14|R15
+        F("Pillar", GS("g_pillar"), 46, "F3_R14"); F("Pillar", GS("g_pillar"), 94, "F3_R15");
+        // Tiền sảnh boss R17: kệ sách, cửa sổ gothic, nến sàn
+        F("Bookshelf", GS("g_bookshelf2"), 160, "F3_R17"); F("Bookshelf", GS("g_bookshelf3"), 162, "F3_R17");
+        if (WallProp(tDeco, "GothicWindow", GS("g_gothicWindow"), 149, 79) != null) n++;
+        F("FloorCandles", GS("g_floorCandles"), 165, "F3_R17");
+        // Trước cổng boss
+        F("FloorCandles", GS("g_floorCandles"), 168 + BO - 5, $"F3_R{20 + CorridorRooms}");
+        // Tinh thể gợi ý cạnh rương bí mật (R08 Wall Jump A, R10 Double Jump A)
+        foreach (var (cx, cy) in new[] { (-29.3f, 61), (146f, ledgeR10Top), (146.6f, ledgeR10Top) })
+        { Anim(Prop(tCrystal, "Crystal_Hint", diamond[0], cx, cy, -1, 0), diamond, 6); n++; }
+
+        log.Add($"Đồ trang trí gói mới: {n} món");
+    }
+
+
 
     // ===================== TRANG TRÍ =====================
     static void PutAligned(Tilemap tm, int x, int y, TileBase t, int v, int h, bool flipX = false)
@@ -601,68 +823,31 @@ static Material BrightMaterial(string path, float k)
 
     static bool FreeCell(int x, int y) => !Solid(x, y) && !Lava(x, y) && !Plat(x, y);
 
+static Tilemap decorTm;
+    static readonly HashSet<Vector3Int> usedCells = new HashSet<Vector3Int>();
+
+    /// Tile trang trí còn giữ: xương Dungeon2 trên sàn, đèn treo trạm tiếp tế, đèn chùm/máy chém KnightDungeon.
+    /// Đuốc, nến, cờ, mạng nhện... chuyển sang BuildProps (sprite gói mới, có animation).
     static void Decorate(Tilemap decor)
     {
+        decorTm = decor; usedCells.Clear();
         var rnd = new System.Random(3303);
-        TileBase torch = K("Torch"), candle = K("Candlestick"), web = K("Web1");
         TileBase guillotine = K("AxeChainLong"), chandelier = K("Chandelier"), lamp = DG(115);
-        TileBase[] bones = { DG(124), DG(125), DG(126) };                       // xương Dungeon2
-        TileBase[] supplyProps = { DG(84), DG(94), DG(117), DG(118), DG(119) }; // thùng, hũ Dungeon2
-        TileBase[] wallHang = { K("Flag1"), K("Flag2"), K("Shield1"), K("Flag3"), K("Shield2"), K("Flag4") };
-        int nFloor = 0, nTorch = 0, nCandle = 0, nWeb = 0, nCeil = 0, nWall = 0;
-        var used = new HashSet<Vector3Int>();
-        bool Mark(int x, int y) => used.Add(new Vector3Int(x, y, 0));
+        TileBase[] bones = { DG(124), DG(125), DG(126) };
+        int nFloor = 0, nCeil = 0;
         bool OnFloor(int x, int y) => !InStair(x) && Solid(x, y - 1) && FreeCell(x, y) && FreeCell(x, y + 1);
 
         foreach (var r in rooms.Values)
         {
-            bool boss = r.id == "F3_R18";
-            bool gate = r.id == HallGateRoom;
-            int stand = r.iy0;
-            if (boss) continue;
-
-            // 1) Đồ trên sàn (thưa)
-            if (r.r.width > 12)
-                for (int x = r.ix0 + 4; x <= r.ix1 - 4; x += rnd.Next(10, 17))
+            if (r.id == "F3_R18" || r.zone == Zone.Supply) { }
+            else if (r.r.width > 12)
+                for (int x = r.ix0 + 4; x <= r.ix1 - 4; x += rnd.Next(12, 19))
                 {
-                    int fy = Stand(x, stand);
+                    int fy = Stand(x, r.iy0);
                     if (rnd.NextDouble() > 0.6 || !OnFloor(x, fy) || !Mark(x, fy)) continue;
-                    var list = r.zone == Zone.Supply ? supplyProps : bones;
-                    PutAligned(decor, x, fy, list[rnd.Next(list.Length)], -1, 0); nFloor++;
+                    PutAligned(decor, x, fy, bones[rnd.Next(bones.Length)], -1, 0); nFloor++;
                 }
 
-            if (r.Knight)
-            {
-                // 2a) Nến đứng trên sàn mỗi ~10 ô (chỉ hành lang)
-                for (int x = r.ix0 + 5; x <= r.ix1 - 5; x += 10)
-                    { int fy = Stand(x, stand); if (OnFloor(x, fy) && Mark(x, fy)) { PutAligned(decor, x, fy, candle, -1, 0); nCandle++; } }
-                // 2b) Cờ/khiên treo trên vách gạch nền (không đặt ở phòng cổng có tranh hall.png)
-                if (!gate && r.r.height >= 10)
-                    for (int x = r.ix0 + 9; x <= r.ix1 - 9; x += 16)
-                    {
-                        int y = Stand(x, stand) + 5;
-                        bool onHallPicture = r.zone == Zone.Corridor && x >= rooms[HallGateRoom].ix0 && x < rooms[HallGateRoom].ix0 + 57;
-                        if (!InStair(x) && !onHallPicture && FreeCell(x, y) && FreeCell(x, y - 1) && FreeCell(x, y + 1) && Mark(x, y))
-                        { PutAligned(decor, x, y, wallHang[rnd.Next(wallHang.Length)], 0, 0); nWall++; }
-                    }
-            }
-            else if (r.r.height >= 10)
-            {
-                // 2c) Đuốc gắn sát vách (mê cung + trạm tiếp tế)
-                int ty = stand + 2;
-                if (Solid(r.ix0 - 1, ty) && FreeCell(r.ix0, ty) && Mark(r.ix0, ty)) { PutAligned(decor, r.ix0, ty, torch, 0, -1); nTorch++; }
-                if (Solid(r.ix1 + 1, ty) && FreeCell(r.ix1, ty) && Mark(r.ix1, ty)) { PutAligned(decor, r.ix1, ty, torch, 0, 1, true); nTorch++; }
-            }
-
-            // 3) Mạng nhện: chỉ phòng có nhện, ở góc trần
-            if (spiderRooms.Contains(r.id))
-            {
-                int cy = r.iy1;
-                if (Solid(r.ix0 - 1, cy) && Solid(r.ix0, cy + 1) && FreeCell(r.ix0, cy) && Mark(r.ix0, cy)) { PutAligned(decor, r.ix0, cy, web, 1, -1); nWeb++; }
-                if (Solid(r.ix1 + 1, cy) && Solid(r.ix1, cy + 1) && FreeCell(r.ix1, cy) && Mark(r.ix1, cy)) { PutAligned(decor, r.ix1, cy, web, 1, 1, true); nWeb++; }
-            }
-
-            // 4) Trần
             if (r.zone == Zone.Supply)
             {
                 foreach (int x in new[] { r.ix0 + r.r.width / 3, r.ix0 + 2 * r.r.width / 3 })
@@ -671,12 +856,28 @@ static Material BrightMaterial(string path, float k)
             else if (r.Knight && r.r.width >= 20)
             {
                 int x = (r.ix0 + r.ix1) / 2 + rnd.Next(-4, 5);
-                var t = (r.id == "F3_R13" || r.id == "F3_R24") ? guillotine : chandelier;   // máy chém ở cổng + phòng IV
+                var t = (r.id == "F3_R13" || r.id == "F3_R24") ? guillotine : chandelier;
                 if (Solid(x, r.iy1 + 1) && FreeCell(x, r.iy1) && FreeCell(x, r.iy1 - 1) && Mark(x, r.iy1)) { PutAligned(decor, x, r.iy1, t, 1, 0); nCeil++; }
             }
         }
-        log.Add($"Trang trí: sàn {nFloor}, đuốc {nTorch}, nến {nCandle}, cờ/khiên {nWall}, mạng nhện {nWeb}, trần {nCeil}");
+        log.Add($"Tile trang trí: xương {nFloor}, trần {nCeil}");
     }
+
+    static bool Mark(int x, int y) => usedCells.Add(new Vector3Int(x, y, 0));
+    static bool Used(int x, int y) => usedCells.Contains(new Vector3Int(x, y, 0));
+
+    /// Vùng w×h ô bắt đầu tại (x,y) trống hoàn toàn; floor=true → mọi ô đáy phải có đất liền bên dưới.
+    static bool Fits(int x, int y, int w, int h, bool floor)
+    {
+        for (int i = 0; i < w; i++)
+        {
+            if (InStair(x + i)) return false;
+            if (floor && !Solid(x + i, y - 1)) return false;
+            for (int j = 0; j < h; j++) if (!FreeCell(x + i, y + j) || Used(x + i, y + j)) return false;
+        }
+        return true;
+    }
+    static void Claim(int x, int y, int w, int h) { for (int i = 0; i < w; i++) for (int j = 0; j < h; j++) Mark(x + i, y + j); }
 
     // ===================== ROOM (Module 5) =====================
     static Vector3 Wpos(float x, float y) => new Vector3(x * cs.x, y * cs.y, 0);
