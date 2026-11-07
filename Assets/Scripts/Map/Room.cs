@@ -25,6 +25,7 @@ public class Room : MonoBehaviour
     {
         if (vcam == null) { Debug.LogError($"{name}: chưa gán vcam", this); return; }
         vcam.Follow = player;          // Player ở scene khác → không kéo được trong Inspector, gán lúc runtime
+        vcam.PreviousStateIsValid = false;   // camera đích nhảy ngay tới player, để Brain lo phần trượt
         vcam.Priority = ActivePriority;
     }
 

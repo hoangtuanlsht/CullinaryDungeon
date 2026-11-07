@@ -15,7 +15,7 @@ using UnityEngine.Tilemaps;
 /// Khối màu: tường giả (vàng), cổng/song sắt/orc gác (cam), chờ hạ boss/Minotaurus (đỏ), sàn nứt (tím, BreakableFloor).
 /// Chạy: Tools > Culinaria > Build Fifth Floor (F5). Chạy lại bao nhiêu lần cũng được (xóa phần đã dựng rồi dựng lại).
 /// Nội dung cũ của scene KHÔNG bị xóa, chỉ bị tắt (SetActive false) để tham chiếu.
-public static class FifthFloorBuilder
+public static partial class FifthFloorBuilder
 {
     const string SceneNameExpected = "FifthFloorScene";
     const string ScenePath = "Assets/Scenes/FifthFloorScene.unity";
@@ -24,7 +24,7 @@ public static class FifthFloorBuilder
     const string Out = "Assets/BackGround/FifthFloor/F5_Greybox";
 
     static readonly string[] GeneratedRoots = { "Grid_F5", "______Room_F5_____", "______Door_F5_____", "______Interact_F5_____",
-                                                "______Hidden_F5_____", "______TODO_F5_____", "______FogZone_F5_____" };
+                                                "______Hidden_F5_____", "______TODO_F5_____", "______FogZone_F5_____", "______Art_F5_____" };
     static readonly string[] OldRootsToDisable = { "Grid", "______Background______", "MovingPlatForm", "_____Minotaurus_____",
                                                    "LimitMapController", "LimitMapController (1)" };
     static readonly string[] OldVcamsToDisable = { "Virtual Camera", "Virtual Camera (1)" };
@@ -53,7 +53,7 @@ public static class FifthFloorBuilder
 
     static Dictionary<string, RoomDef> rooms;
     static readonly List<Door> doors = new List<Door>();
-    const int minX = -SW, minY = -13 * SH, W = 18 * SW, H = 14 * SH;   // chừa 1 ô đá quanh lưới 0..15 × 0..11
+    const int minX = -SW, minY = -16 * SH, W = 18 * SW, H = 17 * SH;   // chừa 1 ô đá quanh lưới 0..15 × 0..14
     static bool[,] solid, plat, house, tent;
     static readonly List<string> log = new List<string>();
     static readonly List<(string name, RectInt area, string kind)> blockers = new List<(string, RectInt, string)>();
@@ -61,8 +61,8 @@ public static class FifthFloorBuilder
     static readonly List<(string id, float x, int y, int coins)> chests = new List<(string, float, int, int)>();
     static readonly List<(string id, RectInt area)> deadZones = new List<(string, RectInt)>();
     static readonly List<(string name, Vector3 pos)> markers = new List<(string, Vector3)>();
-    static readonly HashSet<string> noAutoClimb = new HashSet<string> { "R16", "R28" };   // R16 cầu thang riêng, R28 bậc làm tay (giữ khe Wall Jump)
-    static Sprite blockSprite; static Tile blockTile;
+    static readonly HashSet<string> noAutoClimb = new HashSet<string> { "R16", "R41" };   // R16 cầu thang riêng, R41 bậc làm tay (giữ khe Wall Jump)
+    static Sprite blockSprite; static Tile blockTile; static bool artOk;
 
     static int CellBottom(int gy) => -(gy + 1) * SH;
     static int CellLeft(int gx) => gx * SW;
@@ -87,11 +87,14 @@ public static class FifthFloorBuilder
         // Khu C — phố dưới (mặt phố: đáy hàng 7)
         R("R16", 0, 6, 1, 2); R("R17", 1, 6, 3, 2); R("R18", 4, 7, 3, 1); R("R19", 7, 6, 5, 2);
         R("R20", 12, 7, 3, 1); R("R21", 15, 6, 1, 3);
-        // Khu D — mê cung tối
-        R("R22", 13, 8, 2, 2); R("R23", 8, 8, 5, 1); R("R24", 8, 9, 5, 1); R("R25", 7, 8, 1, 2);
-        R("R26", 1, 8, 6, 1); R("R27", 1, 9, 6, 1); R("R28", 0, 8, 1, 3);
+        // Khu D — mê cung tối (08/11/2026: tách thành khu riêng 20 phòng, hàng 8–13, để fog of war có đất diễn)
+        R("R22", 13, 8, 2, 2); R("R23", 8, 8, 5, 1); R("R24", 5, 8, 3, 1); R("R25", 1, 8, 4, 1);
+        R("R26", 8, 9, 4, 1); R("R27", 7, 9, 1, 2); R("R28", 3, 9, 4, 2); R("R29", 12, 9, 1, 3);
+        R("R30", 15, 9, 1, 2); R("R31", 8, 10, 4, 1); R("R32", 13, 10, 2, 1); R("R33", 1, 10, 2, 2);
+        R("R34", 3, 11, 5, 1); R("R35", 8, 11, 4, 1); R("R36", 13, 11, 3, 1); R("R37", 1, 12, 6, 1);
+        R("R38", 7, 12, 3, 2); R("R39", 10, 12, 6, 1); R("R40", 10, 13, 4, 1); R("R41", 0, 8, 1, 5);
         // Khu E — boss
-        R("R29", 1, 10, 1, 1); R("R30", 2, 10, 3, 2);
+        R("R42", 0, 13, 2, 1); R("R43", 2, 13, 3, 2);
 
         D("R01", "R02", 0, 1, "right"); D("R02", "R03", 2, 1, "right"); D("R03", "R04", 6, 1, "right");
         D("R04", "R05", 8, 1, "right"); D("R05", "R06", 13, 1, "right");
@@ -104,13 +107,30 @@ public static class FifthFloorBuilder
         D("R15", "R16", 0, 5, "bottom", 8, "mino");         // mở khi hạ Minotaurus ở chợ cũ
         D("R16", "R17", 0, 7, "right"); D("R17", "R18", 3, 7, "right"); D("R18", "R19", 6, 7, "right");
         D("R19", "R20", 11, 7, "right"); D("R20", "R21", 14, 7, "right");
-        D("R21", "R22", 15, 8, "left"); D("R22", "R23", 13, 8, "left"); D("R22", "R24", 13, 9, "left");
-        D("R23", "R24", 10, 8, "bottom", 8); D("R23", "R25", 8, 8, "left"); D("R24", "R25", 8, 9, "left");
-        D("R25", "R26", 7, 8, "left"); D("R25", "R27", 7, 9, "left"); D("R26", "R27", 5, 8, "bottom", 8);
-        D("R26", "R28", 1, 8, "left"); D("R27", "R28", 1, 9, "left");
-        D("R28", "R29", 0, 10, "right"); D("R29", "R30", 1, 10, "right");
         D("R14", "R17", 4, 6, "left", 8, "fake");           // H1 tường giả hầm rượu ↔ nhà dân
-        D("R28", "R16", 0, 8, "top", 8, "gate");            // L2 song sắt, mở từ phía R28
+
+        // ---- Mê cung ----
+        D("R21", "R22", 15, 8, "left");                     // lối vào từ miệng cống
+        D("R22", "R23", 13, 8, "left"); D("R22", "R30", 14, 9, "right");
+        D("R23", "R24", 8, 8, "left"); D("R23", "R26", 9, 8, "bottom");
+        D("R23", "R29", 12, 8, "bottom", 8, "drop");        // hố rơi: R23 → trục rơi R29 → (rơi tiếp) R39
+        D("R24", "R25", 5, 8, "left", 8, "fake");           // H2 tường giả ngõ chuột ↔ hầm mộ trên
+        D("R27", "R24", 7, 9, "top");
+        D("R25", "R28", 3, 8, "bottom");
+        D("R41", "R25", 0, 8, "right", 8, "gate");          // L3 song sắt, mở từ phía giếng đáy R41
+        D("R26", "R27", 8, 9, "left"); D("R26", "R29", 11, 9, "right");
+        D("R27", "R28", 7, 10, "left"); D("R27", "R31", 7, 10, "right");
+        D("R29", "R39", 12, 11, "bottom", 8, "drop");
+        D("R30", "R32", 15, 10, "left"); D("R32", "R36", 13, 10, "bottom"); D("R36", "R39", 14, 11, "bottom");
+        D("R31", "R35", 10, 10, "bottom"); D("R35", "R34", 8, 11, "left"); D("R35", "R38", 9, 11, "bottom");
+        D("R28", "R33", 3, 10, "left"); D("R28", "R34", 4, 10, "bottom");
+        D("R33", "R37", 1, 11, "bottom", 8, "drop");        // hố vạc: rơi xuống kênh mộ
+        D("R34", "R37", 5, 11, "bottom"); D("R37", "R38", 6, 12, "right"); D("R38", "R39", 9, 12, "right");
+        D("R39", "R40", 11, 12, "bottom");                  // hầm khóa: ngõ cụt có Rương 7
+        D("R37", "R41", 1, 12, "left");
+        D("R41", "R16", 0, 8, "top", 8, "gate");            // L2 song sắt lên chân cầu thang đá, mở từ phía R41
+        D("R41", "R42", 0, 12, "bottom");                   // đáy giếng → tiền phòng boss
+        D("R42", "R43", 1, 13, "right");
     }
 
     // ===================== MENU =====================
@@ -130,7 +150,7 @@ public static class FifthFloorBuilder
             EditorUtility.DisplayDialog("F5 Builder", "Hãy mở FifthFloorScene và đặt làm scene active trước.", "OK");
             return;
         }
-        log.Clear(); blockers.Clear(); gpFloors.Clear(); chests.Clear(); deadZones.Clear(); markers.Clear();
+        log.Clear(); blockers.Clear(); gpFloors.Clear(); chests.Clear(); deadZones.Clear(); markers.Clear(); houses.Clear();
 
         // Sao lưu bản gốc một lần, trước lần dựng đầu tiên
         if (!System.IO.File.Exists(BackupPath))
@@ -153,6 +173,7 @@ public static class FifthFloorBuilder
 
         DefineRooms();
         MakeBlockTile();
+        artOk = PrepareArt();                 // phần hình ảnh (FifthFloorBuilder.Art.cs); thiếu tài nguyên thì giữ greybox màu
         BuildGeometry();
         WriteTilemaps();
         BuildRooms();
@@ -160,6 +181,7 @@ public static class FifthFloorBuilder
         BuildHiddenBlockers();
         BuildFogZones(scene);
         BuildTodoMarkers();
+        if (artOk) DecorateF5(scene);
 
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
@@ -209,8 +231,10 @@ public static class FifthFloorBuilder
         var room = rooms[id];
         int x0 = room.r.xMin + offX, y0 = room.Floor, top = y0 + 5 * floors - 1;
         if (top > room.r.yMax - 4) { log.Add($"BỎ nhà {id}+{offX}: {floors} tầng không vừa trần"); return; }
+        houses.Add((id, x0, y0, width, floors, isTent));
         var target = isTent ? tent : house;
         for (int x = x0; x < x0 + width; x++) for (int y = y0; y < top; y++) if (!Get(solid, x, y)) Set(target, x, y, true);
+        if (isTent) return;                                                                   // lều orc: không có sàn tầng, không có mái đi được
         for (int k = 1; k <= floors; k++)
         {
             Plat(x0, y0 + 5 * k - 1, width);                                                 // sàn tầng k (tầng trên cùng = mái)
@@ -234,7 +258,8 @@ public static class FifthFloorBuilder
                 int bx = d.side == "right" ? (d.cx + 1) * SW : d.cx * SW;
                 int yb = CellBottom(d.cy) + 1;
                 Carve(bx - 1, yb, 2, 3);
-                if (d.kind == "fake") blockers.Add(($"FakeWall_H1_{A.id}_{B.id}", new RectInt(bx - 1, yb, 2, 3), "fake"));
+                if (d.kind == "fake") blockers.Add(($"FakeWall_{(A.id == "F5_R14" ? "H1" : "H2")}_{A.id}_{B.id}", new RectInt(bx - 1, yb, 2, 3), "fake"));
+                if (d.kind == "gate") blockers.Add(($"Gate_L3_SongSat_{B.id}_{A.id} (mở từ {A.id})", new RectInt(bx - 1, yb, 2, 3), "gate"));
                 foreach (var (room, inward) in new[] { (A, d.side == "right" ? -1 : 1), (B, d.side == "right" ? 1 : -1) })
                 {
                     if (d.cy == room.BottomRow) continue;
@@ -249,7 +274,7 @@ public static class FifthFloorBuilder
                 int hx = CellLeft(d.cx) + d.off;
                 Carve(hx, by - 1, 3, 2);
                 RoomDef lower = d.side == "bottom" ? B : A;
-                if (!noAutoClimb.Contains(lower.id.Substring(3))) ClimbStack(lower, hx, lower.r.yMax - 3, true);
+                if (d.kind != "drop" && !noAutoClimb.Contains(lower.id.Substring(3))) ClimbStack(lower, hx, lower.r.yMax - 3, true);   // hố rơi: không có bậc leo ngược
                 var hole = new RectInt(hx, by - 1, 3, 2);
                 RoomDef upper = d.side == "bottom" ? A : B;
                 switch (d.kind)
@@ -344,28 +369,28 @@ public static class FifthFloorBuilder
         var r20 = rooms["R20"];
         Fill(r20.r.xMin + 25, r20.Floor, 4, 1);
 
-        // ---- Mê cung: vách ngăn thò từ trần / dựng từ sàn ----
-        foreach (var (id, offs) in new[] { ("R23", new[] { 12, 26, 56, 70 }), ("R24", new[] { 10, 28, 60, 74 }), ("R26", new[] { 12, 28, 46, 62, 96 }), ("R27", new[] { 14, 34, 54 }) })
-        {
-            var r = rooms[id];
-            for (int i = 0; i < offs.Length; i++)
-            {
-                if (i % 2 == 0) Fill(r.r.xMin + offs[i], r.Floor + 3, 2, r.r.yMax - 1 - (r.Floor + 3));   // treo từ trần, chừa 3 ô bên dưới
-                else Fill(r.r.xMin + offs[i], r.Floor, 2, 3);                                                // dựng từ sàn, cao 3 (nhảy qua)
-            }
-        }
-        var r22 = rooms["R22"];
-        Plat(r22.r.xMin + 6, r22.Floor + 9, 24);
+        // ---- Mê cung: vách ngăn thò từ trần (chừa khe bò 3 ô) / dựng từ sàn (cao 3, nhảy qua) ----
+        MazeWalls("R23", 14, 30, 48, 64, 78); MazeWalls("R24", 26); MazeWalls("R25", 16, 30, 46, 58);
+        MazeWalls("R26", 20, 36, 54); MazeWalls("R31", 18, 34, 48, 62); MazeWalls("R34", 20, 34, 52, 66, 80);
+        MazeWalls("R35", 26, 40, 56); MazeWalls("R37", 16, 34, 50, 66, 84, 98); MazeWalls("R39", 16, 30, 48, 62, 78, 94);
+        MazeWalls("R36", 30, 44); MazeWalls("R40", 16, 30, 46);
+        var r22 = rooms["R22"]; Plat(r22.r.xMin + 6, r22.Floor + 9, 24);
+        var r28 = rooms["R28"]; Fill(r28.r.xMin + 20, r28.Floor + 6, 30, 1); Plat(r28.r.xMin + 14, r28.Floor + 3, 4); Plat(r28.r.xMin + 52, r28.Floor + 3, 4);   // ngã tư: tầng lửng giữa phòng
+        var r38 = rooms["R38"];                                                     // đại sảnh cột: 4 cột đá lớn, đèn thờ ở giữa
+        foreach (int cx in new[] { 8, 18, 34, 44 }) Fill(r38.r.xMin + cx, r38.Floor + 4, 2, r38.r.height - 6);
+        Plat(r38.r.xMin + 12, r38.Floor + 4, 6); Plat(r38.r.xMin + 36, r38.Floor + 4, 6);
 
-        // ---- R28 giếng đáy: khe Wall Jump 3 ô sát tường trái, cột cao tới trần, hốc rương khoét vào cột từ phía khe → Rương 6.
-        //      Bậc leo ở giữa giếng làm tay (không tự sinh) để không lọt vào khe. Cột chừa 3 ô dưới chân để chui vào khe.
-        var r28 = rooms["R28"];
-        int f28 = r28.Floor, x28 = r28.r.xMin;
-        Fill(x28 + 4, f28 + 3, 3, r28.r.yMax - 2 - (f28 + 3) + 1);   // cột x+4..x+6, từ sàn+3 lên sát trần
-        Carve(x28 + 4, f28 + 21, 2, 3);                               // hốc rương mở về phía khe
-        chests.Add(("F5_Chest06", x28 + 4.5f, f28 + 21, 1200));
-        foreach (int dy in new[] { 3, 6, 9, 13, 16, 19 }) Plat(x28 + 7, f28 + dy - 1, 3);   // giữa giếng: sàn → gờ R27 → gờ R26
-        foreach (int dy in new[] { 23, 26 }) Plat(x28 + 8, f28 + dy - 1, 3);              // gờ R26 → lỗ song sắt lên R16
+        // ---- R41 giếng đáy: khe Wall Jump 3 ô sát tường trái, cột cao tới trần, hốc rương khoét vào cột từ phía khe → Rương 6.
+        //      Bậc leo giữa giếng làm tay (so le hai cột), lên tới gờ song sắt L3 (R25) và lỗ song sắt L2 trên trần (R16).
+        var r41 = rooms["R41"];
+        int f41 = r41.Floor, x41 = r41.r.xMin;
+        Fill(x41 + 4, f41 + 3, 3, r41.r.yMax - 2 - (f41 + 3) + 1);
+        Carve(x41 + 4, f41 + 33, 2, 3);
+        chests.Add(("F5_Chest06", x41 + 4.5f, f41 + 33, 1200));
+        for (int dy = 3, i = 0; dy <= 45; dy += 3, i++) Plat(i % 2 == 0 ? x41 + 7 : x41 + 11, f41 + dy - 1, 3);
+
+        // ---- R40 hầm khóa: ngõ cụt duy nhất, Rương 7 ở cuối ----
+        chests.Add(("F5_Chest07", rooms["R40"].r.xMax - 5.5f, rooms["R40"].Floor, 1500));
     }
 
     // ===================== TILE =====================
@@ -413,7 +438,27 @@ public static class FifthFloorBuilder
         return go.GetComponent<Tilemap>();
     }
 
-    static Color ZoneColor(int y) => y >= -30 ? ZoneA : y >= -60 ? ZoneB : y >= -80 ? ZoneC : y >= -100 ? ZoneD : ZoneE;
+    static bool IsBossArea(int x, int y) => y < -130 && x < 90;                 // R42, R43 (hàng 13–14, cột 0–4)
+    static Color ZoneColor(int x, int y) => y >= -30 ? ZoneA : y >= -60 ? ZoneB : y >= -80 ? ZoneC : IsBossArea(x, y) || y < -140 ? ZoneE : ZoneD;
+
+    /// Vách ngăn mê cung tại các khoảng cách (tile) tính từ mép trái phòng; tự bỏ vách nào đè lên lỗ cửa trên sàn hoặc trần.
+    static void MazeWalls(string id, params int[] offs)
+    {
+        var r = rooms[id];
+        var holes = doors.Where(d => (d.side == "bottom" || d.side == "top") && (d.a == id || d.b == id))
+                         .Select(d => CellLeft(d.cx) + d.off)
+                         .Where(hx => hx >= r.r.xMin && hx < r.r.xMax).ToList();
+        for (int i = 0; i < offs.Length; i++)
+        {
+            bool Bad(int o) => o < 5 || o > r.r.width - 6 || holes.Any(hx => r.r.xMin + o > hx - 4 && r.r.xMin + o < hx + 6);
+            int off = offs[i];
+            if (Bad(off)) off = new[] { 7, -7, 11, -11 }.Select(k => offs[i] + k).Where(o => !Bad(o)).DefaultIfEmpty(-1).First();   // dời vách ra khỏi lỗ cửa
+            if (off < 0) { log.Add($"Bỏ vách {id}+{offs[i]} (sát cửa/mép)"); continue; }
+            int x = r.r.xMin + off;
+            if (i % 2 == 0) Fill(x, r.Floor + 3, 2, r.r.yMax - 1 - (r.Floor + 3));
+            else Fill(x, r.Floor, 2, 3);
+        }
+    }
 
     static void Paint(Tilemap tm, bool[,] a, System.Func<int, int, Color> color, System.Func<int, int, bool> extra = null)
     {
@@ -432,11 +477,14 @@ public static class FifthFloorBuilder
         var gridT = new GameObject("Grid_F5", typeof(Grid)).transform;
         int groundLayer = LayerMask.NameToLayer("Ground");
 
-        Paint(NewTilemap(gridT, "F5_HouseWall (nhà dân, không va chạm)", -10), house, (x, y) => HouseWall);
-        Paint(NewTilemap(gridT, "F5_TentWall (lều orc, không va chạm)", -10), tent, (x, y) => TentWall);
+        if (!artOk)                                   // có hình ảnh thì vỏ nhà là sprite (Art), không cần khối tường màu
+        {
+            Paint(NewTilemap(gridT, "F5_HouseWall (nhà dân, không va chạm)", -10), house, (x, y) => HouseWall);
+            Paint(NewTilemap(gridT, "F5_TentWall (lều orc, không va chạm)", -10), tent, (x, y) => TentWall);
+        }
 
         var ground = NewTilemap(gridT, "F5_Ground", 0, groundLayer);
-        Paint(ground, solid, (x, y) => ZoneColor(y));
+        if (artOk) PaintGroundArt(ground); else Paint(ground, solid, (x, y) => ZoneColor(x, y));
         var tc = ground.gameObject.AddComponent<TilemapCollider2D>();
         var rb = ground.gameObject.AddComponent<Rigidbody2D>(); rb.bodyType = RigidbodyType2D.Static;
         ground.gameObject.AddComponent<CompositeCollider2D>();
@@ -445,7 +493,7 @@ public static class FifthFloorBuilder
 #pragma warning restore 0618
 
         var platTm = NewTilemap(gridT, "F5_Platform_OneWay (sàn tầng nhà, bậc)", 0, groundLayer);
-        Paint(platTm, plat, (x, y) => PlatTint, (x, y) => !Get(solid, x, y));
+        if (artOk) PaintPlatformArt(platTm); else Paint(platTm, plat, (x, y) => PlatTint, (x, y) => !Get(solid, x, y));
         var ptc = platTm.gameObject.AddComponent<TilemapCollider2D>();
         var prb = platTm.gameObject.AddComponent<Rigidbody2D>(); prb.bodyType = RigidbodyType2D.Static;
         var pcc = platTm.gameObject.AddComponent<CompositeCollider2D>();
@@ -580,7 +628,7 @@ public static class FifthFloorBuilder
         var down = FindPartnerDoor("Assets/Scenes/SixthFloorScene.unity", SceneNameExpected);
         string myExit = down.myId ?? "F5_Exit", f6Door = down.theirId ?? "F6_Entry";
         log.Add(down.theirId == null ? "CHƯA KHỚP cửa tầng 6: SixthFloorScene chưa có SceneDoor trỏ về tầng 5. Tạm đặt F5_Exit → F6_Entry." : $"Cửa tầng 6: {myExit} → {f6Door}");
-        var r30 = rooms["R30"].r;
+        var r30 = rooms["R43"].r;
         MakeDoor(doorsT, myExit, new Vector3(r30.xMax - 3.5f, r30.yMin + 2.5f, 0), "Assets/Scenes/SixthFloorScene.unity", f6Door, 0);
         blockers.Add(("Gate_Boss_TruocCuaTang6", new RectInt(r30.xMax - 7, r30.yMin + 1, 1, 5), "boss"));
 
@@ -593,12 +641,12 @@ public static class FifthFloorBuilder
         var it = Group("______Interact_F5_____").transform;
         MakeCheckpoint(it, "F5_CP01_TraiOrc", rooms["R05"].r.xMin + 62.5f, rooms["R05"]);
         MakeCheckpoint(it, "F5_CP02_QuanRuou", rooms["R13"].r.xMin + 10.5f, rooms["R13"]);
-        MakeCheckpoint(it, "F5_CP03_DenTho", rooms["R25"].r.xMin + 4.5f, rooms["R25"]);
-        MakeCheckpoint(it, "F5_CP04_TienPhongBoss", rooms["R29"].r.xMin + 9.5f, rooms["R29"]);
+        MakeCheckpoint(it, "F5_CP03_DenTho", rooms["R27"].r.xMin + 9.5f, rooms["R27"]);
+        MakeCheckpoint(it, "F5_CP04_TienPhongBoss", rooms["R42"].r.xMin + 26.5f, rooms["R42"]);
         foreach (var c in chests) MakeChest(it, c.id, c.x, c.y, c.coins);
 
         var boss = new GameObject("BossSpawn (boss tầng 5 - chưa thiết kế)");
-        boss.transform.SetParent(it); boss.transform.position = new Vector3(rooms["R30"].r.center.x, rooms["R30"].Floor + 1, 0);
+        boss.transform.SetParent(it); boss.transform.position = new Vector3(rooms["R43"].r.center.x, rooms["R43"].Floor + 1, 0);
 
         var r05 = rooms["R05"];
         var safe = new GameObject("F5_SafeZone_TODO (Trại orc R05)");
@@ -669,7 +717,8 @@ public static class FifthFloorBuilder
             so.FindProperty("floorId").stringValue = id;
             so.ApplyModifiedPropertiesWithoutUndo();
         }
-        markers.Add(("Lever_L2_SongSat (đỉnh R28)", new Vector3(rooms["R28"].r.xMin + 12.5f, rooms["R28"].r.yMax - 4f, 0)));
+        markers.Add(("Lever_L2_SongSat (đỉnh R41, mở lên R16)", new Vector3(rooms["R41"].r.xMin + 12.5f, rooms["R41"].r.yMax - 4f, 0)));
+        markers.Add(("Lever_L3_SongSat (gờ R41, mở sang R25)", new Vector3(rooms["R41"].r.xMin + 13.5f, rooms["R41"].r.yMax - 9f, 0)));
         markers.Add(("Lift_ThangToiOrc_TODO (đáy R09, thay bậc leo bằng thang tời + cần gạt)", new Vector3(rooms["R09"].r.xMin + 4.5f, rooms["R09"].Floor + 1, 0)));
     }
 
@@ -682,7 +731,7 @@ public static class FifthFloorBuilder
         if (overlay == null) { log.Add("KHÔNG thấy FogOfWarCanvas: bỏ qua vùng fog."); return; }
         overlay.SetActive(false);                                   // mặc định tắt; FogOfWarZone bật khi vào mê cung
         var parent = Group("______FogZone_F5_____").transform;
-        foreach (var id in new[] { "R22", "R23", "R24", "R25", "R26", "R27", "R28" })
+        foreach (var id in Enumerable.Range(22, 20).Select(n => "R" + n))
         {
             var r = rooms[id].r;
             var go = new GameObject("FogZone_" + id);
@@ -693,7 +742,7 @@ public static class FifthFloorBuilder
             so.FindProperty("fogOverlay").objectReferenceValue = overlay;
             so.ApplyModifiedPropertiesWithoutUndo();
         }
-        log.Add("Fog of war: tắt mặc định, bật trong R22–R28 (FogOfWarZone).");
+        log.Add("Fog of war: tắt mặc định, bật trong R22–R41 (FogOfWarZone).");
     }
 
     static void BuildTodoMarkers()
@@ -709,10 +758,12 @@ public static class FifthFloorBuilder
         M("Quai_BoXuongLinhGac", "R10", 34, 1); M("Quai_Undead", "R12", 48, 1);
         M("Quai_NamQuai (nguồn ăn: nấm)", "R17", 16, 1); M("Quai_Undead", "R18", 28, 1);
         M("Quai_QuyLua (dấu vết rồng: vảy, vết cháy)", "R20", 14, 1);
-        M("Quai_Slime + Doi", "R22", 18, 1); M("Quai_Nhen", "R23", 40, 1); M("Quai_Undead", "R24", 50, 1);
-        M("Quai_BoXuong + NhenLon", "R26", 52, 1);
-        M("Den_Tho (vùng sáng cố định trong fog)", "R25", 9, 4);
-        M("R30: phòng boss trống", "R30", 27, 2);
+        M("Quai_Slime + Doi", "R22", 18, 1); M("Quai_Doi", "R23", 40, 1); M("Quai_BoXuong", "R25", 40, 1);
+        M("Quai_Undead", "R26", 30, 1); M("Quai_Nhen", "R28", 40, 1); M("Quai_Nhen (rơi từ trần)", "R29", 9, 20);
+        M("Quai_Slime", "R30", 9, 1); M("Quai_BoXuong + Undead", "R31", 40, 1); M("Quai_NhenLon x2 (ổ nhện)", "R32", 18, 1);
+        M("Quai_Doi x2 (trong hố)", "R33", 18, 6); M("Quai_Undead (đứng im, giống tượng)", "R34", 44, 1); M("Quai_Slime", "R35", 30, 1);
+        M("Quai_Slime x2", "R36", 24, 1); M("Quai_BoXuong + NhenLon", "R37", 60, 1); M("Quai_Undead x2", "R39", 54, 1); M("Quai_Nhen", "R40", 24, 1);
+        M("R43: phòng boss trống", "R43", 27, 2);
         foreach (var (name, pos) in markers) { var go = new GameObject(name); go.transform.SetParent(todo); go.transform.position = pos; }
     }
 }
