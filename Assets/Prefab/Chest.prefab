@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 7855224879656183057}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.8855457, y: 3.0412905, z: -0.019822212}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -121,6 +121,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   coinAmount: 10
+  chestId: 
 --- !u!61 &4351835671516730267
 BoxCollider2D:
   m_ObjectHideFlags: 0

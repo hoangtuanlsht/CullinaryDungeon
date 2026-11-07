@@ -4867,6 +4867,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da9cb297fee019244802dc7c89b70c6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &810966672
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 810966674}
+  - component: {fileID: 810966673}
+  m_Layer: 0
+  m_Name: RoomManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &810966673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 810966672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5589516894abfbb45be498e8346a7c89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &810966674
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 810966672}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 320.3308, y: -74.814476, z: -10.4967165}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &816531419
 GameObject:
   m_ObjectHideFlags: 0
@@ -12006,6 +12050,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Desert
       objectReference: {fileID: 0}
+    - target: {fileID: 243665444399960157, guid: ad8a347dcc96dce4a9bcd67cc32187a1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2619509071044295449, guid: ad8a347dcc96dce4a9bcd67cc32187a1, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.170309
@@ -14859,3 +14907,4 @@ SceneRoots:
   - {fileID: 1011653033}
   - {fileID: 639518189}
   - {fileID: 1806336478}
+  - {fileID: 810966674}
