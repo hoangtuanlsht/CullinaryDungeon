@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Board :MonoBehaviour, Interact
 {
+
     public void InteractWithObject()
     {
         Debug.Log("Bảng thông báo! Đây là một bảng thông báo.");
