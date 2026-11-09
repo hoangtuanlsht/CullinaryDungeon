@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 
-/// [Module 5] Một phòng: vùng giới hạn (collider, dùng chung cho nhận diện phòng + Confiner2D) và vcam riêng.
+/// [Module 5] Một phòng: collider (dùng chung cho nhận diện phòng + Confiner2D) và vcam riêng.
+/// Các collider con tên "Buffer..." là dải đệm lấn sang phòng kế bên: chỉ dùng để GIỮ phòng hiện tại lâu hơn.
 [RequireComponent(typeof(Collider2D))]
 public class Room : MonoBehaviour
 {
@@ -15,8 +16,20 @@ public class Room : MonoBehaviour
 
     public string RoomId => roomId;
 
+    private readonly List<Collider2D> areas = new List<Collider2D>();
+
+    /// Điểm p còn nằm trong phòng hoặc trong dải đệm của phòng không.
+    public bool Contains(Vector2 p)
+    {
+        foreach (var a in areas) if (a != null && a.OverlapPoint(p)) return true;
+        return false;
+    }
+
     private void Awake()
     {
+        areas.Add(GetComponent<Collider2D>());
+        foreach (Transform child in transform)
+            if (child.name.StartsWith("Buffer") && child.TryGetComponent(out Collider2D c)) areas.Add(c);
         if (vcam != null) vcam.Priority = InactivePriority;
         if (string.IsNullOrEmpty(roomId)) Debug.LogError($"{name}: chưa đặt Room Id", this);
     }

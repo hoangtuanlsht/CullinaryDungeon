@@ -5,6 +5,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
+using Cinemachine;
 
 /// Greybox tầng 4 — Hồ Phát Sáng, đủ 30 phòng: A (hang dẫn), B (bờ hồ), C (mặt hồ), D (thành phố chìm), E (lòng cột trụ).
 /// Theo tài liệu "Thiet-Ke-Tang-4-Ho-Phat-Sang.md" (mục 1b: 1 ô lưới = 18×10 tile, y lưới tăng xuống dưới).
@@ -105,7 +106,7 @@ public static class FourthFloorBuilder
             EditorUtility.DisplayDialog("F4 Builder", "Hãy mở FourthFloorScene và đặt làm scene active trước.", "OK");
             return;
         }
-        log.Clear(); blockers.Clear(); swimCells.Clear();
+        log.Clear(); blockers.Clear(); swimCells.Clear(); tunnelMid.Clear();
         foreach (var root in scene.GetRootGameObjects())
             if (GeneratedRoots.Contains(root.name)) Object.DestroyImmediate(root);
 
@@ -338,6 +339,7 @@ public static class FourthFloorBuilder
             var room = RoomAtCell(roomCell.gx, roomCell.gy);
             if (room != null && nb.gx == roomCell.gx && nb.gy < roomCell.gy) ClimbStack(room, CellLeft(roomCell.gx) + 8, room.r.yMax - 3, true);
         }
+        tunnelMid[id] = path.Skip(1).Take(path.Length - 2).Select(p => new Vector2Int(p.gx, p.gy)).ToList();   // ô lưới giữa = phòng hầm riêng
         log.Add($"Đường ẩn {id}: {path.Length - 2} ô đá");
     }
 
@@ -977,6 +979,15 @@ public static class FourthFloorBuilder
     // ===================== ROOM (Module 5) =====================
     static GameObject Group(string name) => new GameObject(name);
 
+    // ===================== KHUNG PHÒNG (chia lại như FirstFloorScene 1) =====================
+    // - Mỗi phòng: collider gốc (nhận diện phòng) + con "CamBounds" (khung Confiner) + dải đệm "Buffer_*" 3 ô lấn qua cửa.
+    // - Đường hầm ẩn (H1–H7, CUR) = phòng riêng phủ các ô lưới hầm đi qua → camera theo người chơi trong hầm.
+    // - Hốc/ngách nằm ngoài khung phòng (hốc Ground Pound, hốc rương, ngách leo R29, hố R10/R23) = phòng nhỏ riêng,
+    //   khung camera tối thiểu 1 màn hình 18×10 → vào hốc thì camera nhìn hốc, đi phía trên không lộ hốc.
+    // - Camera: FramingTransposer damping 0.2, ScreenY 0.7 (giống tầng 1).
+    static readonly Dictionary<string, List<Vector2Int>> tunnelMid = new Dictionary<string, List<Vector2Int>>();
+    class Region { public string id; public HashSet<Vector2Int> detect = new HashSet<Vector2Int>(), cam = new HashSet<Vector2Int>(); }
+
     static void BuildRooms()
     {
         var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefab/Room.prefab");
@@ -984,36 +995,192 @@ public static class FourthFloorBuilder
         var parent = Group("______Room_____").transform;
         foreach (var r in rooms.Values.OrderBy(r => r.id))
         {
-            var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab, parent);
-            go.name = r.id;
-            go.layer = LayerMask.NameToLayer("Room");
-            go.transform.position = new Vector3(r.r.xMin, r.r.yMin, 0);
-            var poly = go.GetComponent<PolygonCollider2D>();
-            float w = r.r.width, h = r.r.height;
-            poly.pathCount = 1;
-            poly.SetPath(0, new[] { new Vector2(0, 0), new Vector2(w, 0), new Vector2(w, h), new Vector2(0, h) });
-            poly.offset = Vector2.zero;
-
-            var so = new SerializedObject(go.GetComponent<global::Room>());
-            so.FindProperty("roomId").stringValue = r.id;
-            so.ApplyModifiedPropertiesWithoutUndo();
-            r.go = go; r.vcam = so.FindProperty("vcam").objectReferenceValue;
-
-            if (r.vcam is Component vc)
-            {
-                foreach (var c in vc.GetComponents<Component>())
-                {
-                    if (c == null || c.GetType().Name != "CinemachineConfiner2D") continue;
-                    var cso = new SerializedObject(c);
-                    var p = cso.FindProperty("m_BoundingShape2D");
-                    if (p != null) { p.objectReferenceValue = poly; cso.ApplyModifiedPropertiesWithoutUndo(); }
-                    var m = c.GetType().GetMethod("InvalidateCache");
-                    if (m != null) m.Invoke(c, null);
-                }
-                vc.gameObject.name = "VCam_" + r.id;
-                vc.transform.position = new Vector3(r.r.xMin + w / 2, r.r.yMin + h / 2, -10);
-            }
+            var loop = new List<Vector2[]> { RectLoop(r.r) };
+            r.go = MakeRoom(prefab, parent, r.id, r.r.min, loop, loop, out r.vcam);
         }
+        int nb = 0;
+        foreach (var d in doors) nb += DoorBuffers(d);
+        var regions = ExtraRegions();
+        foreach (var g in regions)
+        {
+            var min = new Vector2Int(g.detect.Min(c => c.x), g.detect.Min(c => c.y));
+            MakeRoom(prefab, parent, g.id, min, Trace(g.detect), Trace(g.cam), out _);
+        }
+        log.Add($"Khung phòng: {rooms.Count} phòng + {regions.Count(g => g.id.Contains("_H") || g.id.EndsWith("CUR"))} hầm ẩn + {regions.Count(g => g.id.Contains("_Pocket"))} hốc/ngách, {nb} dải đệm cửa");
+    }
+
+    static Vector2[] RectLoop(RectInt r) => new[] { new Vector2(r.xMin, r.yMin), new Vector2(r.xMax, r.yMin), new Vector2(r.xMax, r.yMax), new Vector2(r.xMin, r.yMax) };
+
+    /// Tạo 1 phòng từ prefab (gỡ liên kết prefab như tầng 1 để đổi được thân camera). detect/cam: các vòng đa giác toạ độ thế giới.
+    static GameObject MakeRoom(GameObject prefab, Transform parent, string id, Vector2Int origin, List<Vector2[]> detect, List<Vector2[]> cam, out Object vcamOut)
+    {
+        var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab, parent);
+        PrefabUtility.UnpackPrefabInstance(go, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+        go.name = id;
+        int roomLayer = LayerMask.NameToLayer("Room");
+        go.layer = roomLayer;
+        go.transform.position = new Vector3(origin.x, origin.y, 0);
+        Vector2 o = origin;
+        var poly = go.GetComponent<PolygonCollider2D>();
+        poly.offset = Vector2.zero; poly.pathCount = detect.Count;
+        for (int i = 0; i < detect.Count; i++) poly.SetPath(i, detect[i].Select(p => p - o).ToArray());
+
+        var cb = new GameObject("CamBounds"); cb.layer = roomLayer;
+        cb.transform.SetParent(go.transform, false);
+        var cpoly = cb.AddComponent<PolygonCollider2D>(); cpoly.isTrigger = true; cpoly.pathCount = cam.Count;
+        for (int i = 0; i < cam.Count; i++) cpoly.SetPath(i, cam[i].Select(p => p - o).ToArray());
+
+        var so = new SerializedObject(go.GetComponent<global::Room>());
+        so.FindProperty("roomId").stringValue = id;
+        so.ApplyModifiedPropertiesWithoutUndo();
+        vcamOut = so.FindProperty("vcam").objectReferenceValue;
+        if (vcamOut is CinemachineVirtualCamera vc)
+        {
+            var conf = vc.GetComponent<CinemachineConfiner2D>();
+            if (conf != null) { conf.m_BoundingShape2D = cpoly; conf.m_Damping = 0; conf.InvalidateCache(); }
+            if (vc.GetCinemachineComponent<CinemachineTransposer>() != null) vc.DestroyCinemachineComponent<CinemachineTransposer>();
+            var ft = vc.GetCinemachineComponent<CinemachineFramingTransposer>() ?? vc.AddCinemachineComponent<CinemachineFramingTransposer>();
+            ft.m_XDamping = 0.2f; ft.m_YDamping = 0.2f; ft.m_ZDamping = 1f;
+            ft.m_ScreenX = 0.5f; ft.m_ScreenY = 0.7f; ft.m_DeadZoneWidth = 0; ft.m_DeadZoneHeight = 0;
+            ft.m_SoftZoneWidth = 0.8f; ft.m_SoftZoneHeight = 0.8f; ft.m_LookaheadTime = 0; ft.m_CameraDistance = 10;
+            vc.m_Lens.OrthographicSize = 5;
+            var b = cpoly.bounds;
+            vc.gameObject.name = "VCam_" + id;
+            vc.transform.position = new Vector3(b.center.x, b.center.y, -10);
+        }
+        return go;
+    }
+
+    /// Dải đệm 3 ô lấn sang phòng bên kia ở mỗi cửa: còn đứng trong dải thì giữ phòng hiện tại (Room.Contains).
+    static int DoorBuffers(Door d)
+    {
+        RoomDef A = rooms[d.a], B = rooms[d.b];
+        if (A.go == null || B.go == null) return 0;
+        if (d.side == "right" || d.side == "left")
+        {
+            int bx = d.side == "right" ? (d.cx + 1) * SW : d.cx * SW;
+            int yb = CellBottom(d.cy) + 1;
+            if ((A.lake || B.lake) && d.cy == A.BottomRow && d.cy == B.BottomRow) yb += 2;
+            RoomDef left = d.side == "right" ? A : B, right = d.side == "right" ? B : A;
+            AddBuffer(left, new RectInt(bx, yb - 1, 3, 5), right.id);
+            AddBuffer(right, new RectInt(bx - 3, yb - 1, 3, 5), left.id);
+        }
+        else
+        {
+            int by = d.side == "bottom" ? CellBottom(d.cy) : CellBottom(d.cy) + SH;
+            int hx = CellLeft(d.cx) + d.off;
+            RoomDef upper = d.side == "bottom" ? A : B, lower = d.side == "bottom" ? B : A;
+            AddBuffer(upper, new RectInt(hx - 1, by - 3, 5, 3), lower.id);
+            AddBuffer(lower, new RectInt(hx - 1, by, 5, 3), upper.id);
+        }
+        return 2;
+    }
+
+    static void AddBuffer(RoomDef room, RectInt area, string other)
+    {
+        var go = new GameObject("Buffer_" + other); go.layer = LayerMask.NameToLayer("Room");
+        go.transform.SetParent(room.go.transform, false);
+        var bc = go.AddComponent<BoxCollider2D>(); bc.isTrigger = true;
+        bc.size = area.size;
+        bc.offset = area.center - (Vector2)room.go.transform.position;
+    }
+
+    /// Vùng trống nằm ngoài mọi khung phòng → phòng hầm ẩn / phòng hốc.
+    static List<Region> ExtraRegions()
+    {
+        var inRoom = new bool[W, H];
+        foreach (var r in rooms.Values)
+            for (int x = r.r.xMin; x < r.r.xMax; x++) for (int y = r.r.yMin; y < r.r.yMax; y++) if (In(x, y)) inRoom[x - minX, y - minY] = true;
+        bool Open(int x, int y) => In(x, y) && !solid[x - minX, y - minY] && !inRoom[x - minX, y - minY];
+        var seen = new bool[W, H];
+        var result = new Dictionary<string, Region>();
+        var pocketCount = new Dictionary<string, int>();
+        for (int i = 0; i < W; i++) for (int j = 0; j < H; j++)
+        {
+            int sx = i + minX, sy = j + minY;
+            if (seen[i, j] || !Open(sx, sy)) continue;
+            var comp = new List<Vector2Int>(); var q = new Queue<Vector2Int>();
+            q.Enqueue(new Vector2Int(sx, sy)); seen[i, j] = true;
+            while (q.Count > 0)
+            {
+                var p = q.Dequeue(); comp.Add(p);
+                foreach (var dv in new[] { Vector2Int.right, Vector2Int.left, Vector2Int.up, Vector2Int.down })
+                {
+                    var n = p + dv;
+                    if (Open(n.x, n.y) && !seen[n.x - minX, n.y - minY]) { seen[n.x - minX, n.y - minY] = true; q.Enqueue(n); }
+                }
+            }
+            if (comp.Count < 4) continue;
+            // Hầm ẩn?
+            string tid = null;
+            foreach (var kv in tunnelMid)
+                if (comp.Any(t => kv.Value.Contains(new Vector2Int(Mathf.FloorToInt(t.x / (float)SW), Mathf.FloorToInt((-t.y - 1) / (float)SH))))) { tid = kv.Key; break; }
+            if (tid != null)
+            {
+                string id = "F4_" + tid;
+                if (!result.TryGetValue(id, out var g)) result[id] = g = new Region { id = id };
+                foreach (var c in tunnelMid[tid])
+                {
+                    int x0 = CellLeft(c.x), y0 = CellBottom(c.y);
+                    for (int x = x0; x < x0 + SW; x++) for (int y = y0; y < y0 + SH; y++) { g.detect.Add(new Vector2Int(x, y)); g.cam.Add(new Vector2Int(x, y)); }
+                }
+                continue;
+            }
+            // Hốc: thuộc phòng tiếp giáp nhiều nhất
+            var owner = rooms.Values.OrderByDescending(r => comp.Count(t =>
+                r.r.Contains(t + Vector2Int.right) || r.r.Contains(t + Vector2Int.left) || r.r.Contains(t + Vector2Int.up) || r.r.Contains(t + Vector2Int.down))).First();
+            pocketCount.TryGetValue(owner.id, out int k); pocketCount[owner.id] = ++k;
+            var pg = new Region { id = $"{owner.id}_Pocket{k}" };
+            int bx0 = comp.Min(t => t.x), bx1 = comp.Max(t => t.x) + 1, by0 = comp.Min(t => t.y), by1 = comp.Max(t => t.y) + 1;
+            for (int x = bx0; x < bx1; x++) for (int y = by0; y < by1; y++) pg.detect.Add(new Vector2Int(x, y));
+            int cw = Mathf.Max(SW, bx1 - bx0), ch = Mathf.Max(SH, by1 - by0);
+            int cx0 = bx0 - (cw - (bx1 - bx0)) / 2, cy0 = by0 - (ch - (by1 - by0)) / 2;
+            for (int x = cx0; x < cx0 + cw; x++) for (int y = cy0; y < cy0 + ch; y++) pg.cam.Add(new Vector2Int(x, y));
+            result[pg.id] = pg;
+        }
+        return result.Values.OrderBy(g => g.id).ToList();
+    }
+
+    /// Viền của tập ô → các vòng đa giác (ngược chiều kim đồng hồ), bỏ điểm thẳng hàng.
+    static List<Vector2[]> Trace(HashSet<Vector2Int> cells)
+    {
+        var next = new Dictionary<Vector2Int, List<Vector2Int>>();
+        void Edge(Vector2Int a, Vector2Int b) { if (!next.TryGetValue(a, out var l)) next[a] = l = new List<Vector2Int>(); l.Add(b); }
+        foreach (var c in cells)
+        {
+            int x = c.x, y = c.y;
+            if (!cells.Contains(new Vector2Int(x, y - 1))) Edge(new Vector2Int(x, y), new Vector2Int(x + 1, y));
+            if (!cells.Contains(new Vector2Int(x + 1, y))) Edge(new Vector2Int(x + 1, y), new Vector2Int(x + 1, y + 1));
+            if (!cells.Contains(new Vector2Int(x, y + 1))) Edge(new Vector2Int(x + 1, y + 1), new Vector2Int(x, y + 1));
+            if (!cells.Contains(new Vector2Int(x - 1, y))) Edge(new Vector2Int(x, y + 1), new Vector2Int(x, y));
+        }
+        var loops = new List<Vector2[]>();
+        while (next.Count > 0)
+        {
+            var start = next.Keys.First(); var cur = start; var pts = new List<Vector2Int>();
+            Vector2Int dirIn = Vector2Int.zero;
+            do
+            {
+                pts.Add(cur);
+                var outs = next[cur];
+                Vector2Int nxt = outs[0];
+                if (outs.Count > 1 && dirIn != Vector2Int.zero)   // điểm kẹp: ưu tiên rẽ trái
+                {
+                    var left = new Vector2Int(-dirIn.y, dirIn.x);
+                    foreach (var o in outs) if (o - cur == left) nxt = o;
+                }
+                outs.Remove(nxt); if (outs.Count == 0) next.Remove(cur);
+                dirIn = nxt - cur; cur = nxt;
+            } while (cur != start && next.ContainsKey(cur));
+            var simp = new List<Vector2>();
+            for (int i = 0; i < pts.Count; i++)
+            {
+                var a = pts[(i - 1 + pts.Count) % pts.Count]; var b = pts[i]; var c = pts[(i + 1) % pts.Count];
+                if ((b - a) != (c - b) * 1 && !((b.x - a.x) * (c.y - b.y) == (b.y - a.y) * (c.x - b.x))) simp.Add(b);
+            }
+            if (simp.Count >= 3) loops.Add(simp.ToArray());
+        }
+        return loops;
     }
 
     // ===================== CỬA, RƯƠNG, ĐIỂM LƯU =====================

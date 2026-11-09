@@ -16,18 +16,38 @@ public class RoomTracker : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Collider2D hit = Physics2D.OverlapPoint(body.bounds.center, roomLayer);
-        if (hit == null) return;                      // ra ngoài mọi phòng (lỗi map) → giữ phòng cũ
+        Vector2 p = body.bounds.center;
 
-        Room room = hit.GetComponent<Room>();
-        if (room == null || room == Current) return;
+        // Vùng đệm (hysteresis): các phòng cạnh nhau giao nhau một dải.
+        // Còn đứng trong phòng hiện tại thì giữ nguyên, chỉ đổi khi đã ra hẳn khỏi nó
+        // → đứng lắc qua lại ở ranh giới không làm camera nhảy liên tục.
+        if (Current != null && Current.Contains(p)) return;
 
-        // Nếu scene tầng cũ đã unload, Current là "null giả" của Unity → điều kiện dưới tự bỏ qua.
-        if (Current != null) Current.Deactivate();
-        Current = room;
-        Current.Activate(transform);
+        int n = Physics2D.OverlapPoint(p, filter, hits);
+        for (int i = 0; i < n; i++)
+        {
+            Room room = hits[i].GetComponent<Room>();   // bỏ qua collider con CamBounds (không có Room)
+            if (room == null || room == Current) continue;
 
-        WorldProgress.MarkVisited(room.RoomId);       // B5
-        OnRoomChanged?.Invoke(room);
+            // Nếu scene tầng cũ đã unload, Current là "null giả" của Unity → điều kiện dưới tự bỏ qua.
+            if (Current != null) Current.Deactivate();
+            Current = room;
+            Current.Activate(transform);
+
+            WorldProgress.MarkVisited(room.RoomId);   // B5
+            OnRoomChanged?.Invoke(room);
+            return;
+        }
+        // Không trúng phòng nào (lỗi map) → giữ phòng cũ.
+    }
+
+
+    private readonly Collider2D[] hits = new Collider2D[8];
+    private ContactFilter2D filter;
+
+    private void Awake()
+    {
+        filter = new ContactFilter2D { useTriggers = true };
+        filter.SetLayerMask(roomLayer);
     }
 }

@@ -4740,7 +4740,7 @@ MonoBehaviour:
   anim: {fileID: 1316154431}
   healthBar: {fileID: 2042162438}
   speedWalk: 120
-  speedRun: 160
+  speedRun: 200
   jumpForce: 12
   isDoubleJump: 1
   footStepSpeed: 0.5

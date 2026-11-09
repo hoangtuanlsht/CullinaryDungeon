@@ -2331,8 +2331,8 @@ MonoBehaviour:
   spawnPoint: {fileID: 254625610}
   enterDirection: 1
   targetScene:
-    sceneAsset: {fileID: 102900000, guid: 91fcb5458d3aec148b5f2a01513b6abe, type: 3}
-    sceneName: SecondFloorScene_v2
+    sceneAsset: {fileID: 102900000, guid: e9197c7dd8be70d478ee40177563895b, type: 3}
+    sceneName: FifthFloorScene
   targetDoorId: F5_Up
   requireInteract: 1
 --- !u!61 &562298384
@@ -3109,8 +3109,8 @@ MonoBehaviour:
   spawnPoint: {fileID: 1929731916}
   enterDirection: 1
   targetScene:
-    sceneAsset: {fileID: 102900000, guid: 91fcb5458d3aec148b5f2a01513b6abe, type: 3}
-    sceneName: SecondFloorScene_v2
+    sceneAsset: {fileID: 102900000, guid: 537354a0077dce54f96b4520109462ef, type: 3}
+    sceneName: FourthFloorScene
   targetDoorId: F4_Up
   requireInteract: 1
 --- !u!61 &744612072
@@ -3847,8 +3847,8 @@ MonoBehaviour:
   spawnPoint: {fileID: 1112836559}
   enterDirection: 1
   targetScene:
-    sceneAsset: {fileID: 102900000, guid: 91fcb5458d3aec148b5f2a01513b6abe, type: 3}
-    sceneName: SecondFloorScene_v2
+    sceneAsset: {fileID: 102900000, guid: 59d7a32e9e762784db75e32522fffa5c, type: 3}
+    sceneName: FirstFloorScene 1
   targetDoorId: F1_Up
   requireInteract: 1
 --- !u!61 &903692823
@@ -4950,8 +4950,8 @@ MonoBehaviour:
   spawnPoint: {fileID: 683322709}
   enterDirection: 1
   targetScene:
-    sceneAsset: {fileID: 102900000, guid: 91fcb5458d3aec148b5f2a01513b6abe, type: 3}
-    sceneName: SecondFloorScene_v2
+    sceneAsset: {fileID: 102900000, guid: 21d2e842a6c7ad449b375e47dabdc247, type: 3}
+    sceneName: ThirdFloorScene
   targetDoorId: F3_Up
   requireInteract: 1
 --- !u!61 &1304997037

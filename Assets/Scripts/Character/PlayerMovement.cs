@@ -280,7 +280,7 @@ public class PlayerMovement
                 owner.isDoubleJump = true;                                          // chạm tường trả lại nhảy đôi
                 rb.velocity = new Vector2(0f, Mathf.Max(rb.velocity.y, -owner.wallSlideSpeed));
                 owner.transform.localScale = new Vector3(wallDir, 1f, 1f);
-                PlayAnim("Fall");
+                PlayAnim("WallSlide");
                 return true;
 
             case MoveState.WallJumpLock:
