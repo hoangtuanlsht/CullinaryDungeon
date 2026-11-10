@@ -49,5 +49,6 @@ public class RoomTracker : MonoBehaviour
     {
         filter = new ContactFilter2D { useTriggers = true };
         filter.SetLayerMask(roomLayer);
+        if (GetComponent<RoomFade>() == null) gameObject.AddComponent<RoomFade>();   // màn đen khi đổi phòng
     }
 }

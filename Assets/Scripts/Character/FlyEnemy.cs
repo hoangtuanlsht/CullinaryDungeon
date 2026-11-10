@@ -53,6 +53,21 @@ public class FlyEnemy : Character
         }
     }
     
+    // Tường chặn quái (EnemyWall): tường đứng → quay đầu, tường nằm (lỗ trần/sàn) → đổi hướng bay lên/xuống
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (!other.CompareTag("EnemyWall")) return;
+        var b = other.bounds;
+        if (b.size.x > b.size.y)
+        {
+            dirY = transform.position.y < b.center.y ? -Mathf.Abs(dirY) : Mathf.Abs(dirY);
+        }
+        else if ((dirX > 0f && b.center.x > transform.position.x) || (dirX < 0f && b.center.x < transform.position.x))
+        {
+            Flip();
+        }
+    }
+
     private void Flip()
     {
         isFacingLeft = !isFacingLeft;
