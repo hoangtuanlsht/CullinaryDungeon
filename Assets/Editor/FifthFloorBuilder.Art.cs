@@ -346,13 +346,13 @@ public static partial class FifthFloorBuilder
         P(t, "R11", "g_chain", 10, 14); P(t, "R11", "g_chain", 13, 20);
         P(t, "R12", "g_fireplace0", 7.5f, 4f, false, 1, -6); P(t, "R12", "g_stoneTable", 14.5f); P(t, "R12", "g_halberds", 17.5f, 0.2f);
         P(t, "R12", "s_sign", 33); P(t, "R12", "f5_barrel", 49); P(t, "R12", "s_rubble4", 68);
-        P(t, "R13", "s_sign", 2.5f); P(t, "R13", "g_barrel", 9); P(t, "R13", "g_barrelSide", 11); P(t, "R13", "g_bench", 22);
+        P(t, "R13", "s_sign", 5f); P(t, "R13", "g_barrel", 9); P(t, "R13", "g_barrelSide", 11); P(t, "R13", "g_bench", 22);
         P(t, "R13", "g_candelabra", 18, 8.5f); P(t, "R13", "g_bench", 10, 5); P(t, "R13", "s_bottle2", 26, 5); P(t, "R13", "s_bottle3", 27, 5);
         P(t, "R13", "g_fireplace0", 24, 10, false, 1, -6); P(t, "R13", "f5_planter", 52);
         P(t, "R14", "g_barrelSide", 4); P(t, "R14", "g_barrelSide", 6); P(t, "R14", "g_barrel", 8); P(t, "R14", "g_barrelSide", 18);
         P(t, "R14", "g_barrelSide", 20); P(t, "R14", "g_barrel", 28); P(t, "R14", "f5_crate", 31, 0, false, 0.7f);
-        P(t, "R15", "s_well", 7); P(t, "R15", "s_wagon", 27, 0, true); P(t, "R15", "s_rubbleBig", 40); P(t, "R15", "s_rubble2", 58);
-        P(t, "R15", "f5_cart", 69, 0, true, 0.8f); P(t, "R15", "s_rubble3", 24);
+        P(t, "R15", "s_well", 7); P(t, "R15", "s_wagon", 27, 0, true); P(t, "R15", "s_rubbleBig", 40); P(t, "R15", "s_rubble2", 66.5f);
+        P(t, "R15", "f5_cart", 43, 0, true, 0.8f);   // dời khỏi miệng hầm R13|R15 P(t, "R15", "s_rubble3", 24);
 
         // ---- Khu C: phố dưới ----
         T("R16", 4, 1); T("R16", 13, 9);
@@ -364,7 +364,7 @@ public static partial class FifthFloorBuilder
         P(t, "R21", "g_chain", 9, 18); P(t, "R21", "g_chain", 13, 8);
 
         // ---- Khu D: mê cung tối. Ít đồ, mỗi phòng một "dấu hiệu" riêng để người chơi nhận ra mình đang ở đâu trong bóng tối ----
-        P(t, "R22", "g_webR", 30, 15.5f); P(t, "R22", "s_rubble2", 8); P(t, "R22", "g_chain", 20, 12);
+        P(t, "R22", "g_webR", 27, 15.5f); P(t, "R22", "s_rubble2", 8); P(t, "R22", "g_chain", 20, 12);
         P(t, "R23", "g_chain", 22, 5); P(t, "R23", "g_chain", 56, 5); P(t, "R23", "s_rubble3", 40);                 // tiếng vọng: xích treo
         P(t, "R24", "s_rubble1", 8); P(t, "R24", "s_rubble2", 40); P(t, "R24", "s_bottle3", 44);                    // ngõ chuột
         P(t, "R25", "g_coffinA", 8); P(t, "R25", "g_coffinB", 24); P(t, "R25", "g_coffinA", 40, 0, true); P(t, "R25", "g_coffinB", 52, 0, true);
@@ -385,7 +385,7 @@ public static partial class FifthFloorBuilder
         P(t, "R41", "g_chain", 14, 30); P(t, "R41", "g_chain", 9, 14);
 
         // ---- Khu E ----
-        T("R42", 3); T("R42", 32); P(t, "R42", "s_rubble1", 18);
+        T("R42", 3); T("R42", 29); P(t, "R42", "s_rubble1", 18);
         P(t, "R43", "g_pillar", 6); P(t, "R43", "g_pillar", 46);
     }
 

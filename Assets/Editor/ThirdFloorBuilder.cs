@@ -127,6 +127,7 @@ public static class ThirdFloorBuilder
         BuildEnemies();
         BuildBoss();
         BuildEnemyWalls();
+        F3EnemyHealthBars.Apply(scene);   // mỗi quái 1 Canvas-HealthBar
         F3RoomMerge.ApplyAll(scene);   // khung phòng giao nhau với phòng kế bên + lấp tile chỗ camera nhìn ra ngoài map
 
         EditorSceneManager.MarkSceneDirty(scene);

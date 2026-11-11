@@ -28,7 +28,24 @@ public static class F3RoomFrames
     const float CamHalfW = 10f;
     const int RevealRows = 2;          // C.4: lối vào khu bí mật — camera nhích lên được 2 ô
     const int RevealHalfW = 10;        // bề ngang phần nhô phải ≥ khung hình (Confiner2D không vào vùng hẹp hơn khung hình)
-    static readonly HashSet<string> SecretRooms = new HashSet<string> { "F3_R08", "F3_R16", "F3_R20" };
+    static readonly HashSet<string> SecretRooms = new HashSet<string> { "F3_R08", "F3_R16", "F3_R20" };   // id khung gốc
+
+    /// Khung gốc của 25 RoomDef trong ThirdFloorBuilder (BO = 200). Nhận ra khung theo hình học → đổi tên phòng thoải mái.
+    public static readonly Dictionary<RectInt, string> OriginalRects = BuildOriginalRects();
+    static Dictionary<RectInt, string> BuildOriginalRects()
+    {
+        var d = new Dictionary<RectInt, string>();
+        void R(string id, int x, int y, int w, int h) => d[new RectInt(x, y, w, h)] = id;
+        R("F3_R01", 0, 0, 40, 18); R("F3_R02", 40, 0, 44, 18); R("F3_R03", 4, 18, 24, 38); R("F3_R04", -32, 18, 36, 18);
+        R("F3_R05", 28, 18, 36, 18); R("F3_R06", 64, 18, 22, 38); R("F3_R07", 28, 36, 36, 20); R("F3_R08", -30, 36, 8, 32);
+        R("F3_R09", 86, 18, 32, 20); R("F3_R10", 118, 18, 34, 20); R("F3_R11", 4, 56, 60, 16); R("F3_R12", 64, 56, 36, 16);
+        R("F3_R13", 4, 72, 44, 16); R("F3_R14", 48, 72, 48, 16); R("F3_R15", 96, 72, 48, 16); R("F3_R16", 112, 88, 8, 30);
+        R("F3_R17", 144, 72, 24, 22); R("F3_R19", -24, 72, 28, 20);
+        for (int k = 0; k < 5; k++) R($"F3_R{21 + k}", 168 + k * 40, 72, 40, 18);
+        R("F3_R18", 368, 72, 44, 24); R("F3_R20", 402, 96, 10, 26);
+        return d;
+    }
+
 
     static readonly string[] BlockingMaps = { "F3_Ground", "F3_Ground_KnightDungeon", "F3_DeadZone_Lava" };
     static readonly string[] FillMaps = { "F3_Ground", "F3_Ground_KnightDungeon" };
@@ -83,6 +100,7 @@ public static class F3RoomFrames
 
         // 1) Mặt nạ ô + tường chặn quái ở lối thông
         var gates = new List<(Vector2 center, Vector2 size, string name)>();
+        var secretGates = new HashSet<string>();
         foreach (var i in infos)
         {
             i.cells.UnionWith(i.own);
@@ -101,8 +119,9 @@ public static class F3RoomFrames
                 int len = op.b - op.a + 1;
                 if (op.side == 'R') gates.Add((new Vector2(op.line + 1, op.a + len / 2f), new Vector2(0.4f, len), $"Gate_{i.room.name}_{op.nb.room.name}"));
                 if (op.side == 'T') gates.Add((new Vector2(op.a + len / 2f, op.line + 1), new Vector2(len, 0.4f), $"Gate_{i.room.name}_{op.nb.room.name}"));
-                if (op.side == 'T' && SecretRooms.Contains(op.nb.room.name))
+                if (op.side == 'T' && op.nb.rects.Any(rr => SecretRooms.Contains(rr.id)))
                 {
+                    secretGates.Add($"Gate_{i.room.name}_{op.nb.room.name}");
                     // Đoạn ô liền của hàng viền trên chứa lỗ → phần nhô không thò ra ngoài bề ngang của phòng
                     int mid = (op.a + op.b) / 2, rx0 = mid, rx1 = mid;
                     while (i.own.Contains(new Vector2Int(rx0 - 1, op.line))) rx0--;
@@ -166,12 +185,22 @@ public static class F3RoomFrames
         if (oldGate != null) Object.DestroyImmediate(oldGate);
         var gateRoot = new GameObject(GateRoot);
         SceneManager.MoveGameObjectToScene(gateRoot, scene);
+        int barrierLayer = SetupBarrierLayer();
         foreach (var (center, size, name) in gates)
         {
             var g = new GameObject(name) { tag = "EnemyWall" };
             g.transform.SetParent(gateRoot.transform, false);
             g.transform.position = center;
             var bc = g.AddComponent<BoxCollider2D>(); bc.isTrigger = true; bc.size = size;
+            g.AddComponent<RoomGate>();
+            if (barrierLayer >= 0)
+            {
+                // Collider đặc chỉ va chạm với layer Enemy: chặn cả quái đang đuổi / bị đánh văng / dơi
+                var bar = new GameObject("Barrier") { layer = barrierLayer };
+                bar.transform.SetParent(g.transform, false);
+                var bb = bar.AddComponent<BoxCollider2D>();
+                bb.size = new Vector2(Mathf.Max(size.x, 0.6f), Mathf.Max(size.y, 0.6f));
+            }
         }
 
         // 3b) Vệt sáng ở lỗ trần/sàn, đúng ranh giới 2 phòng (giống vệt sáng giữa hầm ngang của F3RoomMerge)
@@ -194,7 +223,7 @@ public static class F3RoomFrames
                 go.transform.localScale = new Vector3((size.x + 1f) / s.x, 3f / s.y, 1f);   // phủ bề ngang lỗ, cao 3 ô (lỗ dày 2 ô)
             }
             var pulse = go.AddComponent<GlowPulse>();
-            if (SecretRooms.Any(s => name.EndsWith("_" + s))) pulse.SetRange(0.04f, 0.12f);   // lối bí mật: chỉ lờ mờ
+            if (secretGates.Contains(name)) pulse.SetRange(0.04f, 0.12f);   // lối bí mật: chỉ lờ mờ
         }
 
         // 4) Lấp tile ở những chỗ camera có thể nhìn thấy mà chưa có gì
@@ -225,6 +254,16 @@ public static class F3RoomFrames
             Debug.Log($"[F3Frames] {i.room.name} [{string.Join("+", i.rects.Select(r => r.id))}]: {string.Join(", ", i.notes)}");
     }
 
+    /// Layer EnemyBarrier chỉ va chạm với Enemy (sửa ma trận va chạm Physics2D của project). -1 nếu chưa có layer.
+    static int SetupBarrierLayer()
+    {
+        int bl = LayerMask.NameToLayer(RoomGate.BarrierLayer), el = LayerMask.NameToLayer("Enemy");
+        if (bl < 0 || el < 0) { Debug.LogError($"[F3Frames] Thiếu layer {RoomGate.BarrierLayer} hoặc Enemy → quái vẫn đi qua được chỗ chuyển phòng"); return -1; }
+        for (int i = 0; i < 32; i++) Physics2D.IgnoreLayerCollision(bl, i, i != el);
+        AssetDatabase.SaveAssets();
+        return bl;
+    }
+
     /// Lần đầu (phòng chưa có RoomRect nào): lưu khung chữ nhật hiện tại của collider vào con "RoomRect".
     public static void EnsureRoomRect(Room r)
     {
@@ -240,20 +279,24 @@ public static class F3RoomFrames
     }
 
     /// Các khung chữ nhật gốc của phòng; khung của chính phòng đứng đầu.
-    static List<(string id, RectInt r)> RoomRects(Room r)
+    public static List<(string id, RectInt r)> RoomRects(Room r)
     {
         EnsureRoomRect(r);
         var list = new List<(string id, RectInt r)>();
+        string mainId = null;
         foreach (Transform t in r.transform)
         {
             if (!t.name.StartsWith("RoomRect")) continue;
             var box = t.GetComponent<BoxCollider2D>();
             if (box == null) continue;
             Vector2 min = (Vector2)t.TransformPoint(box.offset) - box.size / 2f;
-            string id = t.name == "RoomRect" ? r.name : t.name.Substring("RoomRect_".Length);
-            list.Add((id, new RectInt(Mathf.RoundToInt(min.x), Mathf.RoundToInt(min.y), Mathf.RoundToInt(box.size.x), Mathf.RoundToInt(box.size.y))));
+            var rect = new RectInt(Mathf.RoundToInt(min.x), Mathf.RoundToInt(min.y), Mathf.RoundToInt(box.size.x), Mathf.RoundToInt(box.size.y));
+            string id = OriginalRects.TryGetValue(rect, out var oid) ? oid
+                      : t.name == "RoomRect" ? r.name : t.name.Substring("RoomRect_".Length);
+            list.Add((id, rect));
+            if (t.name == "RoomRect") mainId = id;
         }
-        return list.OrderBy(p => p.id == r.name ? 0 : 1).ThenBy(p => p.id).ToList();
+        return list.OrderBy(p => p.id == mainId ? 0 : 1).ThenBy(p => p.id).ToList();
     }
 
     /// Lối thông của phòng: ô viền không bị chặn mà ô kề ngoài thuộc phòng khác; gom thành đoạn liền.

@@ -50,6 +50,7 @@ public static class F2LevelBuilderV3
         BuildBackgrounds(lines);
         BuildMarkersAndProps(lines);
         int enemies = BuildEnemies(lines);
+        F2RoomMerge.ApplyAll(EditorSceneManager.GetActiveScene());   // gộp phòng, hầm, khung camera, vùng cấm quái
 
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         Debug.Log($"[F2 v3] Xong: 16 phòng, {enemies} quái. Tile thiếu: {missing}");

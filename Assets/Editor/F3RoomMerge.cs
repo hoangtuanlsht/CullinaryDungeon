@@ -80,8 +80,10 @@ public static class F3RoomMerge
     static void MergeRooms(Scene scene)
     {
         var roots = scene.GetRootGameObjects();
-        var rooms = roots.SelectMany(g => g.GetComponentsInChildren<Room>(true))
-            .GroupBy(r => r.name).ToDictionary(g => g.Key, g => g.First());
+        // Tìm phòng theo id KHUNG GỐC (nhận theo hình học), không theo tên → đổi tên phòng trong scene không làm gộp nhầm
+        var rooms = new Dictionary<string, Room>();
+        foreach (var rm in roots.SelectMany(g => g.GetComponentsInChildren<Room>(true)))
+            foreach (var (rid, _) in F3RoomFrames.RoomRects(rm)) rooms[rid] = rm;
         var behaviours = roots.SelectMany(g => g.GetComponentsInChildren<MonoBehaviour>(true)).Where(b => b != null).ToList();
         int merged = 0, retargeted = 0;
 
@@ -93,7 +95,7 @@ public static class F3RoomMerge
 
             foreach (var id in members)
             {
-                if (!rooms.TryGetValue(id, out var M) || M == null) continue;   // đã gộp ở lần chạy trước
+                if (!rooms.TryGetValue(id, out var M) || M == null || M == L) continue;   // đã gộp ở lần chạy trước
                 F3RoomFrames.EnsureRoomRect(M);
                 foreach (var t in M.transform.Cast<Transform>().Where(t => t.name.StartsWith("RoomRect")).ToList())
                 {

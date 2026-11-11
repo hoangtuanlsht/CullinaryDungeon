@@ -32,7 +32,8 @@ public static class FourthFloorBuilder
     static readonly Color BossGateTint = new Color(1f, 0.30f, 0.43f);
     static readonly Color CurrentTint = new Color(0.29f, 0.85f, 1f);
     static readonly Color SwimTint = new Color(0.35f, 0.95f, 1f, 0.10f);
-    static readonly string[] GeneratedRoots = { "Grid_F4", "______Room_____", "______Door_____", "______Interact_____", "______Hidden_____", "______TODO_____", "______Background_____", "______Water_____" };
+    static readonly string[] GeneratedRoots = { "Grid_F4", "______Room_____", "______Door_____", "______Interact_____", "______Hidden_____", "______TODO_____", "______Background_____", "______Water_____",
+                                                         "______RoomGate_____", "______HoleGlow_____", "______TunnelGlow_____" };   // 3 root cuối do F4RoomMerge/F4RoomFrames tạo
 
     class RoomDef
     {
@@ -107,6 +108,14 @@ public static class FourthFloorBuilder
             return;
         }
         log.Clear(); blockers.Clear(); swimCells.Clear(); tunnelMid.Clear();
+        // Sao lưu scene trước lần chia phòng kiểu Hollow Knight đầu tiên (giữ nguyên nếu đã có)
+        const string backup = "Assets/Scenes/Backup/FourthFloorScene_2026-11-11_beforeMerge.unity";
+        if (AssetDatabase.LoadAssetAtPath<SceneAsset>(backup) == null && !string.IsNullOrEmpty(scene.path))
+        {
+            if (!AssetDatabase.IsValidFolder("Assets/Scenes/Backup")) AssetDatabase.CreateFolder("Assets/Scenes", "Backup");
+            AssetDatabase.CopyAsset(scene.path, backup);
+            log.Add("Đã sao lưu scene: " + backup);
+        }
         foreach (var root in scene.GetRootGameObjects())
             if (GeneratedRoots.Contains(root.name)) Object.DestroyImmediate(root);
 
@@ -120,6 +129,7 @@ public static class FourthFloorBuilder
         BuildHiddenBlockers();
         BuildTodoMarkers();
         BuildBackgrounds();
+        F4RoomMerge.ApplyAll(scene);   // gộp phòng + vệt sáng hầm + khung camera/cổng chặn quái kiểu Hollow Knight
 
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
@@ -302,6 +312,25 @@ public static class FourthFloorBuilder
         Tunnel("H6", new[] { (10, 11), (9, 11), (8, 11) }, "gate", null);
         Tunnel("H7", new[] { (4, 12), (4, 13), (4, 14), (5, 14) }, null, "fake", true);
         Tunnel("CUR", new[] { (3, 10), (3, 9), (3, 8), (3, 7), (3, 6) }, null, "current", true);
+
+        // ---- Tường dày kiểu Hollow Knight: ở 6 ranh giới ngang giữ lại, cửa thành hầm dài 8 ô (4 ô mỗi bên vách) ----
+        // Đắp đá từ đỉnh cửa lên tới trần phòng (không lấn qua trần sang phòng trên). Phải khớp F4RoomMerge.Tunnels.
+        int filled = 0;
+        foreach (var d in doors)
+        {
+            if (!KeepTunnels.Contains((d.a, d.b)) || (d.side != "right" && d.side != "left")) continue;
+            RoomDef A = rooms[d.a], B = rooms[d.b];
+            int bx = d.side == "right" ? (d.cx + 1) * SW : d.cx * SW;
+            int yb = CellBottom(d.cy) + 1;
+            if ((A.lake || B.lake) && d.cy == A.BottomRow && d.cy == B.BottomRow) yb += 2;
+            for (int x = bx - 4; x < bx + 4; x++)
+            {
+                var room = x >= A.r.xMin && x < A.r.xMax ? A : B;
+                for (int y = yb + 3; y <= room.r.yMax - 2 && !Get(solid, x, y); y++) { Set(solid, x, y, true); Set(plat, x, y, false); filled++; }
+            }
+            log.Add($"Hầm {d.a}|{d.b}: x={bx} y={yb}");
+        }
+        log.Add($"Tường dày: đắp {filled} ô đá ở {KeepTunnels.Length} đường hầm");
 
         // ---- Nước thành phố chìm (chỉ để nhìn, chưa gây chết) ----
         foreach (var r in rooms.Values.Where(r => r.underwater))
@@ -986,7 +1015,9 @@ public static class FourthFloorBuilder
     //   khung camera tối thiểu 1 màn hình 18×10 → vào hốc thì camera nhìn hốc, đi phía trên không lộ hốc.
     // - Camera: FramingTransposer damping 0.2, ScreenY 0.7 (giống tầng 1).
     static readonly Dictionary<string, List<Vector2Int>> tunnelMid = new Dictionary<string, List<Vector2Int>>();
-    class Region { public string id; public HashSet<Vector2Int> detect = new HashSet<Vector2Int>(), cam = new HashSet<Vector2Int>(); }
+    class Region { public string id; public HashSet<Vector2Int> detect = new HashSet<Vector2Int>(), cam = new HashSet<Vector2Int>(); public List<RectInt> cellRects = new List<RectInt>(); }
+    /// 6 ranh giới ngang giữ lại (các cửa ngang khác được gộp phòng trong F4RoomMerge.Groups).
+    static readonly (string, string)[] KeepTunnels = { ("R07", "R08"), ("R11", "R12"), ("R16", "R17"), ("R20", "R23"), ("R25", "R26"), ("R26", "R27") };
 
     static void BuildRooms()
     {
@@ -998,15 +1029,20 @@ public static class FourthFloorBuilder
             var loop = new List<Vector2[]> { RectLoop(r.r) };
             r.go = MakeRoom(prefab, parent, r.id, r.r.min, loop, loop, out r.vcam);
         }
-        int nb = 0;
-        foreach (var d in doors) nb += DoorBuffers(d);
+        // Dải lấn ở cửa do F4RoomFrames dựng (nới collider gốc), không cần Buffer_* nữa.
         var regions = ExtraRegions();
         foreach (var g in regions)
         {
             var min = new Vector2Int(g.detect.Min(c => c.x), g.detect.Min(c => c.y));
-            MakeRoom(prefab, parent, g.id, min, Trace(g.detect), Trace(g.cam), out _);
+            var rgo = MakeRoom(prefab, parent, g.id, min, Trace(g.detect), Trace(g.cam), out _);
+            for (int k = 0; k < g.cellRects.Count; k++)   // phòng hầm ẩn: mỗi ô lưới = 1 khung RoomRect để F4RoomFrames xử lý như phòng gộp
+            {
+                var c = new GameObject(k == 0 ? "RoomRect" : $"RoomRect_{g.id}_{k + 1}") { layer = rgo.layer };
+                c.transform.SetParent(rgo.transform, false); c.transform.position = Vector3.zero;
+                var bxc = c.AddComponent<BoxCollider2D>(); bxc.isTrigger = true; bxc.offset = g.cellRects[k].center; bxc.size = g.cellRects[k].size; bxc.enabled = false;
+            }
         }
-        log.Add($"Khung phòng: {rooms.Count} phòng + {regions.Count(g => g.id.Contains("_H") || g.id.EndsWith("CUR"))} hầm ẩn + {regions.Count(g => g.id.Contains("_Pocket"))} hốc/ngách, {nb} dải đệm cửa");
+        log.Add($"Khung phòng: {rooms.Count} phòng + {regions.Count(g => !g.id.StartsWith("F4P_"))} hầm ẩn + {regions.Count(g => g.id.StartsWith("F4P_"))} hốc/ngách (trước khi gộp)");
     }
 
     static Vector2[] RectLoop(RectInt r) => new[] { new Vector2(r.xMin, r.yMin), new Vector2(r.xMax, r.yMin), new Vector2(r.xMax, r.yMax), new Vector2(r.xMin, r.yMax) };
@@ -1122,6 +1158,7 @@ public static class FourthFloorBuilder
                 foreach (var c in tunnelMid[tid])
                 {
                     int x0 = CellLeft(c.x), y0 = CellBottom(c.y);
+                    g.cellRects.Add(new RectInt(x0, y0, SW, SH));
                     for (int x = x0; x < x0 + SW; x++) for (int y = y0; y < y0 + SH; y++) { g.detect.Add(new Vector2Int(x, y)); g.cam.Add(new Vector2Int(x, y)); }
                 }
                 continue;
@@ -1130,7 +1167,7 @@ public static class FourthFloorBuilder
             var owner = rooms.Values.OrderByDescending(r => comp.Count(t =>
                 r.r.Contains(t + Vector2Int.right) || r.r.Contains(t + Vector2Int.left) || r.r.Contains(t + Vector2Int.up) || r.r.Contains(t + Vector2Int.down))).First();
             pocketCount.TryGetValue(owner.id, out int k); pocketCount[owner.id] = ++k;
-            var pg = new Region { id = $"{owner.id}_Pocket{k}" };
+            var pg = new Region { id = $"F4P_{owner.id.Substring(3)}_{k}" };   // F4P_* : F4RoomFrames bỏ qua (khung camera riêng ≥ 1 màn hình)
             int bx0 = comp.Min(t => t.x), bx1 = comp.Max(t => t.x) + 1, by0 = comp.Min(t => t.y), by1 = comp.Max(t => t.y) + 1;
             for (int x = bx0; x < bx1; x++) for (int y = by0; y < by1; y++) pg.detect.Add(new Vector2Int(x, y));
             int cw = Mathf.Max(SW, bx1 - bx0), ch = Mathf.Max(SH, by1 - by0);
@@ -1262,7 +1299,7 @@ public static class FourthFloorBuilder
         var it = Group("______Interact_____").transform;
         var r04 = rooms["R04"]; var r08 = rooms["R08"];
         MakeCheckpoint(it, "F4_CP01", r04.r.xMin + 9.5f, r04.r.yMin + 1, r04);
-        MakeCheckpoint(it, "F4_CP02", r08.r.xMin + 3.5f, r08.r.yMin + 1, r08);
+        MakeCheckpoint(it, "F4_CP02", r08.r.xMin + 7.5f, r08.r.yMin + 1, r08);
         MakeChest(it, "F4_Chest01", ledgeChestX, ledgeChestY, 800);
         var r21 = rooms["R21"].r;
         MakeChest(it, "F4_Chest02", r21.xMin + 5.5f, r21.yMin + 1, 600);
@@ -1270,8 +1307,8 @@ public static class FourthFloorBuilder
         MakeChest(it, "F4_Chest04", chest4.x, chest4.y, 800);
         MakeChest(it, "F4_Chest05", chest5.x, chest5.y, 1200);
         var r17 = rooms["R17"]; var r26 = rooms["R26"];
-        MakeCheckpoint(it, "F4_CP03", r17.r.xMin + 4.5f, r17.r.yMin + 1, r17);
-        MakeCheckpoint(it, "F4_CP04", r26.r.xMin + 4.5f, r26.r.yMin + 1, r26);
+        MakeCheckpoint(it, "F4_CP03", r17.r.xMin + 8.5f, r17.r.yMin + 1, r17);
+        MakeCheckpoint(it, "F4_CP04", r26.r.xMin + 8.5f, r26.r.yMin + 1, r26);
         var boss = new GameObject("BossSpawn (boss tầng 4 - chưa thiết kế)");
         boss.transform.SetParent(it); boss.transform.position = new Vector3(rooms["R27"].r.center.x, rooms["R27"].r.center.y, 0);
 

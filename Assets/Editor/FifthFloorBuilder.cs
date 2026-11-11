@@ -150,7 +150,8 @@ public static partial class FifthFloorBuilder
             EditorUtility.DisplayDialog("F5 Builder", "Hãy mở FifthFloorScene và đặt làm scene active trước.", "OK");
             return;
         }
-        log.Clear(); blockers.Clear(); gpFloors.Clear(); chests.Clear(); deadZones.Clear(); markers.Clear(); houses.Clear();
+        log.Clear(); blockers.Clear(); gpFloors.Clear(); chests.Clear(); deadZones.Clear(); markers.Clear(); houses.Clear(); tunnelCells.Clear();
+        F5RoomMerge.Backup(scene);      // bản trước khi chia phòng kiểu Hollow Knight (một lần)
 
         // Sao lưu bản gốc một lần, trước lần dựng đầu tiên
         if (!System.IO.File.Exists(BackupPath))
@@ -182,6 +183,8 @@ public static partial class FifthFloorBuilder
         BuildFogZones(scene);
         BuildTodoMarkers();
         if (artOk) DecorateF5(scene);
+        RemovePropsInTunnels(scene);
+        F5RoomMerge.ApplyAll(scene);           // gộp phòng + vệt sáng hầm + chia khung camera (F5RoomMerge.cs, F5RoomFrames.cs)
 
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
@@ -338,7 +341,7 @@ public static partial class FifthFloorBuilder
         chests.Add(("F5_Chest04", rooms["R14"].r.xMin + 12.5f, rooms["R14"].Floor, 800));
 
         // ---- R15 chợ cũ (72 ô): 3 nhà dân, quảng trường 24 ô ở giữa cho Minotaurus ----
-        House("R15", 13, 9, 2); House("R15", 47, 9, 3); House("R15", 62, 8, 2);
+        House("R15", 13, 9, 2); House("R15", 47, 9, 3); House("R15", 58, 8, 2);   // nhà cuối dời từ ô 62 → 58: chừa 4 ô cho hầm R13|R15
         markers.Add(("Minotaurus_MiniBoss (EnemyStats riêng ~60%)", new Vector3(rooms["R15"].r.xMin + 34, rooms["R15"].Floor + 1, 0)));
 
         // ---- R16 cầu thang đá: hai đợt bậc gấp khúc ----
@@ -391,6 +394,58 @@ public static partial class FifthFloorBuilder
 
         // ---- R40 hầm khóa: ngõ cụt duy nhất, Rương 7 ở cuối ----
         chests.Add(("F5_Chest07", rooms["R40"].r.xMax - 5.5f, rooms["R40"].Floor, 1500));
+
+        CarveTunnels();
+    }
+
+    // ===================== HẦM Ở RANH GIỚI PHÒNG (kiểu Hollow Knight) =====================
+    static readonly HashSet<Vector2Int> tunnelCells = new HashSet<Vector2Int>();
+
+    /// Cửa ngang còn giữ ranh giới (F5RoomMerge.Tunnels) thành đường hầm dài 2*HalfLen ô: đắp đá từ đỉnh cửa lên tới trần ở cả hai phía.
+    static void CarveTunnels()
+    {
+        int hl = F5RoomMerge.HalfLen, dh = F5RoomMerge.DoorH;
+        foreach (var (bx, ys) in F5RoomMerge.Tunnels)
+        {
+            int n = 0;
+            for (int x = bx - hl; x < bx + hl; x++)
+            {
+                if (!Get(solid, x, ys - 1)) log.Add($"CẢNH BÁO hầm x={bx}: cột {x} không có sàn ở y={ys - 1}");
+                var col = new List<int>();
+                int y = ys + dh;
+                while (!Get(solid, x, y) && col.Count < 40) { col.Add(y); y++; }
+                if (col.Count >= 40) { log.Add($"CẢNH BÁO hầm x={bx}: cột {x} không có trần, bỏ qua"); continue; }
+                foreach (int yy in col)
+                {
+                    Set(solid, x, yy, true); Set(plat, x, yy, false); Set(house, x, yy, false); Set(tent, x, yy, false);
+                    tunnelCells.Add(new Vector2Int(x, yy)); n++;
+                }
+            }
+            var area = new RectInt(bx - hl, ys, 2 * hl, 40);
+            foreach (var h in houses)
+                if (new RectInt(h.x0, h.y0, h.w, 5 * h.floors).Overlaps(area)) log.Add($"CẢNH BÁO hầm x={bx}: đè lên nhà {h.room}@{h.x0}");
+            log.Add($"Hầm x={bx} y={ys}: đắp {n} ô");
+        }
+    }
+
+    /// Đồ trang trí / đuốc có tâm nằm trong đá hầm thì xóa (dữ liệu đặt đồ đã né sẵn, đây chỉ là lưới an toàn).
+    static void RemovePropsInTunnels(Scene scene)
+    {
+        var art = scene.GetRootGameObjects().FirstOrDefault(g => g.name == "______Art_F5_____");
+        if (art == null || tunnelCells.Count == 0) return;
+        foreach (var grp in new[] { "Props", "Torches" })
+        {
+            var g = art.transform.Find(grp);
+            if (g == null) continue;
+            foreach (Transform t in g.Cast<Transform>().ToList())
+            {
+                var sr = t.GetComponentInChildren<SpriteRenderer>();
+                Vector3 c = sr != null ? sr.bounds.center : t.position;
+                if (!tunnelCells.Contains(new Vector2Int(Mathf.FloorToInt(c.x), Mathf.FloorToInt(c.y)))) continue;
+                log.Add($"Xóa đồ trang trí bị đá hầm lấp: {t.name} @({c.x:F1},{c.y:F1})");
+                Object.DestroyImmediate(t.gameObject);
+            }
+        }
     }
 
     // ===================== TILE =====================

@@ -40,7 +40,8 @@ public class Flame : MonoBehaviour, IPoolable
             collision.GetComponent<Character>().OnHit(damage, transform);
             Explode();
         }
-        else if ((blockingLayers.value & (1 << collision.gameObject.layer)) != 0)
+        else if ((blockingLayers.value & (1 << collision.gameObject.layer)) != 0
+                 || collision.GetComponent<RoomGate>() != null)             // không bay qua chỗ chuyển phòng
         {
             Explode();
         }
