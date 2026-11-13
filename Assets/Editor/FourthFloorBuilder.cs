@@ -33,7 +33,7 @@ public static class FourthFloorBuilder
     static readonly Color CurrentTint = new Color(0.29f, 0.85f, 1f);
     static readonly Color SwimTint = new Color(0.35f, 0.95f, 1f, 0.10f);
     static readonly string[] GeneratedRoots = { "Grid_F4", "______Room_____", "______Door_____", "______Interact_____", "______Hidden_____", "______TODO_____", "______Background_____", "______Water_____",
-                                                         "______RoomGate_____", "______HoleGlow_____", "______TunnelGlow_____" };   // 3 root cuối do F4RoomMerge/F4RoomFrames tạo
+                                                         "______RoomGate_____", "______HoleGlow_____", "______TunnelGlow_____", "______Waterfall_____" };   // 3 root cuối do F4RoomMerge/F4RoomFrames tạo
 
     class RoomDef
     {
@@ -124,6 +124,7 @@ public static class FourthFloorBuilder
         WriteTilemaps();
         BuildWater();
         BuildUnderwaterDecor();
+        BuildWaterfalls();
         BuildRooms();
         BuildDoorsAndInteract();
         BuildHiddenBlockers();
@@ -783,6 +784,79 @@ public static class FourthFloorBuilder
         log.Add($"Đồ trang trí dưới nước: {nFloor} mọc đáy, {nCeil} rủ từ trần, {nFloat} trôi nổi ({pos.Count} ô)");
     }
 
+    // ===================== THÁC NƯỚC (asset Resouces/WaterFall: 10 màu × 8 khung 48×48) =====================
+    const string WaterfallDir = "Assets/Resouces/WaterFall/";
+    /// (phòng, số thác tối đa, bộ màu dùng lần lượt): 1–4 xanh dương, 7 xanh ngọc
+    static readonly (string room, int max, int[] sets)[] WaterfallRooms = { ("R12", 3, new[] { 3, 7, 1 }), ("R13", 1, new[] { 2 }), ("R10", 1, new[] { 7 }) };
+
+    static Sprite[] WaterfallFrames(int set)
+    {
+        var list = new List<Sprite>();
+        for (int f = 1; f <= 8; f++)
+        {
+            var s = BgSpritePath($"{WaterfallDir}{set}/Sprite-{f:0000}.png", true);   // Sprite Single, PPU 16, Point, Full Rect, Repeat
+            if (s != null) list.Add(s);
+        }
+        return list.ToArray();
+    }
+
+    /// Thác đổ từ trần đá thẳng xuống mặt nước: chỉ đặt ở cột rộng 3 ô trống hoàn toàn (không bậc, không lỗ trần) từ trần tới nước.
+    /// Chỉ là hình động (SpriteLoop), không va chạm, nằm sau nhân vật; chân thác chìm dưới lớp nước.
+    static void BuildWaterfalls()
+    {
+        if (!AssetDatabase.IsValidFolder(WaterfallDir.TrimEnd('/'))) { log.Add("Chưa có " + WaterfallDir + " → bỏ qua thác nước"); return; }
+        var root = new GameObject("______Waterfall_____").transform;
+        bool Free3(int x, int y) => !Get(solid, x, y) && !Get(solid, x + 1, y) && !Get(solid, x + 2, y);
+        bool Plat3(int x, int y) => Get(plat, x, y) || Get(plat, x + 1, y) || Get(plat, x + 2, y);
+        int n = 0;
+        foreach (var (rid, max, sets) in WaterfallRooms)
+        {
+            var r = rooms[rid].r;
+            var cands = new List<(int x, int top, int surf)>();
+            for (int x = r.xMin + 3; x <= r.xMax - 6; x++)
+            {
+                int surf = int.MinValue;
+                for (int y = r.yMin - 3; y < r.yMax; y++)
+                    if (Get(water, x, y) && Get(water, x + 1, y) && Get(water, x + 2, y) && !Get(water, x, y + 1)) { surf = y; break; }
+                if (surf == int.MinValue) continue;
+                int y2 = surf + 2; bool ok = !Plat3(x, surf + 1);   // bỏ qua hàng đá nổi ngay trên mặt hồ: thác vẽ sau tile nên đá che chân thác
+                while (y2 < r.yMax && Free3(x, y2)) { if (Plat3(x, y2)) { ok = false; break; } y2++; }
+                if (!ok || y2 - surf < 6) continue;
+                if (Get(solid, x, y2) && Get(solid, x + 1, y2) && Get(solid, x + 2, y2)) cands.Add((x, y2, surf));   // trần đá liền
+            }
+            var chosen = new List<(int x, int top, int surf)>();
+            foreach (var c in cands.OrderBy(c => Hash(c.x * 7 + 3, c.surf)))
+            {
+                if (chosen.Count >= max) break;
+                if (chosen.Any(o => Mathf.Abs(o.x - c.x) < 12)) continue;
+                chosen.Add(c);
+            }
+            for (int k = 0; k < chosen.Count; k++)
+            {
+                var (x, top, surf) = chosen[k];
+                var frames = WaterfallFrames(sets[k % sets.Length]);
+                if (frames.Length == 0) continue;
+                var go = new GameObject($"Waterfall_{rid}_{k + 1}");
+                go.transform.SetParent(root);
+                var sr = go.AddComponent<SpriteRenderer>();
+                sr.sprite = frames[0]; sr.drawMode = SpriteDrawMode.Tiled; sr.tileMode = SpriteTileMode.Continuous;
+                float bottom = surf + 0.3f, h = top - bottom;
+                sr.size = new Vector2(3f, h); sr.sortingOrder = -2;
+                go.transform.position = new Vector3(x + 1.5f, bottom + h / 2f, 0);
+                var so = new SerializedObject(go.AddComponent<SpriteLoop>());
+                var fp = so.FindProperty("frames"); fp.arraySize = frames.Length;
+                for (int i = 0; i < frames.Length; i++) fp.GetArrayElementAtIndex(i).objectReferenceValue = frames[i];
+                so.FindProperty("fps").floatValue = 10f;
+                so.FindProperty("timeOffset").floatValue = 0.37f * (n + 1);
+                so.ApplyModifiedPropertiesWithoutUndo();
+                n++;
+            }
+            if (chosen.Count < max) log.Add($"Thác nước {rid}: chỉ tìm được {chosen.Count}/{max} cột trống từ trần tới nước");
+        }
+        log.Add($"Thác nước: {n} thác (R12, R13, R10)");
+    }
+
+
 
     // ===================== ĐỘ SÁNG =====================
     const float CityBright = 2.2f;   // gạch tháp khu D–E
@@ -858,6 +932,9 @@ public static class FourthFloorBuilder
         var seaBot = BgSprite("Generic/F4_BG_Sea_FarCity_Strip", true);
 
         var landmark = new Dictionary<string, string[]> { { "F4_R07", CaveBgLayers }, { "F4_R20", SeaBgLayers } };
+        // Phòng boss R27 (54×20 = tỉ lệ 2.7): cắt cảnh 3 của bộ BackGroundUnderWater (xác thuyền + bóng cá mập), giữ đáy ảnh
+        var bossBg = System.IO.File.Exists("Assets/Resouces/BackGroundUnderWater/background 3/orig.png")
+            ? CropSprite("Assets/Resouces/BackGroundUnderWater/background 3/orig.png", new RectInt(0, 111, 576, 213)) : null;
 
         // ---- Bộ Ocean bạn tải về: phủ liền CẢ khu dưới nước (không lặp theo phòng) ----
         var ocean0 = BgSpritePath(F4BgFolder + "Midground/Ocean0.png", true);   // cột nước: mặt sáng → đáy tối
@@ -885,7 +962,7 @@ public static class FourthFloorBuilder
             sr.size = new Vector2(sx1 - sx0, bh);
             sr.transform.position = new Vector3((sx0 + sx1) / 2f, sy0 + bh / 2f, 0);
         }
-        if (ocean1 != null)
+        if (ocean1 != null && bossBg == null)   // có nền xác thuyền riêng cho R27 thì không đặt tàu đắm Ocean1 nữa
         {
             var r27 = rooms["R27"].r;
             var sr = new GameObject("Ocean_Shipwreck (Ocean1, phòng boss R27)").AddComponent<SpriteRenderer>();
@@ -897,6 +974,11 @@ public static class FourthFloorBuilder
         foreach (var r in rooms.Values.OrderBy(r => r.id))
         {
             var rg = new GameObject("BG_" + r.id).transform; rg.SetParent(parent);
+            if (r.id == "F4_R27" && bossBg != null)
+            {
+                CoverRoom(rg, "Landmark_BossShipwreck (BackGroundUnderWater 3)", bossBg, r.r, -31, new Color(0.72f, 0.95f, 1f));   // nhuộm sang xanh ngọc
+                continue;
+            }
             if (landmark.TryGetValue(r.id, out var layers))
             {
                 // R07: cắt ảnh hồ hang để mặt hồ nằm ngay dưới sàn phòng, tháp ở giữa (ảnh gốc 640×360, mặt hồ ở hàng 230)
