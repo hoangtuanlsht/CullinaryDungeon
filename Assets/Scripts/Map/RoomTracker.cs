@@ -30,11 +30,16 @@ public class RoomTracker : MonoBehaviour
             if (room == null || room == Current) continue;
 
             // Nếu scene tầng cũ đã unload, Current là "null giả" của Unity → điều kiện dưới tự bỏ qua.
-            if (Current != null) Current.Deactivate();
+            if (Current != null)
+            {
+                Current.Deactivate();
+                Current.SetBackgroundActive(false);
+            }
             Current = room;
             Current.Activate(transform);
 
             WorldProgress.MarkVisited(room.RoomId);   // B5
+            Current.SetBackgroundActive(true);           // bật background của phòng mới
             OnRoomChanged?.Invoke(room);
             return;
         }

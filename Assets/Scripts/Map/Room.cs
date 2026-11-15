@@ -14,6 +14,12 @@ public class Room : MonoBehaviour
     private const int ActivePriority = 20;                      // cao hơn mọi vcam cũ (đang dùng 10)
     private const int InactivePriority = 0;
 
+    [SerializeField] private GameObject background; // kéo BG_F2_Rxx tương ứng vào
+
+    public void SetBackgroundActive(bool active)
+    {
+        if (background != null) background.SetActive(active);
+    }
     public string RoomId => roomId;
 
     private readonly List<Collider2D> areas = new List<Collider2D>();
@@ -32,6 +38,7 @@ public class Room : MonoBehaviour
             if (child.name.StartsWith("Buffer") && child.TryGetComponent(out Collider2D c)) areas.Add(c);
         if (vcam != null) vcam.Priority = InactivePriority;
         if (string.IsNullOrEmpty(roomId)) Debug.LogError($"{name}: chưa đặt Room Id", this);
+        SetBackgroundActive(false);
     }
 
     public void Activate(Transform player)
@@ -39,6 +46,10 @@ public class Room : MonoBehaviour
         if (vcam == null) { Debug.LogError($"{name}: chưa gán vcam", this); return; }
         vcam.Follow = player;          // Player ở scene khác → không kéo được trong Inspector, gán lúc runtime
         vcam.PreviousStateIsValid = false;   // camera đích nhảy ngay tới player, để Brain lo phần trượt
+                                             // Tính lại vùng giới hạn theo kích thước cửa sổ hiện tại (tránh dùng bản tính cũ khi đổi aspect)
+        var confiner = vcam.GetComponent<CinemachineConfiner2D>();
+        if (confiner != null) confiner.InvalidateCache();
+
         vcam.Priority = ActivePriority;
     }
 

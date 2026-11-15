@@ -401,8 +401,8 @@ TextureImporter:
         serializedVersion: 2
         x: 192
         y: 48
-        width: 15
-        height: 32
+        width: 16
+        height: 34
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -420,10 +420,10 @@ TextureImporter:
       name: g_torch1
       rect:
         serializedVersion: 2
-        x: 207
+        x: 208
         y: 48
         width: 16
-        height: 32
+        height: 34
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -441,10 +441,10 @@ TextureImporter:
       name: g_torch2
       rect:
         serializedVersion: 2
-        x: 223
+        x: 224
         y: 48
         width: 16
-        height: 32
+        height: 34
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -462,10 +462,10 @@ TextureImporter:
       name: g_torch3
       rect:
         serializedVersion: 2
-        x: 239
+        x: 240
         y: 48
-        width: 15
-        height: 32
+        width: 16
+        height: 34
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}

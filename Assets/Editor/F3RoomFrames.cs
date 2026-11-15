@@ -21,9 +21,10 @@ public static class F3RoomFrames
     const string Prefix = "F3_R";
     const string GateRoot = "______RoomGate_____";
     const string HoleGlowRoot = "______HoleGlow_____";
-    const int StripDepth = 3;          // dải lấn qua lỗ trần/sàn (ô)
-    const int StripDepthSide = 1;      // dải lấn qua cửa ngang/hầm: chuyển phòng ngay sau vệt sáng giữa hầm
-    const int StripMargin = 1;
+    const int StripDepth2 = 3;         // lỗ trần/sàn: dải nhận diện lấn sang phòng bên 1,5 ô (đơn vị nửa ô) = đúng nửa chiều cao vệt sáng (giống tầng 4)
+    const int StripDepthSide2 = 2;     // cửa ngang/hầm: 1 ô, chuyển phòng ngay sau vệt sáng giữa hầm
+    const int StripMargin2 = 1;        // lỗ trần/sàn: nới 0,5 ô mỗi bên = đúng bề rộng vệt sáng
+    const int StripMarginSide2 = 2;    // cửa ngang/hầm: 1 ô
     const float CamHalfH = 5f;
     const float CamHalfW = 10f;
     const int RevealRows = 2;          // C.4: lối vào khu bí mật — camera nhích lên được 2 ô
@@ -64,6 +65,15 @@ public static class F3RoomFrames
         EditorSceneManager.SaveScene(scene);
     }
 
+    [MenuItem("Tools/Culinaria/F3 Update Room Colliders (không vẽ tile, không lưu scene)")]
+    public static void RunCollidersOnly()
+    {
+        var scene = SceneManager.GetSceneByName(SceneName);
+        if (!scene.IsValid() || !scene.isLoaded) { Debug.LogError("[F3Frames] Hãy mở ThirdFloorScene trước."); return; }
+        Apply(scene, true);
+        EditorSceneManager.MarkSceneDirty(scene);
+    }
+
     class Info
     {
         public Room room;
@@ -77,7 +87,7 @@ public static class F3RoomFrames
 
     struct Opening { public char side; public int line, a, b; public Info nb; }
 
-    public static void Apply(Scene scene)
+    public static void Apply(Scene scene, bool collidersOnly = false)
     {
         var roots = scene.GetRootGameObjects();
         var maps = roots.SelectMany(g => g.GetComponentsInChildren<Tilemap>(true)).ToList();
@@ -103,16 +113,17 @@ public static class F3RoomFrames
         var secretGates = new HashSet<string>();
         foreach (var i in infos)
         {
-            i.cells.UnionWith(i.own);
+            foreach (var oc in i.own) Add2(i.cells, oc);
             foreach (var op in Openings(i, owner, Blocked))
             {
-                int depth = op.side == 'L' || op.side == 'R' ? StripDepthSide : StripDepth;
+                bool sideOp = op.side == 'L' || op.side == 'R';
+                int depth = sideOp ? StripDepthSide2 : StripDepth2, margin = sideOp ? StripMarginSide2 : StripMargin2;
                 for (int k = 1; k <= depth; k++)
-                    for (int t = op.a - StripMargin; t <= op.b + StripMargin; t++)
+                    for (int t = 2 * op.a - margin; t <= 2 * op.b + 1 + margin; t++)
                     {
-                        var c = op.side == 'L' ? new Vector2Int(op.line - k, t) : op.side == 'R' ? new Vector2Int(op.line + k, t)
-                              : op.side == 'B' ? new Vector2Int(t, op.line - k) : new Vector2Int(t, op.line + k);
-                        if (op.nb.own.Contains(c)) i.cells.Add(c);
+                        var h = op.side == 'L' ? new Vector2Int(2 * op.line - k, t) : op.side == 'R' ? new Vector2Int(2 * op.line + 1 + k, t)
+                              : op.side == 'B' ? new Vector2Int(t, 2 * op.line - k) : new Vector2Int(t, 2 * op.line + 1 + k);
+                        if (op.nb.own.Contains(new Vector2Int(Mathf.FloorToInt(h.x / 2f), Mathf.FloorToInt(h.y / 2f)))) i.cells.Add(h);
                     }
                 i.notes.Add($"{op.side}[{op.a}..{op.b}]→{op.nb.room.name}");
                 // mỗi lối thông chỉ tạo 1 tường (từ phía phòng bên trái / bên dưới)
@@ -129,7 +140,7 @@ public static class F3RoomFrames
                     int w = Mathf.Min(2 * RevealHalfW + 1, rx1 - rx0 + 1);
                     int wx0 = Mathf.Clamp(mid - RevealHalfW, rx0, rx1 + 1 - w);
                     for (int x = wx0; x < wx0 + w; x++)
-                        for (int y = op.line + 1; y <= op.line + RevealRows; y++) i.camCells.Add(new Vector2Int(x, y));
+                        for (int y = op.line + 1; y <= op.line + RevealRows; y++) Add2(i.camCells, new Vector2Int(x, y));
                     i.notes.Add($"lộ {RevealRows} ô x[{wx0}..{wx0 + w - 1}]");
                 }
             }
@@ -147,14 +158,14 @@ public static class F3RoomFrames
             var camLoop = Outline(i.camCells);
             var poly = go.GetComponent<PolygonCollider2D>();
             poly.isTrigger = true; poly.offset = Vector2.zero; poly.pathCount = 1;
-            poly.SetPath(0, loop.Select(p => (Vector2)go.transform.InverseTransformPoint(new Vector3(p.x, p.y, 0))).ToArray());
+            poly.SetPath(0, ToWorld(loop, 0f).Select(p => (Vector2)go.transform.InverseTransformPoint(new Vector3(p.x, p.y, 0))).ToArray());
 
             var cb = new GameObject("CamBounds") { layer = go.layer };
             cb.transform.SetParent(go.transform, false);
             cb.transform.position = Vector3.zero;
             var bounds = cb.AddComponent<PolygonCollider2D>();
             bounds.isTrigger = true; bounds.pathCount = 1;
-            bounds.SetPath(0, camLoop.Select(p => (Vector2)cb.transform.InverseTransformPoint(new Vector3(p.x, p.y, 0))).ToArray());
+            bounds.SetPath(0, ToWorld(camLoop, 0f).Select(p => (Vector2)cb.transform.InverseTransformPoint(new Vector3(p.x, p.y, 0))).ToArray());
 
             var so = new SerializedObject(i.room);
             var vc = so.FindProperty("vcam").objectReferenceValue as CinemachineVirtualCamera;
@@ -178,6 +189,12 @@ public static class F3RoomFrames
             var c = i.Main.center;
             vc.transform.position = new Vector3(c.x, c.y, vc.transform.position.z);
             EditorUtility.SetDirty(conf); EditorUtility.SetDirty(vc); EditorUtility.SetDirty(poly); EditorUtility.SetDirty(bounds);
+        }
+
+        if (collidersOnly)
+        {
+            Debug.Log($"[F3Frames] Chỉ cập nhật collider + CamBounds cho {infos.Count} phòng (không đụng tường chặn quái, vệt sáng, tile, ảnh nền): {string.Join(" | ", infos.Select(inf => inf.room.name + ": " + string.Join(", ", inf.notes)))}");
+            return;
         }
 
         // 3) Tường chặn quái ở chỗ chuyển phòng (tạo lại mỗi lần)
@@ -237,7 +254,8 @@ public static class F3RoomFrames
         var paintedRooms = new HashSet<string>();
         foreach (var i in infos)
         {
-            int x0 = i.camCells.Min(p => p.x), x1 = i.camCells.Max(p => p.x), y0 = i.camCells.Min(p => p.y), y1 = i.camCells.Max(p => p.y);
+            // camCells tính bằng nửa ô → đổi về ô
+            int x0 = Mathf.FloorToInt(i.camCells.Min(p => p.x) / 2f), x1 = Mathf.FloorToInt(i.camCells.Max(p => p.x) / 2f), y0 = Mathf.FloorToInt(i.camCells.Min(p => p.y) / 2f), y1 = Mathf.FloorToInt(i.camCells.Max(p => p.y) / 2f);
             int ex = Mathf.CeilToInt(CamHalfW), ey = Mathf.CeilToInt(CamHalfH) + 1;
             for (int x = x0 - ex; x <= x1 + ex; x++)
                 for (int y = y0 - ey; y <= y1 + ey; y++)
@@ -328,6 +346,26 @@ public static class F3RoomFrames
             }
         }
         return res.OrderBy(o => o.side).ThenBy(o => o.a).ToList();
+    }
+
+    /// Thêm 1 ô (đơn vị 1) vào tập ô nửa đơn vị (4 ô con).
+    static void Add2(HashSet<Vector2Int> set, Vector2Int c)
+    {
+        for (int dx = 0; dx < 2; dx++) for (int dy = 0; dy < 2; dy++) set.Add(new Vector2Int(2 * c.x + dx, 2 * c.y + dy));
+    }
+
+    /// Viền (đơn vị nửa ô, đi ngược chiều kim đồng hồ) → toạ độ thế giới, nới ra ngoài `pad`.
+    static Vector2[] ToWorld(List<Vector2Int> loop, float pad)
+    {
+        var res = new Vector2[loop.Count];
+        for (int k = 0; k < loop.Count; k++)
+        {
+            Vector2 p = loop[(k - 1 + loop.Count) % loop.Count], q = loop[k], n = loop[(k + 1) % loop.Count];
+            Vector2 d1 = (q - p).normalized, d2 = (n - q).normalized;
+            Vector2 o = new Vector2(d1.y, -d1.x) + new Vector2(d2.y, -d2.x);
+            res[k] = q * 0.5f + o * pad;
+        }
+        return res;
     }
 
     /// Viền ngoài (ngược chiều kim đồng hồ) của tập ô, đã gộp các điểm thẳng hàng.

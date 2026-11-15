@@ -9,8 +9,8 @@ using UnityEngine.UI;
 /// Bỏ qua lần đổi phòng đầu tiên sau khi load scene / hồi sinh / qua SceneDoor (phòng trước là null hoặc đã bị unload).
 public class RoomFade : MonoBehaviour
 {
-    [SerializeField] private float hold = 0.1f;          // giữ đen tối thiểu (giây, không phụ thuộc timeScale)
-    [SerializeField] private float fadeOut = 0.2f;
+    [SerializeField] private float hold = 0.3f;          // giữ đen tối thiểu (giây, không phụ thuộc timeScale)
+    [SerializeField] private float fadeOut = 0.4f;
     [SerializeField] private float maxWait = 0.5f;        // chờ Brain hết blend tối đa
     [SerializeField] private int fallbackSortOrder = 500; // dưới ScreenFader (đổi scene) nếu tìm thấy nó
 

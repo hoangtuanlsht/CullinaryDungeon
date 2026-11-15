@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.Tilemaps;
 
 /// [Tầng 6] Phần hình ảnh của SixthFloorBuilder: thay khối màu greybox bằng tile và sprite có sẵn trong project.
@@ -287,7 +288,87 @@ public static partial class SixthFloorBuilder
         so.FindProperty("phase").floatValue = phase;
         so.ApplyModifiedPropertiesWithoutUndo();
         sr.gameObject.name = "Torch (animation)";
+        torchObjects.Add(sr.gameObject);
         return sr.gameObject;
+    }
+
+    // ===================== ÁNH SÁNG 2D (chỉ khi URP 2D đang bật) =====================
+    const string LitMatPath = "Packages/com.unity.render-pipelines.universal/Runtime/Materials/Sprite-Lit-Default.mat";
+    static readonly List<GameObject> torchObjects = new List<GameObject>();
+    /// Ảnh cảnh có dung nham/lửa tự phát sáng: giữ material thường (không bị đèn làm tối).
+    static readonly string[] SelfLitScenes = { "emberflow", "pyreheart", "the_deep", "the_altar", "the_chamber", "the_cooling", "the_fury" };
+
+    static Light2D MakeLight(Transform parent, string name, Vector3 pos, Light2D.LightType type, Color color, float intensity,
+                             float outer = 0, float inner = 0, float flicker = 0, float flickerSpeed = 7, float volume = 0)
+    {
+        var go = new GameObject(name); go.transform.SetParent(parent); go.transform.position = pos;
+        var l = go.AddComponent<Light2D>();
+        l.lightType = type; l.color = color; l.intensity = intensity;
+        if (type == Light2D.LightType.Point)
+        {
+            l.pointLightOuterRadius = outer; l.pointLightInnerRadius = inner; l.shadowsEnabled = false; l.falloffIntensity = 0.4f;
+            if (volume > 0) { l.volumeIntensityEnabled = true; l.volumeIntensity = volume; }      // quầng sáng nhìn thấy trong không khí
+        }
+        var so = new SerializedObject(l);
+        var layers = so.FindProperty("m_ApplyToSortingLayers");          // chiếu lên mọi sorting layer
+        if (layers != null)
+        {
+            var all = SortingLayer.layers; layers.arraySize = all.Length;
+            for (int i = 0; i < all.Length; i++) layers.GetArrayElementAtIndex(i).intValue = all[i].id;
+        }
+        so.ApplyModifiedPropertiesWithoutUndo();
+        if (flicker > 0)
+        {
+            var fso = new SerializedObject(go.AddComponent<LightFlicker2D>());
+            fso.FindProperty("amplitude").floatValue = flicker; fso.FindProperty("speed").floatValue = flickerSpeed;
+            fso.ApplyModifiedPropertiesWithoutUndo();
+        }
+        return l;
+    }
+
+    /// Đèn nền chung + đèn điểm ở đuốc, hố dung nham, lửa trại; gán material nhận sáng cho địa hình, nền và đồ trang trí tầng 6.
+    static void BuildLights(UnityEngine.SceneManagement.Scene scene)
+    {
+        if (!CulinariaUrp2D.IsActive) { log.Add("Ánh sáng: URP 2D chưa bật → bỏ qua (Tools > Culinaria > Lighting)."); return; }
+        var lit = AssetDatabase.LoadAssetAtPath<Material>(LitMatPath);
+        if (lit == null) { log.Add("Ánh sáng: không thấy " + LitMatPath + " → bỏ qua."); return; }
+
+        // 1) Material nhận sáng
+        int nLit = 0;
+        var grid = scene.GetRootGameObjects().FirstOrDefault(g => g.name == "Grid_F6");
+        if (grid != null)
+            foreach (var tr in grid.GetComponentsInChildren<TilemapRenderer>(true))
+                if (!tr.name.StartsWith("F6_DeadZone_Lava")) { tr.sharedMaterial = lit; nLit++; }      // dung nham tự phát sáng
+        foreach (var sr in artRoot.GetComponentsInChildren<SpriteRenderer>(true))
+        {
+            string n = sr.gameObject.name;
+            if (n.StartsWith("Torch") || (n.StartsWith("Scene_") && SelfLitScenes.Any(k => n.Contains(k)))) continue;
+            sr.sharedMaterial = lit; nLit++;
+            if (n.StartsWith("Scene_")) sr.color = Color.white;                                       // đèn lo việc sáng tối, bỏ lớp tô tối cũ
+        }
+
+        // 2) Đèn
+        var root = new GameObject("Lights").transform; root.SetParent(artRoot);
+        MakeLight(root, "GlobalLight (độ sáng nền của cả tầng)", Vector3.zero, Light2D.LightType.Global, new Color(0.88f, 0.86f, 0.96f), 0.78f);
+        var torchCol = new Color(1f, 0.66f, 0.34f);
+        foreach (var t in torchObjects.Where(t => t != null))
+            MakeLight(t.transform, "TorchLight", t.transform.position + new Vector3(0, 1.2f, 0), Light2D.LightType.Point, torchCol, 1.5f, 8f, 1.5f, 0.18f, 7f, 0.02f);
+        int nLava = 0;
+        for (int j = 0; j < H; j++)
+            for (int i = 0; i < W; i++)
+            {
+                if (!lava[i, j] || (i > 0 && lava[i - 1, j])) continue;
+                int w = 0; while (i + w < W && lava[i + w, j]) w++;
+                float top = j + minY + 1f;
+                for (float x = Mathf.Min(3f, w / 2f); x < w; x += 6f)                                  // hố dài: một đèn mỗi 6 ô
+                { MakeLight(root, "LavaLight", new Vector3(i + minX + x, top, 0), Light2D.LightType.Point, new Color(1f, 0.42f, 0.12f), 1.3f, Mathf.Max(6f, Mathf.Min(w, 6) + 3f), 1.5f, 0.08f, 2f, 0.015f); nLava++; }
+            }
+        int nFire = 0;
+        var interact = scene.GetRootGameObjects().FirstOrDefault(g => g.name == "______Interact_F6_____");
+        if (interact != null)
+            foreach (var cp in interact.GetComponentsInChildren<CheckPoint>(true))
+            { MakeLight(cp.transform, "CampLight", cp.transform.position, Light2D.LightType.Point, new Color(1f, 0.74f, 0.42f), 1.6f, 9f, 2f, 0.15f, 6f, 0.02f); nFire++; }
+        log.Add($"Ánh sáng: {nLit} renderer nhận sáng, 1 đèn nền, {torchObjects.Count(t => t != null)} đèn đuốc, {nLava} đèn dung nham, {nFire} đèn điểm lưu.");
     }
 
     // ===================== TRANG TRÍ =====================
@@ -295,9 +376,10 @@ public static partial class SixthFloorBuilder
 
     static void DecorateF6(UnityEngine.SceneManagement.Scene scene)
     {
-        artRoot = new GameObject("______Art_F6_____").transform;
+        artRoot = new GameObject("______Art_F6_____").transform; torchObjects.Clear();
         BuildBackdrop();
         BuildProps();
+        BuildLights(scene);
         log.Add($"Hình ảnh: {artRoot.GetComponentsInChildren<SpriteRenderer>().Length} sprite.");
     }
 
@@ -399,5 +481,21 @@ public static partial class SixthFloorBuilder
         // ---- Khu D: hang rồng ----
         P(t, "R26", "g_chain", 9, 12); T("R27", 8); T("R27", 30); P(t, "R27", "s_rubble1", 14, 0, false, 1, -5, warm);
         P(t, "R28", "s_rubbleBig", 22, 0, false, 1, -5, warm); P(t, "R28", "s_rubble4", 44, 0, false, 1, -5, warm);
+
+        // ---- Đuốc tự động: cứ khoảng 12 ô một ngọn dọc mặt sàn mỗi phòng, để phòng nào cũng có nguồn sáng ----
+        // Bỏ qua chỗ không có sàn, sát dung nham, trong đường hầm (trần thấp), và chỗ đã có đuốc trong vòng 7 ô.
+        int auto = 0;
+        foreach (var kv in rooms)
+        {
+            var r = kv.Value.r; int fy = kv.Value.Floor;
+            for (int x = r.xMin + 6; x < r.xMax - 4; x += 12)
+            {
+                bool ok = !Get(solid, x, fy) && Get(solid, x, fy - 1) && !Get(solid, x, fy + 1) && !Get(solid, x, fy + 2) && !Get(solid, x, fy + 4);
+                for (int d = -2; d <= 2 && ok; d++) if (Get(lava, x + d, fy - 2) || !Get(solid, x + d, fy - 1)) ok = false;
+                if (!ok || torchObjects.Any(o => o != null && Mathf.Abs(o.transform.position.x - x) < 7f && Mathf.Abs(o.transform.position.y - fy) < 6f)) continue;
+                Torch(torches, x + 0.5f, fy, (x * 0.37f) % 1f); auto++;
+            }
+        }
+        log.Add($"Đuốc: {torchObjects.Count} ngọn ({auto} ngọn đặt tự động).");
     }
 }
