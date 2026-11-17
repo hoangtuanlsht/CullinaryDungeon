@@ -352,7 +352,7 @@ public static partial class SixthFloorBuilder
         MakeLight(root, "GlobalLight (độ sáng nền của cả tầng)", Vector3.zero, Light2D.LightType.Global, new Color(0.88f, 0.86f, 0.96f), 0.78f);
         var torchCol = new Color(1f, 0.66f, 0.34f);
         foreach (var t in torchObjects.Where(t => t != null))
-            MakeLight(t.transform, "TorchLight", t.transform.position + new Vector3(0, 1.2f, 0), Light2D.LightType.Point, torchCol, 1.5f, 8f, 1.5f, 0.18f, 7f, 0.02f);
+            MakeLight(t.transform, "TorchLight", t.transform.position + new Vector3(0, 1.2f, 0), Light2D.LightType.Point, torchCol, 1.5f, 8f, 1.5f, 0.18f, 7f);
         int nLava = 0;
         for (int j = 0; j < H; j++)
             for (int i = 0; i < W; i++)
@@ -361,13 +361,13 @@ public static partial class SixthFloorBuilder
                 int w = 0; while (i + w < W && lava[i + w, j]) w++;
                 float top = j + minY + 1f;
                 for (float x = Mathf.Min(3f, w / 2f); x < w; x += 6f)                                  // hố dài: một đèn mỗi 6 ô
-                { MakeLight(root, "LavaLight", new Vector3(i + minX + x, top, 0), Light2D.LightType.Point, new Color(1f, 0.42f, 0.12f), 1.3f, Mathf.Max(6f, Mathf.Min(w, 6) + 3f), 1.5f, 0.08f, 2f, 0.015f); nLava++; }
+                { MakeLight(root, "LavaLight", new Vector3(i + minX + x, top, 0), Light2D.LightType.Point, new Color(1f, 0.42f, 0.12f), 1.3f, Mathf.Max(6f, Mathf.Min(w, 6) + 3f), 1.5f, 0.08f, 2f); nLava++; }
             }
         int nFire = 0;
         var interact = scene.GetRootGameObjects().FirstOrDefault(g => g.name == "______Interact_F6_____");
         if (interact != null)
             foreach (var cp in interact.GetComponentsInChildren<CheckPoint>(true))
-            { MakeLight(cp.transform, "CampLight", cp.transform.position, Light2D.LightType.Point, new Color(1f, 0.74f, 0.42f), 1.6f, 9f, 2f, 0.15f, 6f, 0.02f); nFire++; }
+            { MakeLight(cp.transform, "CampLight", cp.transform.position, Light2D.LightType.Point, new Color(1f, 0.74f, 0.42f), 1.6f, 9f, 2f, 0.15f, 6f); nFire++; }
         log.Add($"Ánh sáng: {nLit} renderer nhận sáng, 1 đèn nền, {torchObjects.Count(t => t != null)} đèn đuốc, {nLava} đèn dung nham, {nFire} đèn điểm lưu.");
     }
 
@@ -433,6 +433,66 @@ public static partial class SixthFloorBuilder
                 sr.color = z == 'C' ? new Color(0.72f, 0.72f, 0.78f) : z == 'D' ? new Color(0.82f, 0.78f, 0.76f) : new Color(0.66f, 0.63f, 0.63f);
             }
         }
+    }
+
+    // ===================== GOM NỀN THEO PHÒNG + ĐẨY SÂU (skill culinaria-bg-depth-group) =====================
+    /// Sau khi gộp phòng: mỗi phòng camera có đúng MỘT object nền "BGGroup_<RoomId>" ở Z = BgDepth, phóng 2 lần quanh tâm phòng,
+    /// chứa mọi ảnh nền của các khung thuộc phòng đó; object này được gán vào Room.background để RoomTracker bật/tắt theo phòng.
+    /// Lớp trượt chậm hơn sàn theo hệ số z/(d+z) = 0,5. Đồ trang trí, đuốc, đèn vẫn ở Z = 0.
+    static void GroupBackdropByRoom(UnityEngine.SceneManagement.Scene scene)
+    {
+        var bd = artRoot != null ? artRoot.Find("Backdrop") : null;
+        var roomRoot = scene.GetRootGameObjects().FirstOrDefault(g => g.name == "______Room_F6_____");
+        if (bd == null || roomRoot == null) { log.Add("Nền sâu: không thấy Backdrop hoặc ______Room_F6_____ → bỏ qua."); return; }
+
+        // khung gốc → phòng dẫn đầu sau khi gộp
+        var leaderOf = rooms.Keys.ToDictionary(k => k, k => k);
+        foreach (var (leader, members) in F6RoomMerge.Groups)
+            foreach (var m in members) leaderOf[m.Substring(3)] = leader.Substring(3);
+
+        var kids = new List<Transform>(); foreach (Transform c in bd) kids.Add(c);
+        int nGroups = 0, nAssigned = 0; var missing = new List<string>();
+        foreach (var g in leaderOf.GroupBy(kv => kv.Value, kv => kv.Key).OrderBy(x => x.Key))
+        {
+            var frames = g.ToList();
+            int x0 = frames.Min(f => rooms[f].r.xMin), x1 = frames.Max(f => rooms[f].r.xMax);
+            int y0 = frames.Min(f => rooms[f].r.yMin) - 1, y1 = frames.Max(f => rooms[f].r.yMax);
+            var C = new Vector3((x0 + x1) / 2f, (y0 + y1) / 2f, 0);
+
+            var group = new GameObject("BGGroup_F6_" + g.Key).transform;
+            group.SetParent(bd, false);
+            group.position = new Vector3(C.x, C.y, BgDepth);
+            group.localScale = new Vector3(2, 2, 1);
+
+            // dải tối phủ cả khung bao của phòng: phòng hình chữ L không bị hở nền ở góc lõm
+            var fill = new GameObject("GroupFill"); fill.transform.SetParent(group, false);
+            Vector2 ss = blockSprite.bounds.size;
+            fill.transform.localPosition = Vector3.zero; fill.transform.localScale = new Vector3((x1 - x0) / ss.x, (y1 - y0) / ss.y, 1);
+            var fsr = fill.AddComponent<SpriteRenderer>(); fsr.sprite = blockSprite; fsr.sortingOrder = -101;
+            char z = ZoneAt(rooms[g.Key].r.xMin + 2, rooms[g.Key].r.yMin + 2);
+            fsr.color = z == 'C' ? new Color(0.06f, 0.06f, 0.10f) : new Color(0.09f, 0.04f, 0.04f);
+
+            foreach (var c in kids)
+            {
+                var parts = c.name.Split('_');
+                if (parts.Length < 2 || !frames.Contains(parts[1])) continue;
+                Vector3 wp = c.position, ls = c.localScale;
+                c.SetParent(group, false);
+                c.localPosition = new Vector3(wp.x - C.x, wp.y - C.y, 0);
+                c.localScale = ls;
+            }
+            nGroups++;
+
+            var roomT = roomRoot.transform.Find("F6_" + g.Key);
+            var room = roomT != null ? roomT.GetComponent<global::Room>() : null;
+            if (room == null) { missing.Add(g.Key); continue; }
+            var so = new SerializedObject(room);
+            var p = so.FindProperty("background");
+            if (p == null) { missing.Add(g.Key + " (Room.cs không có trường background)"); continue; }
+            p.objectReferenceValue = group.gameObject; so.ApplyModifiedPropertiesWithoutUndo(); nAssigned++;
+        }
+        log.Add($"Nền sâu: {nGroups} nhóm BGGroup ở Z = {BgDepth}, scale 2; gán Room.background cho {nAssigned} phòng" +
+                (missing.Count > 0 ? "; CHƯA gán: " + string.Join(", ", missing) : "") + ".");
     }
 
     static void P(Transform t, string room, string n, float dx, float dy = 0, bool flip = false, float s = 1, int order = -5, Color? tint = null)

@@ -23,9 +23,12 @@ public static class F5RoomFrames
     const string GateRoot = "______RoomGate_____";
     const string HoleGlowRoot = "______HoleGlow_____";
     const string HiddenRoot = "______Hidden_F5_____";
-    const int StripDepth = 3;
-    const int StripDepthSide = 1;
-    const int StripMargin = 1;
+    // Dải nhận diện tính theo NỬA ô (như tầng 4, 16/11/2026): chỉ phủ đúng vệt sáng, để camera đổi phòng ngay khi qua vệt sáng.
+    const int StripDepth2 = 3;         // lỗ trần/sàn: lấn 1,5 ô = nửa chiều cao vệt sáng
+    const int StripDepthSide2 = 2;     // cửa ngang: 1 ô
+    const int StripMargin2 = 1;        // lỗ trần/sàn: nới 0,5 ô mỗi bên = bề rộng vệt sáng
+    const int StripMarginSide2 = 2;    // cửa ngang: 1 ô
+    const float CamPad = 0.05f;        // nới CamBounds 0,05 ô: khung hình Perspective (FOV 30, Camera Distance 18,7) cao 10,02 ô, phòng cao 10 ô
     const float CamHalfH = 5f;
     const float CamHalfW = 10f;
     const int RevealRows = 2;
@@ -70,6 +73,15 @@ public static class F5RoomFrames
         Apply(scene);
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
+    }
+
+    [MenuItem("Tools/Culinaria/F5 Redivide Room Frames (không lưu scene)")]
+    public static void RunNoSave()
+    {
+        var scene = SceneManager.GetSceneByName(SceneName);
+        if (!scene.IsValid() || !scene.isLoaded) { Debug.LogError("[F5Frames] Hãy mở FifthFloorScene trước."); return; }
+        Apply(scene);
+        EditorSceneManager.MarkSceneDirty(scene);
     }
 
     class Info
@@ -123,18 +135,19 @@ public static class F5RoomFrames
         var secretGates = new HashSet<string>();
         foreach (var i in infos)
         {
-            i.cells.UnionWith(i.own);
+            foreach (var oc in i.own) Add2(i.cells, oc);
             foreach (var op in Openings(i, owner, Blocked))
             {
                 if (i.Frozen && op.nb.Frozen) continue;              // trong mê cung: giữ nguyên, không cổng
                 if (i.Frozen && (op.side == 'L' || op.side == 'B')) continue;   // cổng này do phòng bên kia (R/T) tạo
-                int depth = op.side == 'L' || op.side == 'R' ? StripDepthSide : StripDepth;
+                bool sideOp = op.side == 'L' || op.side == 'R';
+                int depth = sideOp ? StripDepthSide2 : StripDepth2, margin = sideOp ? StripMarginSide2 : StripMargin2;
                 for (int k = 1; k <= depth; k++)
-                    for (int t = op.a - StripMargin; t <= op.b + StripMargin; t++)
+                    for (int t = 2 * op.a - margin; t <= 2 * op.b + 1 + margin; t++)
                     {
-                        var c = op.side == 'L' ? new Vector2Int(op.line - k, t) : op.side == 'R' ? new Vector2Int(op.line + k, t)
-                              : op.side == 'B' ? new Vector2Int(t, op.line - k) : new Vector2Int(t, op.line + k);
-                        if (op.nb.own.Contains(c) && !i.Frozen) i.cells.Add(c);
+                        var h = op.side == 'L' ? new Vector2Int(2 * op.line - k, t) : op.side == 'R' ? new Vector2Int(2 * op.line + 1 + k, t)
+                              : op.side == 'B' ? new Vector2Int(t, 2 * op.line - k) : new Vector2Int(t, 2 * op.line + 1 + k);
+                        if (op.nb.own.Contains(new Vector2Int(Mathf.FloorToInt(h.x / 2f), Mathf.FloorToInt(h.y / 2f))) && !i.Frozen) i.cells.Add(h);
                     }
                 if (!i.Frozen) i.notes.Add($"{op.side}[{op.a}..{op.b}]→{op.nb.room.name}");
                 int len = op.b - op.a + 1;
@@ -173,7 +186,7 @@ public static class F5RoomFrames
                         int w = Mathf.Min(2 * RevealHalfW + 1, rx1 - rx0 + 1);
                         int wx0 = Mathf.Clamp(mid - RevealHalfW, rx0, rx1 + 1 - w);
                         for (int x = wx0; x < wx0 + w; x++)
-                            for (int y = op.line + 1; y <= op.line + RevealRows; y++) i.camCells.Add(new Vector2Int(x, y));
+                            for (int y = op.line + 1; y <= op.line + RevealRows; y++) Add2(i.camCells, new Vector2Int(x, y));
                         i.notes.Add($"lộ {RevealRows} ô x[{wx0}..{wx0 + w - 1}]");
                     }
                 }
@@ -181,6 +194,26 @@ public static class F5RoomFrames
         }
 
         // 2) Collider + CamBounds + VCam
+        foreach (var i in infos.Where(i => i.Frozen))
+        {
+            // Mê cung giữ nguyên collider nhận diện, chỉ thêm CamBounds nới CamPad cho khung hình Perspective lọt vừa
+            var go = i.room.gameObject;
+            foreach (Transform ch in go.transform.Cast<Transform>().ToList())
+                if (ch.name == "CamBounds") Object.DestroyImmediate(ch.gameObject);
+            var cells = new HashSet<Vector2Int>(); foreach (var oc in i.own) Add2(cells, oc);
+            var cb = new GameObject("CamBounds") { layer = go.layer };
+            cb.transform.SetParent(go.transform, false);
+            cb.transform.position = Vector3.zero;
+            var bounds = cb.AddComponent<PolygonCollider2D>();
+            bounds.isTrigger = true; bounds.pathCount = 1;
+            bounds.SetPath(0, ToWorld(Outline(cells), CamPad).Select(p => (Vector2)cb.transform.InverseTransformPoint(new Vector3(p.x, p.y, 0))).ToArray());
+            var vc = new SerializedObject(i.room).FindProperty("vcam").objectReferenceValue as CinemachineVirtualCamera;
+            if (vc == null) continue;
+            var conf = vc.GetComponent<CinemachineConfiner2D>();
+            if (conf == null) conf = vc.gameObject.AddComponent<CinemachineConfiner2D>();
+            conf.m_BoundingShape2D = bounds; conf.m_Damping = 0f; conf.InvalidateCache();
+            EditorUtility.SetDirty(conf); EditorUtility.SetDirty(bounds);
+        }
         foreach (var i in infos)
         {
             if (i.Frozen) continue;
@@ -193,14 +226,14 @@ public static class F5RoomFrames
             var camLoop = Outline(i.camCells);
             var poly = go.GetComponent<PolygonCollider2D>();
             poly.isTrigger = true; poly.offset = Vector2.zero; poly.pathCount = 1;
-            poly.SetPath(0, loop.Select(p => (Vector2)go.transform.InverseTransformPoint(new Vector3(p.x, p.y, 0))).ToArray());
+            poly.SetPath(0, ToWorld(loop, 0f).Select(p => (Vector2)go.transform.InverseTransformPoint(new Vector3(p.x, p.y, 0))).ToArray());
 
             var cb = new GameObject("CamBounds") { layer = go.layer };
             cb.transform.SetParent(go.transform, false);
             cb.transform.position = Vector3.zero;
             var bounds = cb.AddComponent<PolygonCollider2D>();
             bounds.isTrigger = true; bounds.pathCount = 1;
-            bounds.SetPath(0, camLoop.Select(p => (Vector2)cb.transform.InverseTransformPoint(new Vector3(p.x, p.y, 0))).ToArray());
+            bounds.SetPath(0, ToWorld(camLoop, CamPad).Select(p => (Vector2)cb.transform.InverseTransformPoint(new Vector3(p.x, p.y, 0))).ToArray());
 
             var so = new SerializedObject(i.room);
             var vc = so.FindProperty("vcam").objectReferenceValue as CinemachineVirtualCamera;
@@ -374,6 +407,26 @@ public static class F5RoomFrames
             }
         }
         return res.OrderBy(o => o.side).ThenBy(o => o.a).ToList();
+    }
+
+    /// Thêm 1 ô (đơn vị 1) vào tập ô nửa đơn vị (4 ô con).
+    static void Add2(HashSet<Vector2Int> set, Vector2Int c)
+    {
+        for (int dx = 0; dx < 2; dx++) for (int dy = 0; dy < 2; dy++) set.Add(new Vector2Int(2 * c.x + dx, 2 * c.y + dy));
+    }
+
+    /// Viền (đơn vị nửa ô, đi ngược chiều kim đồng hồ) → toạ độ thế giới, nới ra ngoài `pad`.
+    static Vector2[] ToWorld(List<Vector2Int> loop, float pad)
+    {
+        var res = new Vector2[loop.Count];
+        for (int k = 0; k < loop.Count; k++)
+        {
+            Vector2 p = loop[(k - 1 + loop.Count) % loop.Count], q = loop[k], n = loop[(k + 1) % loop.Count];
+            Vector2 d1 = (q - p).normalized, d2 = (n - q).normalized;
+            Vector2 o = new Vector2(d1.y, -d1.x) + new Vector2(d2.y, -d2.x);
+            res[k] = q * 0.5f + o * pad;
+        }
+        return res;
     }
 
     static List<Vector2Int> Outline(HashSet<Vector2Int> cells)

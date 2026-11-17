@@ -21,6 +21,8 @@ public static partial class SixthFloorBuilder
     const int SW = 18, SH = 10;
     const string Out = "Assets/BackGround/SixthFloor/F6_Greybox";
     const int DashGap = 11;
+    public const float BgDepth = 18.7f;        // = orthoSize 5 / tan(15°): khoảng cách camera, cũng là độ sâu Z của nền
+    static int perspVcams;
 
     static readonly string[] GeneratedRoots = { "Grid_F6", "______Room_F6_____", "______Door_F6_____", "______Interact_F6_____",
                                                 "______Hidden_F6_____", "______TODO_F6_____", "______Lava_F6_____", "______Art_F6_____" };
@@ -111,7 +113,7 @@ public static partial class SixthFloorBuilder
         Scene prevActive = SceneManager.GetActiveScene();
         if (prevActive != scene) SceneManager.SetActiveScene(scene);       // object mới tạo phải rơi vào SixthFloorScene
         if (SceneManager.GetActiveScene() != scene) { Debug.LogError("[F6] Không đặt được SixthFloorScene làm scene active → dừng, không dựng gì."); return; }
-        log.Clear(); blockers.Clear(); gpFloors.Clear(); chests.Clear(); lavaPits = 0; markers.Clear(); tunnelCells.Clear();
+        log.Clear(); blockers.Clear(); gpFloors.Clear(); chests.Clear(); lavaPits = 0; perspVcams = 0; markers.Clear(); tunnelCells.Clear();
 
         // Sao lưu bản gốc một lần, trước lần dựng đầu tiên
         if (!System.IO.File.Exists(BackupPath))
@@ -143,6 +145,8 @@ public static partial class SixthFloorBuilder
         BuildTodoMarkers();
         if (artOk) DecorateF6(scene);
         F6RoomMerge.ApplyAll(scene);           // gộp phòng + vệt sáng hầm + chia khung camera (F6RoomMerge.cs, F6RoomFrames.cs)
+        if (artOk) GroupBackdropByRoom(scene); // gom nền theo phòng, đẩy ra Z = BgDepth, gán vào Room.background
+        log.Add($"Vcam Perspective: {perspVcams} (FOV 30, Camera Distance {BgDepth}, Screen Y 0,3).");
 
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
@@ -519,6 +523,20 @@ public static partial class SixthFloorBuilder
                     if (p != null) { p.objectReferenceValue = poly; cso.ApplyModifiedPropertiesWithoutUndo(); }
                     var m = c.GetType().GetMethod("InvalidateCache");
                     if (m != null) m.Invoke(c, null);
+                }
+                // Camera Perspective như tầng 2 (16/11/2026): FOV 30, Camera Distance 18,7, Screen Y 0,3 → nền ở xa mới trượt chậm (parallax)
+                var vso = new SerializedObject(vc);
+                var fov = vso.FindProperty("m_Lens.FieldOfView"); if (fov != null) fov.floatValue = 30f;
+                var lensMode = vso.FindProperty("m_Lens.ModeOverride"); if (lensMode != null) lensMode.intValue = 2;      // 2 = Perspective
+                vso.ApplyModifiedPropertiesWithoutUndo();
+                foreach (var c in vc.GetComponentsInChildren<Component>(true))
+                {
+                    if (c == null || c.GetType().Name != "CinemachineFramingTransposer") continue;
+                    var fso = new SerializedObject(c);
+                    var dist = fso.FindProperty("m_CameraDistance"); if (dist != null) dist.floatValue = BgDepth;
+                    var sy = fso.FindProperty("m_ScreenY"); if (sy != null) sy.floatValue = 0.3f;
+                    fso.ApplyModifiedPropertiesWithoutUndo();
+                    perspVcams++;
                 }
                 vc.gameObject.name = "VCam_" + r.id;
                 vc.transform.position = new Vector3(r.r.xMin + w / 2, r.r.yMin + h / 2, -10);

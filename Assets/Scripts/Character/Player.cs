@@ -95,6 +95,32 @@ public class Player : Character
     [SerializeField] [Range(0f,1f)] private float starveHealthFloor = 0.2f;     // sàn: 20% máu tối đa
     private float timeHungerEffect = 0f;              // đếm thời gian để áp dụng hiệu ứng đói
     [SerializeField][Range(0f, 1f)] float respawnHungerRatio = 0.5f;
+
+    [Header("Mana(Module 12)")]
+    [SerializeField] private PlayerMana playerMana = new PlayerMana();
+    public PlayerMana PlayerMana => playerMana;
+
+    public PlayerMana Mana => playerMana;
+
+    [ContextMenu("Module 12/Tiêu 25 mana")]
+    private void DebugSpendMana()
+    {
+        bool ok = playerMana.TrySpend(25f);
+        Debug.Log($"TrySpend(25) = {ok}, mana = {playerMana.ManaLevel}/{playerMana.ManaMaxLevel}");
+    }
+
+    [ContextMenu("Module 12/Hồi 25 mana")]
+    private void DebugAddMana()
+    {
+        playerMana.AddMana(25f);
+        Debug.Log($"Add(25), mana = {playerMana.ManaLevel}/{playerMana.ManaMaxLevel}");
+    }
+
+    [ContextMenu("Module 12/In mana")]
+    private void DebugPrintMana()
+    {
+        Debug.Log($"Mana = {playerMana.ManaLevel}/{playerMana.ManaMaxLevel}");
+    }
     public void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -114,6 +140,7 @@ public class Player : Character
 
         abilities.OnUnlocked += a => Debug.Log($"Mở khóa kỹ năng: {a}");
         attackOnHit.OnAttackHit += (target) => HandleAttackHit(target);
+        playerMana.OnManaLevelChanged += (current, max) => Debug.Log($"Mana thay đổi: {current}/{max}");
     }
     void Update()
     {
@@ -151,6 +178,7 @@ public class Player : Character
         if (!isDead)
         {
             playerHunger.UpdateHungerLevel(Time.deltaTime);
+            playerMana.Regeneration(Time.deltaTime);
             ApplyHungerEffects(Time.deltaTime);
         }        
     }
