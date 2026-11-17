@@ -12,4 +12,5 @@ public class PlayerAnimEventRelay : MonoBehaviour
 
     public void AnimEvent_HitboxOn() => player.AnimEvent_HitboxOn();
     public void AnimEvent_HitboxOff() => player.AnimEvent_HitboxOff();
+    public void AnimEvent_ReleaseSkill() => player.AnimEvent_ReleaseSkill();
 }

@@ -11,6 +11,7 @@ public enum Ability
     DoubleJump = 1 << 0,
     WallJump = 1 << 1,
     GroundPound = 1 << 2,
+    SwordWave = 1 << 3,
 }
 
 /// [Module 7] Dữ liệu "đã mở khóa gì". Không biết gì về vật lý hay input.

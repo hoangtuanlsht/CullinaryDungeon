@@ -99,6 +99,10 @@ public class Player : Character
     [Header("Mana(Module 12)")]
     [SerializeField] private PlayerMana playerMana = new PlayerMana();
     public PlayerMana PlayerMana => playerMana;
+    [SerializeField] public SwordWave swordWave;
+    [SerializeField] public float swordWaveCoolDown;
+    [SerializeField] public UnityEngine.Transform skillOrigin;
+
 
     public PlayerMana Mana => playerMana;
 
@@ -135,7 +139,7 @@ public class Player : Character
 
         // dòng tạo movement: thêm tham số cuối
         movement = new PlayerMovement(this, rb, groundLayer, fullFriction, noFriction, maxSlopeAngle, slopeCheckDistance, bodyCollider, input);
-        combat = new PlayerCombat(this, attackArea, attackCooldown, defendCooldown);
+        combat = new PlayerCombat(this, attackArea, attackCooldown, defendCooldown, swordWaveCoolDown);
         interaction = new PlayerInteraction(interactUI, recycleableInventoryManager);
 
         abilities.OnUnlocked += a => Debug.Log($"Mở khóa kỹ năng: {a}");
@@ -147,7 +151,7 @@ public class Player : Character
         if (controlLocked) return;
         movement.ReadJumpInput();
 
-        if (input.AttackPressed && !combat.IsDefending && !movement.IsPounding)
+        if (input.AttackPressed && !combat.IsDefending && !movement.IsPounding && !combat.IsCasting)
         {
             bool pounded = !combat.IsAttacking && movement.TryStartPound();
             if (!pounded) combat.BufferAttack();          // trước đây là combat.TryAttack()
@@ -159,6 +163,10 @@ public class Player : Character
         if (input.DefendHeld && isGrounded && !combat.IsAttacking && !isHurt && !isDead && !combat.IsDefending)
         {
             combat.TryDefend();
+        }
+        if (input.SkillPressed && isGrounded && !combat.IsAttacking && !isHurt && !isDead && !combat.IsDefending && !PauseController.IsGamePause)
+        {
+            combat.TrySwordWave();
         }
         if (input.CraftPressed && isGrounded && !combat.IsAttacking && !combat.IsDefending && !isDead)
         {
@@ -186,7 +194,7 @@ public class Player : Character
     {
         if (controlLocked) return;
         bool blockMovement = isDead || isHurt || combat.IsDefending;
-        movement.PhysicsTick(blockMovement , combat.IsAttacking);
+        movement.PhysicsTick(blockMovement , combat.IsBusy);
         float maxFallSpeed = movement.IsPounding ? poundSpeed : 15f; if (rb.velocity.y < -maxFallSpeed)
         {
             rb.velocity = new Vector2(rb.velocity.x, -maxFallSpeed);
@@ -256,6 +264,7 @@ public class Player : Character
         }
     }
     public void AnimEvent_HitboxOn() => combat.SetHitbox(true);
+    public void AnimEvent_ReleaseSkill() => combat.ReleaseSwordWave();
     public void AnimEvent_HitboxOff() => combat.SetHitbox(false);
     /// PlayerMovement gọi khi cú dậm chạm đất. Trả về true nếu có sàn bị phá (để lao tiếp).
     internal bool OnPoundLanded()

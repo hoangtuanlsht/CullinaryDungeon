@@ -163,6 +163,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Skill"",
+                    ""type"": ""Button"",
+                    ""id"": ""10717efe-4917-4ea0-b22c-d121cb2c4a2d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -367,7 +376,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""b5916dec-0702-47b3-96c5-8c35b26b453d"",
-                    ""path"": ""<Keyboard>/f"",
+                    ""path"": ""<Keyboard>/v"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -451,6 +460,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Inventory"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cc36d506-e887-4af0-80be-929a7eba31af"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skill"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -467,6 +487,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Gameplay_Interact = m_Gameplay.FindAction("Interact", throwIfNotFound: true);
         m_Gameplay_Craft = m_Gameplay.FindAction("Craft", throwIfNotFound: true);
         m_Gameplay_Inventory = m_Gameplay.FindAction("Inventory", throwIfNotFound: true);
+        m_Gameplay_Skill = m_Gameplay.FindAction("Skill", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -555,6 +576,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Interact;
     private readonly InputAction m_Gameplay_Craft;
     private readonly InputAction m_Gameplay_Inventory;
+    private readonly InputAction m_Gameplay_Skill;
     /// <summary>
     /// Provides access to input actions defined in input action map "Gameplay".
     /// </summary>
@@ -598,6 +620,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Gameplay/Inventory".
         /// </summary>
         public InputAction @Inventory => m_Wrapper.m_Gameplay_Inventory;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/Skill".
+        /// </summary>
+        public InputAction @Skill => m_Wrapper.m_Gameplay_Skill;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -648,6 +674,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Inventory.started += instance.OnInventory;
             @Inventory.performed += instance.OnInventory;
             @Inventory.canceled += instance.OnInventory;
+            @Skill.started += instance.OnSkill;
+            @Skill.performed += instance.OnSkill;
+            @Skill.canceled += instance.OnSkill;
         }
 
         /// <summary>
@@ -683,6 +712,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Inventory.started -= instance.OnInventory;
             @Inventory.performed -= instance.OnInventory;
             @Inventory.canceled -= instance.OnInventory;
+            @Skill.started -= instance.OnSkill;
+            @Skill.performed -= instance.OnSkill;
+            @Skill.canceled -= instance.OnSkill;
         }
 
         /// <summary>
@@ -779,5 +811,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnInventory(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Skill" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSkill(InputAction.CallbackContext context);
     }
 }

@@ -25,6 +25,7 @@ public class PlayerInputReader : MonoBehaviour
     public bool JumpPressed => controls.Gameplay.Jump.WasPressedThisFrame();
     public bool JumpReleased => controls.Gameplay.Jump.WasReleasedThisFrame();
     public bool AttackPressed => controls.Gameplay.Attack.WasPressedThisFrame();
+    public bool SkillPressed => controls.Gameplay.Skill.WasPressedThisFrame();
     public bool InteractPressed => controls.Gameplay.Interact.WasPressedThisFrame();
     public bool CraftPressed => controls.Gameplay.Craft.WasPressedThisFrame();
     public bool InventoryPressed => controls.Gameplay.Inventory.WasPressedThisFrame();

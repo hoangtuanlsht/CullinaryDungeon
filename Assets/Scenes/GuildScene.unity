@@ -1877,6 +1877,13 @@ MonoBehaviour:
   fullRegenPerSecond: 1
   starveHealthFloor: 0.2
   respawnHungerRatio: 0.5
+  playerMana:
+    manaLevel: 100
+    manaMaxLevel: 100
+    manaRegenRate: 2
+  swordWave: {fileID: 0}
+  swordWaveCoolDown: 0
+  skillOrigin: {fileID: 0}
 --- !u!4 &480035049
 Transform:
   m_ObjectHideFlags: 0
@@ -9841,6 +9848,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomId: Guild
   vcam: {fileID: 605122003}
+  background: {fileID: 0}
 --- !u!60 &3513656619538407252 stripped
 PolygonCollider2D:
   m_CorrespondingSourceObject: {fileID: 6853083176963548903, guid: 09acc2fcda0973d4ca23a5d2188f0f45, type: 3}
@@ -9937,6 +9945,10 @@ PrefabInstance:
     - target: {fileID: 1496069885389725974, guid: cbe913952de759842bf5a4a4364786d3, type: 3}
       propertyPath: m_Name
       value: Canvas_Guide
+      objectReference: {fileID: 0}
+    - target: {fileID: 7947529075852926872, guid: cbe913952de759842bf5a4a4364786d3, type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

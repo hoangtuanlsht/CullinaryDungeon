@@ -6,9 +6,10 @@ public class PlayerCombat
 {
     private readonly Player owner;
     private readonly GameObject attackArea;
+    // Attack and Defend
+
     private const float AttackDuration = 0.35f;
     private const float DefendDuration = 0.5f;
-
     private Cooldown attackCd;         // KHÔNG đặt readonly: struct readonly thì Start() chạy trên bản sao
     private Cooldown defendCd;
     private Coroutine attackRoutine;
@@ -27,12 +28,21 @@ public class PlayerCombat
     public bool IsAttacking { get; private set; }
     public bool IsDefending { get; private set; }
 
-    public PlayerCombat(Player owner, GameObject attackArea, float attackCooldown, float defendCooldown)
+    //SwordWave
+    private Cooldown swordWaveCd;
+    private float swordWaveCoolDown;
+    private const float CastingDuration = 0.35f;
+    private Coroutine castingRoutine;
+    public bool IsCasting { get; private set; }
+    public bool IsBusy => IsAttacking || IsCasting;
+
+    public PlayerCombat(Player owner, GameObject attackArea, float attackCooldown, float defendCooldown,float swordWaveCoolDown)
     {
         this.owner = owner;
         this.attackArea = attackArea;
         this.attackCooldown = attackCooldown;
         this.defendCooldown = defendCooldown;
+        this.swordWaveCoolDown = swordWaveCoolDown;
     }
     /// Điều kiện gọi (phím C, !isDefending) vẫn nằm ở Player.Update() như bản gốc;
     /// hàm này chỉ giữ đúng phần thân logic của Attack() cũ.
@@ -56,6 +66,7 @@ public class PlayerCombat
         if (!attackCd.IsReady) return;        // còn cooldown → giữ ý định lại, frame sau thử tiếp
         ClearAttackBuffer();                  // (c) tiêu thụ: xoá TRƯỚC khi chém
         PerformAttack();
+        //if(owner.Abilities.)
     }
 
     private void PerformAttack()
@@ -75,6 +86,19 @@ public class PlayerCombat
         Stop(ref attackRoutine);
         attackRoutine = owner.StartCoroutine(AttackRoutine());
     }
+    public bool TrySwordWave()
+    {
+        if (!owner.Abilities.Has(Ability.SwordWave)) return false;
+        if(IsAttacking || IsDefending) return false;
+        if (!swordWaveCd.IsReady) return false;
+        if (!owner.PlayerMana.TrySpend(owner.swordWave.ManaSpend)) return false;
+        swordWaveCd.Start(swordWaveCoolDown);
+        IsCasting = true;
+        Stop(ref castingRoutine);
+        castingRoutine = owner.StartCoroutine(CastingRoutine());
+        owner.ChangedAnim("Attack2");
+        return true;
+    }
     private IEnumerator AttackRoutine()
     {
         yield return new WaitForSeconds(AttackDuration);
@@ -82,10 +106,22 @@ public class PlayerCombat
         if (attackArea != null) attackArea.SetActive(false);
         attackRoutine = null;
     }
+    private IEnumerator CastingRoutine()
+    {
+        yield return new WaitForSeconds(CastingDuration);
+        IsCasting = false;
+        castingRoutine = null;
+    }
     /// Gọi từ Animation Event (qua Player). Chỉ có tác dụng khi đang trong một đòn đánh.
     public void SetHitbox(bool on)
     {
         if (attackArea != null) attackArea.SetActive(on && IsAttacking);
+    }
+    public void ReleaseSwordWave()
+    {
+        if (!IsCasting) return;   // ← quan trọng, xem bên dưới
+        SoundManager.Play("Attack");
+        PoolManager.Spawn(owner.swordWave, owner.skillOrigin.transform.position, Quaternion.Euler(0, 0, owner.transform.localScale.x > 0 ? 0 : 180));
     }
     public bool TryRegisterHit()
     {
@@ -121,8 +157,10 @@ public class PlayerCombat
     {
         Stop(ref attackRoutine);
         Stop(ref defendRoutine);
+        Stop(ref castingRoutine);
         IsAttacking = false;
         IsDefending = false;
+        IsCasting = false;
         hasHitThisSwing = false;
         if (attackArea != null) attackArea.SetActive(false);
         ClearAttackBuffer();

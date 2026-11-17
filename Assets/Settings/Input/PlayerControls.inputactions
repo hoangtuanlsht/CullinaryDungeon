@@ -77,6 +77,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Skill",
+                    "type": "Button",
+                    "id": "10717efe-4917-4ea0-b22c-d121cb2c4a2d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -281,7 +290,7 @@
                 {
                     "name": "",
                     "id": "b5916dec-0702-47b3-96c5-8c35b26b453d",
-                    "path": "<Keyboard>/f",
+                    "path": "<Keyboard>/v",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -363,6 +372,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Inventory",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cc36d506-e887-4af0-80be-929a7eba31af",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skill",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
