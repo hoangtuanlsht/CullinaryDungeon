@@ -131,6 +131,7 @@ public static class FourthFloorBuilder
         BuildTodoMarkers();
         BuildBackgrounds();
         F4RoomMerge.ApplyAll(scene);   // gộp phòng + vệt sáng hầm + khung camera/cổng chặn quái kiểu Hollow Knight
+        F4LayeredBackdrops.Apply(scene);   // nền nhiều lớp v2 (hồ / dưới nước / lòng cột), mỗi lớp một độ sâu; gán Room.background
 
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);

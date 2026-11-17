@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ManaBar : MonoBehaviour
 {
     [SerializeField] private Image imageFill;
+    [SerializeField] private TextMeshProUGUI textFill;
     [SerializeField] private Player player;
     private Coroutine flashManaRountine;
     private Color originalColor;
@@ -31,6 +33,7 @@ public class ManaBar : MonoBehaviour
     public void HandleManaLevelChanged(float current, float max)
     {
         imageFill.fillAmount = current / max;
+        textFill.text = current.ToString();
     }
     public void HandleManaNotEnough()
     {

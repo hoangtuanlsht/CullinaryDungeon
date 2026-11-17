@@ -4,39 +4,20 @@ using UnityEngine;
 
 public class AttackState : IsState
 {
-    public float timer;
     public void OnEnter(Enemy enemy)
     {
-        if(enemy.Target != null)
-        {
-            enemy.ChangeDirection(enemy.Target.transform.position.x > enemy.transform.position.x);
-        }
         enemy.StopMoving();
         enemy.Attack();
-        timer = 0;
     }
-
     public void OnExecute(Enemy enemy)
     {
-        timer+= Time.deltaTime;
-        if (timer >= 1.5f)
-        {
-            if (enemy.Target == null)
-            {
-                enemy.ChangeState(new IdleState());
-            }
-            else if (enemy.isAttackInRange())
-            {
-                enemy.ChangeState(new AttackState()); // Đánh tiếp
-            }
-            else
-            {
-                enemy.ChangeState(new PatrolState()); // Đuổi theo
-            }
-
-        }
+        if (enemy.IsAttacking) return;                                   // đang ra đòn thì chờ đòn xong
+        enemy.StopMoving();                                              // ← đòn xong: về Idle, để lần Attack() sau bắn được trigger
+        if (enemy.Target == null) { enemy.ChangeState(new PatrolState()); return; }
+        if (!enemy.isAttackInRange()) { enemy.ChangeState(new PatrolState()); return; }
+        if (enemy.CanAttack) enemy.Attack();
+        else enemy.ChangeDirection(enemy.Target.transform.position.x > enemy.transform.position.x);
     }
-
     public void OnExit(Enemy enemy)
     {
     }

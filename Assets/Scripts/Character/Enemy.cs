@@ -8,6 +8,8 @@ public class Enemy : Character
 {
     [SerializeField] protected float attackRange;
     [SerializeField] protected float moveSpeed;
+    private int blockedDir = 0;
+
     [SerializeField] protected float attackTime= 0.3f;
     [SerializeField] protected float deAttackTime=0.8f;
     [SerializeField] public float damager;
@@ -26,6 +28,8 @@ public class Enemy : Character
     protected bool isHurt = false;
     protected Character target;
     public Character Target => target;
+    public bool CanAttack => attackTimer <= 0f;
+    public bool IsAttacking => isAttacking;
 
     [Header("Data (Module 4)")]
     [SerializeField] private EnemyStats stats;
@@ -134,8 +138,10 @@ public class Enemy : Character
     }
     public void Moving()
     {
+        int dir = isRight ? 1 : -1;
+        if(dir == blockedDir) { StopMoving(); return; }
         ChangedAnim("Run");
-        rb.velocity = transform.right * moveSpeed;
+        rb.velocity = new Vector2(dir * moveSpeed, rb.velocity.y);
     }
     public void StopMoving()
     {
@@ -206,11 +212,13 @@ public class Enemy : Character
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        
-        if (collision.CompareTag("EnemyWall"))
-        {
-            ChangeDirection(!isRight);
-        }
+        if (!collision.CompareTag("EnemyWall")) return;
+        blockedDir = collision.bounds.center.x > transform.position.x ? 1 : -1;
+        if(target == null) ChangeDirection(!isRight);
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("EnemyWall")) blockedDir = 0;
     }
     public void ChangeDirection(bool isRight)
     {
@@ -231,13 +239,10 @@ public class Enemy : Character
             ChangeState(new AttackState());
         }
         else
-        if(Target != null){
+        {
             ChangeState(new PatrolState());
         }
-        else
-        {
-            ChangeState(new IdleState());
-        }
+
     }
     private void OnDrawGizmosSelected()
     {

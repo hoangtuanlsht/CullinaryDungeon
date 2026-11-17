@@ -143,11 +143,11 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.5, y: 1}
+  m_Offset: {x: -0.0060746935, y: 0.00051146746}
+  m_Size: {x: 0.22663058, y: 0.23977587}
   m_Direction: 0
 --- !u!114 &1143551193388244932
 MonoBehaviour:
@@ -162,7 +162,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 5914726654302896988}
-  speed: 2
+  speed: 8
   damage: 20
   manaSpend: 25
   lifetime: 1.5

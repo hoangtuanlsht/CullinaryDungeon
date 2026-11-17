@@ -302,10 +302,11 @@ public class Player : Character
         if(item == null || isDead) return false;
         bool canHeal = item.healthRecovery > 0f && health < MaxHealth;
         bool canFeed = item.hungerRecovery > 0f && !PlayerHunger.IsFull;
-
-        if(!canHeal && !canFeed) return false;
+        bool canRestoreMana = item.manaRecovery > 0f && playerMana.ManaLevel < playerMana.ManaMaxLevel;
+        if (!canHeal && !canFeed && !canRestoreMana) return false;
         Feed(item.hungerRecovery);
         Heal(item.healthRecovery);
+        PlayerMana.AddMana(item.manaRecovery);
         return true;
     }
     private void ApplyHungerEffects(float deltaTime)
