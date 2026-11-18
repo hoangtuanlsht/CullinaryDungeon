@@ -29,6 +29,7 @@ public class SaveData
 public class PlayerSave
 {
     public float damage;
+    public float mana;
     public int coin;
     public int abilities;
     public float hunger;

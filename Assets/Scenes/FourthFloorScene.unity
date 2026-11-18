@@ -32703,7 +32703,7 @@ GameObject:
   - component: {fileID: 900560911}
   - component: {fileID: 900560910}
   - component: {fileID: 900560909}
-  m_Layer: 6
+  m_Layer: 13
   m_Name: F4_Platform_OneWay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -85649,6 +85649,38 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.6, y: 6}
   m_EdgeRadius: 0
+--- !u!1 &1121510182
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1121510183}
+  m_Layer: 0
+  m_Name: "R13: \u0110\u1EC1n B\u01A1i - \u0111\u1EB7t AbilityPickup (Swim) \u1EDF
+    \u0111\xE2y (Module 13.1b)"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1121510183
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1121510182}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 175.5, y: -74.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1268360065}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1121725093
 GameObject:
   m_ObjectHideFlags: 0
@@ -90082,6 +90114,9 @@ Transform:
   - {fileID: 1712435132}
   - {fileID: 1716758995}
   - {fileID: 183875010}
+  - {fileID: 1121510183}
+  - {fileID: 1759681530}
+  - {fileID: 1595507860}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1269151371
@@ -420437,6 +420472,38 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1595507859
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1595507860}
+  m_Layer: 0
+  m_Name: "H\u1ED3 R10, R12, R13: b\u1ECF tag DeadZone, \u0111\u1ED5i sang layer
+    Water \u1EDF bu\u1ED5i 13.5 (sau khi c\xF3 13.1b)"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1595507860
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1595507859}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 117, y: -76, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1268360065}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1595554914
 GameObject:
   m_ObjectHideFlags: 0
@@ -424715,8 +424782,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1712435132}
   m_Layer: 0
-  m_Name: "R12: gi\u1EBFng l\u1EB7n xu\u1ED1ng R15 (n\u01B0\u1EDBc kh\xF4ng g\xE2y
-    ch\u1EBFt)"
+  m_Name: "R12 \u2192 R15: gi\u1EBFng l\u1EB7n. Ch\u01B0a c\xF3 B\u01A1i th\xEC n\u01B0\u1EDBc
+    \u1EDF \u0111\xE2y g\xE2y ch\u1EBFt (Module 13.1b). Kh\xF4ng \u0111\u1EB7t s\u1EE9a
+    g\u1EA7n l\u1ED1i xu\u1ED1ng"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -426634,6 +426702,38 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1759681529
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1759681530}
+  m_Layer: 0
+  m_Name: "R15: V\u0169ng t\u1EADp b\u01A1i (chuy\u1EC3n t\u1EEB R06) - kh\xF4ng
+    \u0111\u1EB7t qu\xE1i, n\u01B0\u1EDBc y\xEAn"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1759681530
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1759681529}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 117, y: -90.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1268360065}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1762632847
 GameObject:
   m_ObjectHideFlags: 0

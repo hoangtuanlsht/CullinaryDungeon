@@ -6,8 +6,14 @@ using UnityEngine;
 public struct Cooldown
 {
     private float readyAt;
+    private float duration;
     public bool IsReady => Time.time >= readyAt;
     public float Remaining => Mathf.Max(0f, readyAt - Time.time);   // để vẽ icon hồi chiêu sau này
-    public void Start(float duration) => readyAt = Time.time + duration;
+    public float Progress => duration <= 0f ? 1f : 1f - Mathf.Clamp01(Remaining / duration);   // 0..1, để vẽ thanh hồi chiêu 
+    public void Start(float duration)
+    {
+        this.duration = duration;
+        readyAt = Time.time + duration;
+    }
     public void Reset() => readyAt = 0f;
 }

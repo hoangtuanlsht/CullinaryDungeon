@@ -102,6 +102,7 @@ public class Player : Character
     [SerializeField] public SwordWave swordWave;
     [SerializeField] public float swordWaveCoolDown;
     [SerializeField] public UnityEngine.Transform skillOrigin;
+    public PlayerCombat Combat => combat;
 
 
     public PlayerMana Mana => playerMana;
@@ -385,6 +386,7 @@ public class Player : Character
     {
         OnInit();
         playerHunger.AtLeastHunger(respawnHungerRatio);
+        playerMana.AddMana(playerMana.ManaMaxLevel);
         transform.position = currentRespawnPosition;
 
         if (rb != null)

@@ -69,6 +69,7 @@ public class SaveManager : Singleton<SaveManager>
             version = SaveMigrator.CurrentVersion,
             savedAtUtc = DateTime.UtcNow.ToString("o")
         };
+        d.player.mana = player.PlayerMana.ManaLevel;
         d.player.coin = PlayerWallet.Coin;
         d.player.abilities = (int)player.Abilities.Unlocked;
         d.player.hunger = player.PlayerHunger.HungerLevel;
@@ -86,7 +87,8 @@ public class SaveManager : Singleton<SaveManager>
         PlayerWallet.Restore(d.player.coin);
         player.Abilities.Restore((Ability)d.player.abilities);
         player.PlayerHunger.Restore(d.player.hunger);
-        if(d.player.damage>0) player.damage = d.player.damage;
+        player.PlayerMana.Restore(d.player.mana);
+        if (d.player.damage>0) player.damage = d.player.damage;
         
         WorldProgress.RestoreFrom(d.world);
         inventory.RestoreFrom(d.inventory, itemDatabase);

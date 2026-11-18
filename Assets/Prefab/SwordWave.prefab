@@ -164,7 +164,7 @@ MonoBehaviour:
   rb: {fileID: 5914726654302896988}
   speed: 8
   damage: 20
-  manaSpend: 25
+  manaSpend: 40
   lifetime: 1.5
   blockingLayers:
     serializedVersion: 2

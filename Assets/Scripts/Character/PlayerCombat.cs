@@ -33,6 +33,10 @@ public class PlayerCombat
     private float swordWaveCoolDown;
     private const float CastingDuration = 0.35f;
     private Coroutine castingRoutine;
+
+    public float SwordWaveRemaining => swordWaveCd.Remaining;
+    public float SwordWaveProgress => swordWaveCd.Progress;
+    public float SwordWaveCost => owner.swordWave.ManaSpend;
     public bool IsCasting { get; private set; }
     public bool IsBusy => IsAttacking || IsCasting;
 

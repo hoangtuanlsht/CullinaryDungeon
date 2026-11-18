@@ -596,7 +596,7 @@ GameObject:
   - component: {fileID: 62069712}
   - component: {fileID: 62069711}
   - component: {fileID: 62069710}
-  m_Layer: 6
+  m_Layer: 13
   m_Name: Room1_PlatForm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88364,7 +88364,7 @@ GameObject:
   - component: {fileID: 1925173385}
   - component: {fileID: 1925173384}
   - component: {fileID: 1925173388}
-  m_Layer: 6
+  m_Layer: 13
   m_Name: PlatForm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
