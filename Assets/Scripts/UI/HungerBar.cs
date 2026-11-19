@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class HungerBar : MonoBehaviour
 {
     [SerializeField] private Image imageFill;
+    [SerializeField] private TextMeshProUGUI textFill;
 
     [SerializeField] private Player player;
 
@@ -26,6 +28,7 @@ public class HungerBar : MonoBehaviour
     public void HandleHungerLevelChanged(float current, float max)
     {
         imageFill.fillAmount = current / max;
+        textFill.text = current + " / " + max;
     }
     public void HandleHungerStateChanged(HungerState state)
     {

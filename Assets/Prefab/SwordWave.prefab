@@ -168,5 +168,5 @@ MonoBehaviour:
   lifetime: 1.5
   blockingLayers:
     serializedVersion: 2
-    m_Bits: 8256
+    m_Bits: 0
   hitVFX: {fileID: 8244410366233475432, guid: 2f368ddc3a8d79341b9cca52099cc2d0, type: 3}

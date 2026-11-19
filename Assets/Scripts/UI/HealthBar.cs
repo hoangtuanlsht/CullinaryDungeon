@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
     [SerializeField] private Image imageFill;
+    [SerializeField] private TextMeshProUGUI textFill;    
     [SerializeField] Vector3 offset;
 
     float hp;
@@ -43,6 +45,8 @@ public class HealthBar : MonoBehaviour
     {
         maxHp = max; hp = current;
         imageFill.fillAmount = hp / maxHp;
+        textFill.text = current + " / " + max;
+
     }
     private void OnDestroy()
     {

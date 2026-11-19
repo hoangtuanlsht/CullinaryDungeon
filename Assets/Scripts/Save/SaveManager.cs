@@ -14,6 +14,7 @@ public class SaveManager : Singleton<SaveManager>
     private float playTime;
 
     public event Action OnSaved;
+    public event Action OnGameStateRestored;
 
     public bool IsLoading { get; set; }
     private bool dirty;
@@ -92,7 +93,7 @@ public class SaveManager : Singleton<SaveManager>
         
         WorldProgress.RestoreFrom(d.world);
         inventory.RestoreFrom(d.inventory, itemDatabase);
-
+        OnGameStateRestored?.Invoke();
     }
     public void ResetForNewGame()
     {
@@ -100,6 +101,7 @@ public class SaveManager : Singleton<SaveManager>
         PlayerWallet.Restore(legacy);
         WorldProgress.ResetAll();
         // Kỹ năng, đói, túi đồ, sát thương: PersistentGameplay vừa load mới nên đã ở giá trị Inspector.
+        OnGameStateRestored?.Invoke();
     }
     // ---------- Nút test ----------
     [ContextMenu("Module 10/Lưu ngay")]

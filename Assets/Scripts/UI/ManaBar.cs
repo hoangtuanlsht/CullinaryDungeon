@@ -33,8 +33,8 @@ public class ManaBar : MonoBehaviour
     public void HandleManaLevelChanged(float current, float max)
     {
         imageFill.fillAmount = current / max;
-        textFill.text = current.ToString();
-    }
+        textFill.text = current + " / " + max;
+    } 
     public void HandleManaNotEnough()
     {
         Debug.Log($"ManaBar nhận thiếu mana, đổi màu {imageFill.name}", imageFill);

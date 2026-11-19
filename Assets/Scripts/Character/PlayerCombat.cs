@@ -166,6 +166,7 @@ public class PlayerCombat
         IsDefending = false;
         IsCasting = false;
         hasHitThisSwing = false;
+        swordWaveCd.Reset();
         if (attackArea != null) attackArea.SetActive(false);
         ClearAttackBuffer();
     }
