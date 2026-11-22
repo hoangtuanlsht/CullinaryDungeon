@@ -45,6 +45,7 @@ public class HealthBar : MonoBehaviour
     {
         maxHp = max; hp = current;
         imageFill.fillAmount = hp / maxHp;
+        if(textFill == null) return;
         textFill.text = current + " / " + max;
 
     }

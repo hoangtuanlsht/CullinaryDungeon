@@ -1,0 +1,1196 @@
+fileFormatVersion: 2
+guid: b6004075e3ab328498f4dac82d97b0b5
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 8192
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: drip_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 440
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5984ecc3106453d50800000000000000
+      internalID: 6716351390422026389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_1
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 440
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a661e9c9e1527580800000000000000
+      internalID: -8830905854763899228
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_2
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 440
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ae62e0d672d497e0800000000000000
+      internalID: -1759550146642547039
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_3
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 440
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0a9966301c065ec0800000000000000
+      internalID: -3578659590127379957
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_4
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 440
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e74526df700959e00800000000000000
+      internalID: 1050904452051129470
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_5
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 440
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 92bea6d17815dea40800000000000000
+      internalID: 5399061169043073833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_6
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 440
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b79578af595de7150800000000000000
+      internalID: 5872365804267723131
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_7
+      rect:
+        serializedVersion: 2
+        x: 504
+        y: 440
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3cfc94c177649f700800000000000000
+      internalID: 574567904856100803
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 352
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb23c6a968e7ffd40800000000000000
+      internalID: 5620349976563167932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_9
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 352
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f713daa70ec475bf0800000000000000
+      internalID: -335715120201256577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_10
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 352
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c2c819a3812bb170800000000000000
+      internalID: 8195180796292154054
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_11
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 352
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: edf1792284c3cdd40800000000000000
+      internalID: 5610425516312436702
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_12
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 352
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7fe88d848be448bf0800000000000000
+      internalID: -323046719860732169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_13
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 352
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d5e1df64a1340f70800000000000000
+      internalID: 9152494925044114898
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_14
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 352
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0cc2ecca3bd1afb0800000000000000
+      internalID: -4638185095622898677
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_15
+      rect:
+        serializedVersion: 2
+        x: 504
+        y: 352
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea7822b07accbf0f0800000000000000
+      internalID: -1082046267634055250
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_16
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 264
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33e437b06a264de70800000000000000
+      internalID: 9139038009137778227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_17
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 264
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d785c91bd21adb70800000000000000
+      internalID: 8924466343827572689
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_18
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 264
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5dbbccb02fa306a20800000000000000
+      internalID: 3053505358611659733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_19
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 264
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c7cdcf40677bf4e0800000000000000
+      internalID: -1946831158368155703
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_20
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 264
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e1160cedc422af30800000000000000
+      internalID: 4585267837463302631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_21
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 264
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 189984b68467c8d30800000000000000
+      internalID: 4435049786462738817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_22
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 264
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c55ce10600790b70800000000000000
+      internalID: 8865740512559912391
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_23
+      rect:
+        serializedVersion: 2
+        x: 504
+        y: 264
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc198055d41626e80800000000000000
+      internalID: -8186874187839139381
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_24
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 176
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 224a7078c175796f0800000000000000
+      internalID: -677977438859844574
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_25
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 176
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4247535ba1eff88b0800000000000000
+      internalID: -5147616458398403548
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_26
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 176
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88748d89b2dfe6220800000000000000
+      internalID: 2481198808417453960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_27
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 176
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15d3a1ea48f853410800000000000000
+      internalID: 1456227854543633745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_28
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 176
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f88a129a436566f50800000000000000
+      internalID: 6874276665403484303
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_29
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 176
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 84f14922e0609abe0800000000000000
+      internalID: -1465633545952944312
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_30
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 176
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d2f37d132ef14cb0800000000000000
+      internalID: -4881341094321458477
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_31
+      rect:
+        serializedVersion: 2
+        x: 504
+        y: 176
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3d8e79d5cc615050800000000000000
+      internalID: 5787526593161104699
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_32
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 88
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 738c3284b4e8feac0800000000000000
+      internalID: -3823681104630265801
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_33
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 88
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5e29ef5b82d18ca0800000000000000
+      internalID: -6016296131138867617
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_34
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 88
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6585b4b94e3ae8b0800000000000000
+      internalID: -5122213139895188113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_35
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 88
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce45084b569c5fbb0800000000000000
+      internalID: -4902791180665727764
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_36
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 88
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 445c9f203238ce4b0800000000000000
+      internalID: -5409804865981790908
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_37
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 88
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 687fc84191275fc20800000000000000
+      internalID: 3239620959007471494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_38
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 88
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eebce419a12533930800000000000000
+      internalID: 4121728358034623470
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_39
+      rect:
+        serializedVersion: 2
+        x: 504
+        y: 88
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a78eb71765ecdc1e0800000000000000
+      internalID: -2175856174283626374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_40
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 133a1f7b5dc8db320800000000000000
+      internalID: 2575369411467780913
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_41
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 0
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71d9a1819295ec000800000000000000
+      internalID: 58081878235323671
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_42
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 0
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 156b7465864f4f880800000000000000
+      internalID: -8577962661272635823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_43
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 0
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9a654693273b78e0800000000000000
+      internalID: -1694700208790345059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_44
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 0
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7eb36994f1a880b20800000000000000
+      internalID: 3100880210427788263
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_45
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 0
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79c66c9c8828fd330800000000000000
+      internalID: 3737849739753188503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_46
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 0
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3ae173e43d8cf4d0800000000000000
+      internalID: -3099447185244034499
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: drip_47
+      rect:
+        serializedVersion: 2
+        x: 504
+        y: 0
+        width: 72
+        height: 88
+      alignment: 9
+      pivot: {x: 0.5, y: 0.11363637}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ffd1922d6d59662c0800000000000000
+      internalID: -4438695632845595137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      drip_0: 6716351390422026389
+      drip_1: -8830905854763899228
+      drip_10: 8195180796292154054
+      drip_11: 5610425516312436702
+      drip_12: -323046719860732169
+      drip_13: 9152494925044114898
+      drip_14: -4638185095622898677
+      drip_15: -1082046267634055250
+      drip_16: 9139038009137778227
+      drip_17: 8924466343827572689
+      drip_18: 3053505358611659733
+      drip_19: -1946831158368155703
+      drip_2: -1759550146642547039
+      drip_20: 4585267837463302631
+      drip_21: 4435049786462738817
+      drip_22: 8865740512559912391
+      drip_23: -8186874187839139381
+      drip_24: -677977438859844574
+      drip_25: -5147616458398403548
+      drip_26: 2481198808417453960
+      drip_27: 1456227854543633745
+      drip_28: 6874276665403484303
+      drip_29: -1465633545952944312
+      drip_3: -3578659590127379957
+      drip_30: -4881341094321458477
+      drip_31: 5787526593161104699
+      drip_32: -3823681104630265801
+      drip_33: -6016296131138867617
+      drip_34: -5122213139895188113
+      drip_35: -4902791180665727764
+      drip_36: -5409804865981790908
+      drip_37: 3239620959007471494
+      drip_38: 4121728358034623470
+      drip_39: -2175856174283626374
+      drip_4: 1050904452051129470
+      drip_40: 2575369411467780913
+      drip_41: 58081878235323671
+      drip_42: -8577962661272635823
+      drip_43: -1694700208790345059
+      drip_44: 3100880210427788263
+      drip_45: 3737849739753188503
+      drip_46: -3099447185244034499
+      drip_47: -4438695632845595137
+      drip_5: 5399061169043073833
+      drip_6: 5872365804267723131
+      drip_7: 574567904856100803
+      drip_8: 5620349976563167932
+      drip_9: -335715120201256577
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
