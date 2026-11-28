@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67e3d112e112e454f9e4d80cd55d59a3, type: 3}
+  m_Name: Skill_SwordWave
+  m_EditorClassIdentifier: 
+  skillID: skill_sword_wave
+  skillName: SwordWave
+  skillIcon: {fileID: 21300000, guid: 7d8af97e38b40f8418c0f511df62f072, type: 3}
+  manaSpend: 20
+  coolDown: 2
+  castDuration: 0.35
+  animTrigger: Attack2
+  projectilePrefab: {fileID: 1143551193388244932, guid: e3d70c1d38c76f24292b2e78d927d7f1, type: 3}

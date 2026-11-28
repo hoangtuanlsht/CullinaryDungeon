@@ -99,33 +99,10 @@ public class Player : Character
     [Header("Mana(Module 12)")]
     [SerializeField] private PlayerMana playerMana = new PlayerMana();
     public PlayerMana PlayerMana => playerMana;
-    [SerializeField] public SwordWave swordWave;
-    [SerializeField] public float swordWaveCoolDown;
     [SerializeField] public UnityEngine.Transform skillOrigin;
     public PlayerCombat Combat => combat;
 
-
-    public PlayerMana Mana => playerMana;
-
-    [ContextMenu("Module 12/Tiêu 25 mana")]
-    private void DebugSpendMana()
-    {
-        bool ok = playerMana.TrySpend(25f);
-        Debug.Log($"TrySpend(25) = {ok}, mana = {playerMana.ManaLevel}/{playerMana.ManaMaxLevel}");
-    }
-
-    [ContextMenu("Module 12/Hồi 25 mana")]
-    private void DebugAddMana()
-    {
-        playerMana.AddMana(25f);
-        Debug.Log($"Add(25), mana = {playerMana.ManaLevel}/{playerMana.ManaMaxLevel}");
-    }
-
-    [ContextMenu("Module 12/In mana")]
-    private void DebugPrintMana()
-    {
-        Debug.Log($"Mana = {playerMana.ManaLevel}/{playerMana.ManaMaxLevel}");
-    }
+    public SkillData skillData;
     public void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -137,15 +114,16 @@ public class Player : Character
             interactUI.SetActive(false);
         }
         if (recycleableInventoryManager == null) Debug.LogError("Chưa gán InventoryManager!", this);
-
+        if(skillData == null) Debug.LogError("Chưa gán SkillData!", this);
         // dòng tạo movement: thêm tham số cuối
         movement = new PlayerMovement(this, rb, groundLayer, fullFriction, noFriction, maxSlopeAngle, slopeCheckDistance, bodyCollider, input);
-        combat = new PlayerCombat(this, attackArea, attackCooldown, defendCooldown, swordWaveCoolDown);
+        combat = new PlayerCombat(this, attackArea, attackCooldown, defendCooldown);
         interaction = new PlayerInteraction(interactUI, recycleableInventoryManager);
 
         abilities.OnUnlocked += a => Debug.Log($"Mở khóa kỹ năng: {a}");
         attackOnHit.OnAttackHit += (target) => HandleAttackHit(target);
         playerMana.OnManaLevelChanged += (current, max) => Debug.Log($"Mana thay đổi: {current}/{max}");
+       
     }
     void Update()
     {
@@ -167,7 +145,7 @@ public class Player : Character
         }
         if (input.SkillPressed && isGrounded && !combat.IsAttacking && !isHurt && !isDead && !combat.IsDefending && !PauseController.IsGamePause)
         {
-            combat.TrySwordWave();
+            combat.TrySkill();
         }
         if (input.CraftPressed && isGrounded && !combat.IsAttacking && !combat.IsDefending && !isDead)
         {
@@ -265,7 +243,7 @@ public class Player : Character
         }
     }
     public void AnimEvent_HitboxOn() => combat.SetHitbox(true);
-    public void AnimEvent_ReleaseSkill() => combat.ReleaseSwordWave();
+    public void AnimEvent_ReleaseSkill() => combat.ReleaseSkill();
     public void AnimEvent_HitboxOff() => combat.SetHitbox(false);
     /// PlayerMovement gọi khi cú dậm chạm đất. Trả về true nếu có sàn bị phá (để lao tiếp).
     internal bool OnPoundLanded()

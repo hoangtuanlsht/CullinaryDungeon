@@ -5051,9 +5051,8 @@ MonoBehaviour:
     manaLevel: 100
     manaMaxLevel: 100
     manaRegenRate: 0
-  swordWave: {fileID: 1143551193388244932, guid: e3d70c1d38c76f24292b2e78d927d7f1, type: 3}
-  swordWaveCoolDown: 10
   skillOrigin: {fileID: 995280000}
+  skillData: {fileID: 11400000, guid: 3c998f18cc22a1a48a990fa05021bd22, type: 2}
 --- !u!70 &802275188
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

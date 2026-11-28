@@ -30,23 +30,20 @@ public class PlayerCombat
 
     //SwordWave
     private Cooldown swordWaveCd;
-    private float swordWaveCoolDown;
-    private const float CastingDuration = 0.35f;
     private Coroutine castingRoutine;
 
     public float SwordWaveRemaining => swordWaveCd.Remaining;
     public float SwordWaveProgress => swordWaveCd.Progress;
-    public float SwordWaveCost => owner.swordWave.ManaSpend;
+    public float SwordWaveCost => owner.skillData == null ? 0f : owner.skillData.ManaSpend;
     public bool IsCasting { get; private set; }
     public bool IsBusy => IsAttacking || IsCasting;
 
-    public PlayerCombat(Player owner, GameObject attackArea, float attackCooldown, float defendCooldown,float swordWaveCoolDown)
+    public PlayerCombat(Player owner, GameObject attackArea, float attackCooldown, float defendCooldown)
     {
         this.owner = owner;
         this.attackArea = attackArea;
         this.attackCooldown = attackCooldown;
         this.defendCooldown = defendCooldown;
-        this.swordWaveCoolDown = swordWaveCoolDown;
     }
     /// Điều kiện gọi (phím C, !isDefending) vẫn nằm ở Player.Update() như bản gốc;
     /// hàm này chỉ giữ đúng phần thân logic của Attack() cũ.
@@ -90,17 +87,18 @@ public class PlayerCombat
         Stop(ref attackRoutine);
         attackRoutine = owner.StartCoroutine(AttackRoutine());
     }
-    public bool TrySwordWave()
+    public bool TrySkill()
     {
+        if(owner.skillData == null) return false;
         if (!owner.Abilities.Has(Ability.SwordWave)) return false;
         if(IsAttacking || IsDefending) return false;
         if (!swordWaveCd.IsReady) return false;
-        if (!owner.PlayerMana.TrySpend(owner.swordWave.ManaSpend)) return false;
-        swordWaveCd.Start(swordWaveCoolDown);
+        if (!owner.PlayerMana.TrySpend(owner.skillData.ManaSpend)) return false;
+        swordWaveCd.Start(owner.skillData.CoolDown);
         IsCasting = true;
         Stop(ref castingRoutine);
         castingRoutine = owner.StartCoroutine(CastingRoutine());
-        owner.ChangedAnim("Attack2");
+        owner.ChangedAnim(owner.skillData.AnimTrigger);
         return true;
     }
     private IEnumerator AttackRoutine()
@@ -112,7 +110,7 @@ public class PlayerCombat
     }
     private IEnumerator CastingRoutine()
     {
-        yield return new WaitForSeconds(CastingDuration);
+        yield return new WaitForSeconds(owner.skillData.CastDuration);
         IsCasting = false;
         castingRoutine = null;
     }
@@ -121,11 +119,12 @@ public class PlayerCombat
     {
         if (attackArea != null) attackArea.SetActive(on && IsAttacking);
     }
-    public void ReleaseSwordWave()
+    public void ReleaseSkill()
     {
         if (!IsCasting) return;   // ← quan trọng, xem bên dưới
         SoundManager.Play("Attack");
-        PoolManager.Spawn(owner.swordWave, owner.skillOrigin.transform.position, Quaternion.Euler(0, 0, owner.transform.localScale.x > 0 ? 0 : 180));
+        if (owner.skillData.ProjectilePrefab == null) { Debug.LogError("Chưa gán prefab"); return; }
+        PoolManager.Spawn(owner.skillData.ProjectilePrefab, owner.skillOrigin.transform.position, Quaternion.Euler(0, 0, owner.transform.localScale.x > 0 ? 0 : 180));
     }
     public bool TryRegisterHit()
     {

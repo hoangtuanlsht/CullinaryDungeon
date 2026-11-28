@@ -9,7 +9,6 @@ public class SwordWave : MonoBehaviour, IPoolable
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private float speed = 14f;                 // ô/giây
     [SerializeField] private float damage = 20f;
-    [SerializeField] private float manaSpend = 25f;
     [SerializeField, Min(0.1f)] private float lifetime = 0.6f;  // 14 × 0,6 ≈ 8 ô, gần một nửa khung camera
     [Tooltip("Chạm layer này thì biến mất (tường, sàn). Để Nothing = bay xuyên tường.")]
     [SerializeField] private LayerMask blockingLayers;
@@ -20,7 +19,6 @@ public class SwordWave : MonoBehaviour, IPoolable
     private bool alive;
     
     public float Damage => damage;
-    public float ManaSpend => manaSpend;
 
     private void Reset() => rb = GetComponent<Rigidbody2D>();
     private void Awake() { if (rb == null) rb = GetComponent<Rigidbody2D>(); }   // phòng khi quên kéo ô Rb trong Inspector

@@ -21,6 +21,10 @@ public class SkillCoolDownBar : MonoBehaviour
     }
     private void Start()
     {
+        if (player.skillData == null)
+        {
+            Debug.LogError("Player skillData is not assigned in the inspector.");
+        }
         Refresh();
         SaveManager.Instance.OnGameStateRestored += Refresh;
     }
