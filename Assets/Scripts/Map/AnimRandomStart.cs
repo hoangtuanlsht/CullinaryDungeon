@@ -1,15 +1,17 @@
 using UnityEngine;
 
-// Cho hiệu ứng lặp (đom đóm, lá rơi, bong bóng...) bắt đầu ở một khung hình ngẫu nhiên,
-// để nhiều bản đặt cạnh nhau không chạy giống hệt nhau.
+/// Cho mỗi hiệu ứng lặp (cột lửa, lửa ma, đầu lâu bay...) bắt đầu ở một khung ngẫu nhiên và chạy nhanh/chậm khác nhau một chút,
+/// để nhiều hiệu ứng giống nhau trong cùng phòng không chạy đồng loạt như máy.
 [RequireComponent(typeof(Animator))]
 public class AnimRandomStart : MonoBehaviour
 {
-    void Start()
+    [SerializeField] private float minSpeed = 0.85f;
+    [SerializeField] private float maxSpeed = 1.15f;
+
+    private void OnEnable()
     {
         var anim = GetComponent<Animator>();
-        if (anim == null || anim.runtimeAnimatorController == null) return;
-        var state = anim.GetCurrentAnimatorStateInfo(0);
-        anim.Play(state.fullPathHash, 0, Random.value);
+        anim.Play(0, -1, Random.value);
+        anim.speed = Random.Range(minSpeed, maxSpeed);
     }
 }

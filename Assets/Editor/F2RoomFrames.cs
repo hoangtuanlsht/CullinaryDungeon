@@ -10,8 +10,9 @@ using UnityEngine.Tilemaps;
 /// Chia khung phòng SecondFloorScene_v2 (chép từ F3RoomFrames, chỉ đổi dữ liệu tầng).
 ///  - Ô của phòng = hợp các con "RoomRect" / "RoomRect_<id>" (BoxCollider2D tắt, chỉ là dữ liệu).
 ///  - Collider gốc của Room = ô phòng + dải lấn sang phòng kế bên ở mỗi lối thông. "CamBounds" = cùng đa giác (+ phần lộ ở lối bí mật).
+///  - Dải nhận diện chỉ phủ đúng vệt sáng (tính theo nửa ô, giống F4RoomFrames): cửa ngang lấn 1 ô, lỗ trần/sàn lấn 1,5 ô.
 ///  - Mỗi lối thông có 1 EnemyWall + Barrier đúng ranh giới.
-///  - THÊM ở tầng 2: vùng cấm quái quanh mọi chỗ chuyển phòng (hầm ngang, lỗ trần/sàn). Hai đầu vùng có EnemyWall + Barrier
+///  - Vùng cấm quái quanh mọi chỗ chuyển phòng (hầm ngang, lỗ trần/sàn). Hai đầu vùng có EnemyWall + Barrier
 ///    để quái tuần tra quay đầu và quái đang đuổi/bị đánh văng không vào được → người chơi vừa sang phòng không bị đánh úp.
 /// Chạy: Tools > Culinaria > F2 Redivide Room Frames (F2RoomMerge cũng tự gọi). Chạy lại được.
 public static class F2RoomFrames
@@ -21,9 +22,11 @@ public static class F2RoomFrames
     const string GateRoot = "______RoomGate_____";
     const string HoleGlowRoot = "______HoleGlow_____";
     const string EnemyRoot = "______EnemyF2______";
-    const int StripDepth = 3;
-    const int StripDepthSide = 1;
-    const int StripMargin = 1;
+    const int StripDepth2 = 3;         // lỗ trần/sàn: dải nhận diện lấn sang phòng bên 1,5 ô (đơn vị nửa ô) = đúng nửa chiều cao vệt sáng
+    const int StripDepthSide2 = 2;     // cửa ngang: 1 ô
+    const int StripMargin2 = 1;        // lỗ trần/sàn: nới 0,5 ô mỗi bên = đúng bề rộng vệt sáng
+    const int StripMarginSide2 = 2;    // cửa ngang: 1 ô
+    const float CamPad = 0.05f;        // nới CamBounds 0,05 ô để khung hình Perspective (FOV 30, Camera Distance 18,7 → cao 10,02 ô) lọt vừa phòng cao 10 ô
     const float CamHalfH = 5f;
     const float CamHalfW = 10f;
     const int RevealRows = 2;
@@ -66,8 +69,8 @@ public static class F2RoomFrames
         public Room room;
         public List<(string id, RectInt r)> rects;
         public readonly HashSet<Vector2Int> own = new HashSet<Vector2Int>();
-        public readonly HashSet<Vector2Int> cells = new HashSet<Vector2Int>();
-        public readonly HashSet<Vector2Int> camCells = new HashSet<Vector2Int>();
+        public readonly HashSet<Vector2Int> cells = new HashSet<Vector2Int>();      // đơn vị nửa ô
+        public readonly HashSet<Vector2Int> camCells = new HashSet<Vector2Int>();   // đơn vị nửa ô
         public readonly List<string> notes = new List<string>();
         public RectInt Main => rects[0].r;
     }
@@ -102,16 +105,17 @@ public static class F2RoomFrames
         var secretGates = new HashSet<string>();
         foreach (var i in infos)
         {
-            i.cells.UnionWith(i.own);
+            foreach (var oc in i.own) Add2(i.cells, oc);
             foreach (var op in Openings(i, owner, Blocked))
             {
-                int depth = op.side == 'L' || op.side == 'R' ? StripDepthSide : StripDepth;
+                bool sideOp = op.side == 'L' || op.side == 'R';
+                int depth = sideOp ? StripDepthSide2 : StripDepth2, margin = sideOp ? StripMarginSide2 : StripMargin2;
                 for (int k = 1; k <= depth; k++)
-                    for (int t = op.a - StripMargin; t <= op.b + StripMargin; t++)
+                    for (int t = 2 * op.a - margin; t <= 2 * op.b + 1 + margin; t++)
                     {
-                        var c = op.side == 'L' ? new Vector2Int(op.line - k, t) : op.side == 'R' ? new Vector2Int(op.line + k, t)
-                              : op.side == 'B' ? new Vector2Int(t, op.line - k) : new Vector2Int(t, op.line + k);
-                        if (op.nb.own.Contains(c)) i.cells.Add(c);
+                        var h = op.side == 'L' ? new Vector2Int(2 * op.line - k, t) : op.side == 'R' ? new Vector2Int(2 * op.line + 1 + k, t)
+                              : op.side == 'B' ? new Vector2Int(t, 2 * op.line - k) : new Vector2Int(t, 2 * op.line + 1 + k);
+                        if (op.nb.own.Contains(new Vector2Int(Mathf.FloorToInt(h.x / 2f), Mathf.FloorToInt(h.y / 2f)))) i.cells.Add(h);
                     }
                 i.notes.Add($"{op.side}[{op.a}..{op.b}]→{op.nb.room.name}");
                 int len = op.b - op.a + 1;
@@ -150,7 +154,7 @@ public static class F2RoomFrames
                         int w = Mathf.Min(2 * RevealHalfW + 1, rx1 - rx0 + 1);
                         int wx0 = Mathf.Clamp(mid - RevealHalfW, rx0, rx1 + 1 - w);
                         for (int x = wx0; x < wx0 + w; x++)
-                            for (int y = op.line + 1; y <= op.line + RevealRows; y++) i.camCells.Add(new Vector2Int(x, y));
+                            for (int y = op.line + 1; y <= op.line + RevealRows; y++) Add2(i.camCells, new Vector2Int(x, y));
                         i.notes.Add($"lộ {RevealRows} ô x[{wx0}..{wx0 + w - 1}]");
                     }
                 }
@@ -169,14 +173,14 @@ public static class F2RoomFrames
             var camLoop = Outline(i.camCells);
             var poly = go.GetComponent<PolygonCollider2D>();
             poly.isTrigger = true; poly.offset = Vector2.zero; poly.pathCount = 1;
-            poly.SetPath(0, loop.Select(p => (Vector2)go.transform.InverseTransformPoint(new Vector3(p.x, p.y, 0))).ToArray());
+            poly.SetPath(0, ToWorld(loop, 0f).Select(p => (Vector2)go.transform.InverseTransformPoint(new Vector3(p.x, p.y, 0))).ToArray());
 
             var cb = new GameObject("CamBounds") { layer = go.layer };
             cb.transform.SetParent(go.transform, false);
             cb.transform.position = Vector3.zero;
             var bounds = cb.AddComponent<PolygonCollider2D>();
             bounds.isTrigger = true; bounds.pathCount = 1;
-            bounds.SetPath(0, camLoop.Select(p => (Vector2)cb.transform.InverseTransformPoint(new Vector3(p.x, p.y, 0))).ToArray());
+            bounds.SetPath(0, ToWorld(camLoop, CamPad).Select(p => (Vector2)cb.transform.InverseTransformPoint(new Vector3(p.x, p.y, 0))).ToArray());
 
             var so = new SerializedObject(i.room);
             var vc = so.FindProperty("vcam").objectReferenceValue as CinemachineVirtualCamera;
@@ -351,6 +355,26 @@ public static class F2RoomFrames
         return res.OrderBy(o => o.side).ThenBy(o => o.a).ToList();
     }
 
+    /// Thêm 1 ô (đơn vị 1) vào tập ô nửa đơn vị (4 ô con).
+    static void Add2(HashSet<Vector2Int> set, Vector2Int c)
+    {
+        for (int dx = 0; dx < 2; dx++) for (int dy = 0; dy < 2; dy++) set.Add(new Vector2Int(2 * c.x + dx, 2 * c.y + dy));
+    }
+
+    /// Viền (đơn vị nửa ô, đi ngược chiều kim đồng hồ) → toạ độ thế giới, nới ra ngoài `pad`.
+    static Vector2[] ToWorld(List<Vector2Int> loop, float pad)
+    {
+        var res = new Vector2[loop.Count];
+        for (int k = 0; k < loop.Count; k++)
+        {
+            Vector2 p = loop[(k - 1 + loop.Count) % loop.Count], q = loop[k], n = loop[(k + 1) % loop.Count];
+            Vector2 d1 = (q - p).normalized, d2 = (n - q).normalized;
+            Vector2 o = new Vector2(d1.y, -d1.x) + new Vector2(d2.y, -d2.x);
+            res[k] = q * 0.5f + o * pad;
+        }
+        return res;
+    }
+
     static List<Vector2Int> Outline(HashSet<Vector2Int> cells)
     {
         var next = new Dictionary<Vector2Int, Vector2Int>();
@@ -376,23 +400,5 @@ public static class F2RoomFrames
             if (d1.x * d2.y - d1.y * d2.x != 0) outl.Add(q);
         }
         return outl;
-    }
-
-    static bool CopyNearest(List<Tilemap> fill, int x, int y)
-    {
-        for (int d = 1; d <= 40; d++)
-            foreach (var p in new[] { new Vector3Int(x + d, y, 0), new Vector3Int(x - d, y, 0), new Vector3Int(x, y + d, 0), new Vector3Int(x, y - d, 0) })
-                foreach (var t in fill)
-                {
-                    var tile = t.GetTile(p);
-                    if (tile == null) continue;
-                    var q = new Vector3Int(x, y, 0);
-                    t.SetTile(q, tile);
-                    t.SetTileFlags(q, TileFlags.None);
-                    t.SetTransformMatrix(q, t.GetTransformMatrix(p));
-                    t.SetColor(q, t.GetColor(p));
-                    return true;
-                }
-        return false;
     }
 }

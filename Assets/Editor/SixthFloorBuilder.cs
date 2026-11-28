@@ -146,7 +146,8 @@ public static partial class SixthFloorBuilder
         if (artOk) DecorateF6(scene);
         F6RoomMerge.ApplyAll(scene);           // gộp phòng + vệt sáng hầm + chia khung camera (F6RoomMerge.cs, F6RoomFrames.cs)
         if (artOk) GroupBackdropByRoom(scene); // gom nền theo phòng, đẩy ra Z = BgDepth, gán vào Room.background
-        log.Add($"Vcam Perspective: {perspVcams} (FOV 30, Camera Distance {BgDepth}, Screen Y 0,3).");
+        if (artOk) BuildMapFX(scene);           // hiệu ứng PixelFX theo phòng (SixthFloorBuilder.MapFX.cs)
+        log.Add($"Vcam Perspective: {perspVcams}/{rooms.Count} (FOV 30, Framing Transposer, Camera Distance {BgDepth}, Screen Y 0,7; Composer 0,3 — như tầng 2).");
 
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
@@ -525,17 +526,23 @@ public static partial class SixthFloorBuilder
                     if (m != null) m.Invoke(c, null);
                 }
                 // Camera Perspective như tầng 2 (16/11/2026): FOV 30, Camera Distance 18,7, Screen Y 0,3 → nền ở xa mới trượt chậm (parallax)
-                var vso = new SerializedObject(vc);
-                var fov = vso.FindProperty("m_Lens.FieldOfView"); if (fov != null) fov.floatValue = 30f;
-                var lensMode = vso.FindProperty("m_Lens.ModeOverride"); if (lensMode != null) lensMode.intValue = 2;      // 2 = Perspective
-                vso.ApplyModifiedPropertiesWithoutUndo();
-                foreach (var c in vc.GetComponentsInChildren<Component>(true))
+                // Camera giống hệt tầng 2 (SecondFloorScene_v2): Perspective FOV 30; Body = Framing Transposer, Camera Distance 18,7,
+                // Screen Y 0,7, damping 0,2; Composer (Aim) Screen Y 0,3. Room.prefab dùng Transposer nên phải thay bằng Framing Transposer.
+                if (vc is Cinemachine.CinemachineVirtualCamera cv)
                 {
-                    if (c == null || c.GetType().Name != "CinemachineFramingTransposer") continue;
-                    var fso = new SerializedObject(c);
-                    var dist = fso.FindProperty("m_CameraDistance"); if (dist != null) dist.floatValue = BgDepth;
-                    var sy = fso.FindProperty("m_ScreenY"); if (sy != null) sy.floatValue = 0.3f;
-                    fso.ApplyModifiedPropertiesWithoutUndo();
+                    cv.m_Lens.FieldOfView = 30f;
+                    cv.m_Lens.ModeOverride = Cinemachine.LensSettings.OverrideModes.Perspective;
+                    var ft = cv.GetCinemachineComponent<Cinemachine.CinemachineFramingTransposer>();
+                    if (ft == null) ft = cv.AddCinemachineComponent<Cinemachine.CinemachineFramingTransposer>();
+                    ft.m_CameraDistance = BgDepth;
+                    ft.m_ScreenX = 0.5f; ft.m_ScreenY = 0.7f;
+                    ft.m_XDamping = 0.2f; ft.m_YDamping = 0.2f; ft.m_ZDamping = 1f; ft.m_TargetMovementOnly = true;
+                    ft.m_DeadZoneWidth = 0; ft.m_DeadZoneHeight = 0; ft.m_SoftZoneWidth = 0.8f; ft.m_SoftZoneHeight = 0.8f;
+                    ft.m_CenterOnActivate = true;
+                    var comp = cv.GetCinemachineComponent<Cinemachine.CinemachineComposer>();
+                    if (comp != null) { comp.m_ScreenY = 0.3f; PrefabUtility.RecordPrefabInstancePropertyModifications(comp); }
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(cv);
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(ft);
                     perspVcams++;
                 }
                 vc.gameObject.name = "VCam_" + r.id;

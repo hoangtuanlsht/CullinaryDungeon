@@ -93,8 +93,8 @@ public class PlayerMovement
         }
     }
 
-    /// Gọi trong FixedUpdate() của Player, sau khi các cờ trạng thái (dead/hurt/attack/defend)
-    /// đã được tính. blockMovement = true khi Player đang dead/hurt/attack/defend — lúc đó
+    /// Gọi trong FixedUpdate() của Player, sau khi các cờ trạng thái (dead/hurt/defend)
+    /// đã được tính. blockMovement = true khi Player đang dead/hurt/defend — lúc đó
     /// combat/hurt handling đã tự set velocity, movement không được ghi đè lên.
     public void PhysicsTick(bool blockMovement, bool animLocked)
     {
